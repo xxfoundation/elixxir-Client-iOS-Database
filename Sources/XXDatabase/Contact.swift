@@ -23,91 +23,71 @@ struct ContactRecord: Codable, FetchableRecord, PersistableRecord {
   var nickname: String?
 }
 
-extension ContactRecord {
-  static func toModel(_ record: ContactRecord) -> Contact {
-    Contact(
-      id: record.id,
-      marshaled: record.marshaled,
-      username: record.username,
-      email: record.email,
-      phone: record.phone,
-      nickname: record.nickname
-    )
-  }
+private func toModel(_ record: ContactRecord) -> Contact {
+  Contact(
+    id: record.id,
+    marshaled: record.marshaled,
+    username: record.username,
+    email: record.email,
+    phone: record.phone,
+    nickname: record.nickname
+  )
+}
 
-  static func toRecord(_ model: Contact) -> ContactRecord {
-    ContactRecord(
-      id: model.id,
-      marshaled: model.marshaled,
-      username: model.username,
-      email: model.email,
-      phone: model.phone,
-      nickname: model.nickname
-    )
-  }
+private func toRecord(_ model: Contact) -> ContactRecord {
+  ContactRecord(
+    id: model.id,
+    marshaled: model.marshaled,
+    username: model.username,
+    email: model.email,
+    phone: model.phone,
+    nickname: model.nickname
+  )
+}
 
-  static func request(
-    _ query: Contact.Query,
-    _ order: Contact.Order
-  ) -> QueryInterfaceRequest<ContactRecord> {
-    var request = ContactRecord.all()
-    switch order {
-    case .username(let desc):
-      let column = ContactRecord.Columns.username
-      request = request.order(desc ? column.desc : column)
-    }
-    return request
+private func request(
+  _ query: Contact.Query,
+  _ order: Contact.Order
+) -> QueryInterfaceRequest<ContactRecord> {
+  var request = ContactRecord.all()
+  switch order {
+  case .username(let desc):
+    let column = ContactRecord.Columns.username
+    request = request.order(desc ? column.desc : column)
   }
+  return request
 }
 
 extension Database {
   public func fetch() -> Contact.Fetch {
-    fetch(
-      request: ContactRecord.request(_:_:),
-      toModel: ContactRecord.toModel(_:)
-    )
+    fetch(request: request, toModel: toModel)
   }
 
   public func fetchPublisher() -> Contact.FetchPublisher {
-    fetchPublisher(
-      request: ContactRecord.request(_:_:),
-      toModel: ContactRecord.toModel(_:)
-    )
+    fetchPublisher(request: request, toModel: toModel)
   }
 
   public func insert() -> Contact.Insert {
-    insert(
-      toRecord: ContactRecord.toRecord(_:),
-      toModel: ContactRecord.toModel(_:)
-    )
+    insert(toRecord: toRecord, toModel: toModel)
   }
 
   public func insertPublisher() -> Contact.InsertPublisher {
-    insertPublisher(
-      toRecord: ContactRecord.toRecord(_:),
-      toModel: ContactRecord.toModel(_:)
-    )
+    insertPublisher(toRecord: toRecord, toModel: toModel)
   }
 
   public func update() -> Contact.Update {
-    update(
-      toRecord: ContactRecord.toRecord(_:),
-      toModel: ContactRecord.toModel(_:)
-    )
+    update(toRecord: toRecord, toModel: toModel)
   }
 
   public func updatePublisher() -> Contact.UpdatePublisher {
-    updatePublisher(
-      toRecord: ContactRecord.toRecord(_:),
-      toModel: ContactRecord.toModel(_:)
-    )
+    updatePublisher(toRecord: toRecord, toModel: toModel)
   }
 
   public func delete() -> Contact.Delete {
-    delete(toRecord: ContactRecord.toRecord(_:))
+    delete(toRecord: toRecord)
   }
 
   public func deletePublisher() -> Contact.DeletePublisher {
-    deletePublisher(toRecord: ContactRecord.toRecord(_:))
+    deletePublisher(toRecord: toRecord)
   }
 }
