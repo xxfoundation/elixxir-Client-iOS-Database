@@ -5,16 +5,13 @@ import XXModels
 
 final class ContactTests: XCTestCase {
   var db: Database!
-  var cancellables: Set<AnyCancellable>!
 
   override func setUp() async throws {
     db = try Database.inMemory()
-    cancellables = Set()
   }
 
   override func tearDown() async throws {
     db = nil
-    cancellables = nil
   }
 
   func testDatabaseOperations() throws {
@@ -23,17 +20,22 @@ final class ContactTests: XCTestCase {
     let update: Contact.Update = db.update()
     let delete: Contact.Delete = db.delete()
 
-    let contactA = Contact.stub("a")
+    // Insert contact A:
 
+    let contactA = Contact.stub("a")
     XCTAssertEqual(try insert(contactA), contactA)
 
-    let contactB = Contact.stub("b")
+    // Insert contact B:
 
+    let contactB = Contact.stub("b")
     XCTAssertEqual(try insert(contactB), contactB)
 
-    let contactC = Contact.stub("c")
+    // Insert contact C:
 
+    let contactC = Contact.stub("c")
     XCTAssertEqual(try insert(contactC), contactC)
+
+    // Fetch contacts:
 
     XCTAssertEqual(
       try fetch(
@@ -43,10 +45,13 @@ final class ContactTests: XCTestCase {
       [contactA, contactB, contactC]
     )
 
+    // Update contact B:
+
     var updatedContactB = contactB
     updatedContactB.username!.append("-updated")
-
     XCTAssertEqual(try update(updatedContactB), updatedContactB)
+
+    // Fetch contacts:
 
     XCTAssertEqual(
       try fetch(
@@ -56,7 +61,11 @@ final class ContactTests: XCTestCase {
       [contactC, updatedContactB, contactA]
     )
 
+    // Delete contact C:
+
     XCTAssertEqual(try delete(contactC), true)
+
+    // Fetch contacts:
 
     XCTAssertEqual(
       try fetch(
@@ -73,49 +82,102 @@ final class ContactTests: XCTestCase {
     let update: Contact.UpdatePublisher = db.updatePublisher()
     let delete: Contact.DeletePublisher = db.deletePublisher()
 
-    var fetched: [[Contact]] = []
-    let fetchCompletedExpectation = XCTestExpectation(
-      description: "Publishes values then finishes"
-    )
-    fetch(Contact.Query(), Contact.Order.username())
-      .prefix(6)
-      .sink(
-        receiveCompletion: { completion in
-          guard case .finished = completion else { return }
-          fetchCompletedExpectation.fulfill()
-        },
-        receiveValue: { fetched.append($0) }
-      )
-      .store(in: &cancellables)
+    let fetchAssertion = PublisherAssertion<[Contact], Error>()
+    let insertAssertion = PublisherAssertion<Contact, Error>()
+    let updateAssertion = PublisherAssertion<Contact, Error>()
+    let deleteAssertion = PublisherAssertion<Bool, Error>()
+
+    // Subscribe to fetch publisher:
+
+    fetchAssertion.expectValue()
+    fetchAssertion.subscribe(to: fetch(Contact.Query(), Contact.Order.username()))
+    fetchAssertion.waitForValues()
+
+    XCTAssertEqual(fetchAssertion.receivedValues(), [[]])
+    XCTAssertNil(fetchAssertion.receivedCompletion())
+
+    // Insert contact A:
 
     let contactA = Contact.stub("a")
+    insertAssertion.expectValue()
+    insertAssertion.expectCompletion()
+    fetchAssertion.expectValue()
+    insertAssertion.subscribe(to: insert(contactA))
+    insertAssertion.waitForValues()
+    insertAssertion.waitForCompletion()
+    fetchAssertion.waitForValues()
 
-    assert(insert(contactA), publishes: contactA)
+    XCTAssertEqual(insertAssertion.receivedValues(), [contactA])
+    XCTAssert(insertAssertion.receivedCompletion()?.isFinished == true)
+    XCTAssertEqual(fetchAssertion.receivedValues(), [[contactA]])
+    XCTAssertNil(fetchAssertion.receivedCompletion())
+
+    // Insert contact B:
 
     let contactB = Contact.stub("b")
+    insertAssertion.expectValue()
+    insertAssertion.expectCompletion()
+    fetchAssertion.expectValue()
+    insertAssertion.subscribe(to: insert(contactB))
+    insertAssertion.waitForValues()
+    insertAssertion.waitForCompletion()
+    fetchAssertion.waitForValues()
 
-    assert(insert(contactB), publishes: contactB)
+    XCTAssertEqual(insertAssertion.receivedValues(), [contactB])
+    XCTAssert(insertAssertion.receivedCompletion()?.isFinished == true)
+    XCTAssertEqual(fetchAssertion.receivedValues(), [[contactA, contactB]])
+    XCTAssertNil(fetchAssertion.receivedCompletion())
+
+    // Insert contact C:
 
     let contactC = Contact.stub("c")
+    insertAssertion.expectValue()
+    insertAssertion.expectCompletion()
+    fetchAssertion.expectValue()
+    insertAssertion.subscribe(to: insert(contactC))
+    insertAssertion.waitForValues()
+    insertAssertion.waitForCompletion()
+    fetchAssertion.waitForValues()
 
-    assert(insert(contactC), publishes: contactC)
+    XCTAssertEqual(insertAssertion.receivedValues(), [contactC])
+    XCTAssert(insertAssertion.receivedCompletion()?.isFinished == true)
+    XCTAssertEqual(fetchAssertion.receivedValues(), [[contactA, contactB, contactC]])
+    XCTAssertNil(fetchAssertion.receivedCompletion())
+
+    // Update contact B:
 
     var updatedContactB = contactB
     updatedContactB.username!.append("-updated")
+    updateAssertion.expectValue()
+    updateAssertion.expectCompletion()
+    fetchAssertion.expectValue()
+    updateAssertion.subscribe(to: update(updatedContactB))
+    updateAssertion.waitForValues()
+    updateAssertion.waitForCompletion()
+    fetchAssertion.waitForValues()
 
-    assert(update(updatedContactB), publishes: updatedContactB)
+    XCTAssertEqual(updateAssertion.receivedValues(), [updatedContactB])
+    XCTAssert(updateAssertion.receivedCompletion()?.isFinished == true)
+    XCTAssertEqual(fetchAssertion.receivedValues(), [[contactA, updatedContactB, contactC]])
+    XCTAssertNil(fetchAssertion.receivedCompletion())
 
-    assert(delete(contactC), publishes: true)
+    // Delete contact C:
 
-    wait(for: [fetchCompletedExpectation], timeout: 2)
-    XCTAssertEqual(fetched, [
-      [],
-      [contactA],
-      [contactA, contactB],
-      [contactA, contactB, contactC],
-      [contactA, updatedContactB, contactC],
-      [contactA, updatedContactB]
-    ])
+    deleteAssertion.expectValue()
+    deleteAssertion.expectCompletion()
+    fetchAssertion.expectValue()
+    deleteAssertion.subscribe(to: delete(contactC))
+    deleteAssertion.waitForValues()
+    deleteAssertion.waitForCompletion()
+    fetchAssertion.waitForValues()
+
+    XCTAssertEqual(deleteAssertion.receivedValues(), [true])
+    XCTAssert(deleteAssertion.receivedCompletion()?.isFinished == true)
+    XCTAssertEqual(fetchAssertion.receivedValues(), [[contactA, updatedContactB]])
+
+    // Check if fetch publisher completed:
+
+    XCTAssertNil(fetchAssertion.receivedCompletion())
   }
 }
 
