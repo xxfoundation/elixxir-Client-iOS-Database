@@ -31,7 +31,7 @@ extension Database {
     toModel: @escaping (Record) -> Model
   ) -> (Query, Order) throws -> [Model]
   where Record: FetchableRecord {
-    { [writer, queue] query, order in
+    { query, order in
       try queue.sync {
         try writer.read { db in
           try Record
@@ -47,7 +47,7 @@ extension Database {
     toModel: @escaping (Record) -> Model
   ) -> (Query, Order) -> AnyPublisher<[Model], Error>
   where Record: FetchableRecord {
-    { [writer, queue] query, order in
+    { query, order in
       ValueObservation
         .tracking(request(query, order).fetchAll(_:))
         .publisher(
@@ -64,7 +64,7 @@ extension Database {
     toModel: @escaping (Record) -> Model
   ) -> (Model) throws -> Model
   where Record: PersistableRecord {
-    { [writer, queue] model in
+    { model in
       try queue.sync {
         try writer.write { db in
           toModel(try toRecord(model).inserted(db))
@@ -78,7 +78,7 @@ extension Database {
     toModel: @escaping (Record) -> Model
   ) -> (Model) -> AnyPublisher<Model, Error>
   where Record: PersistableRecord {
-    { [writer, queue] model in
+    { model in
       writer
         .writePublisher(
           receiveOn: queue,
@@ -94,7 +94,7 @@ extension Database {
     toModel: @escaping (Record) -> Model
   ) -> (Model) throws -> Model
   where Record: PersistableRecord {
-    { [writer, queue] model in
+    { model in
       try queue.sync {
         try writer.write { db in
           try toRecord(model).update(db)
@@ -109,7 +109,7 @@ extension Database {
     toModel: @escaping (Record) -> Model
   ) -> (Model) -> AnyPublisher<Model, Error>
   where Record: PersistableRecord {
-    { [writer, queue] model in
+    { model in
       writer
         .writePublisher(
           receiveOn: queue,
@@ -128,7 +128,7 @@ extension Database {
     toRecord: @escaping (Model) -> Record
   ) -> (Model) throws -> Bool
   where Record: PersistableRecord {
-    { [writer, queue] model in
+    { model in
       try queue.sync {
         try writer.write { db in
           try toRecord(model).delete(db)
@@ -141,7 +141,7 @@ extension Database {
     toRecord: @escaping (Model) -> Record
   ) -> (Model) -> AnyPublisher<Bool, Error>
   where Record: PersistableRecord {
-    { [writer, queue] model in
+    { model in
       writer
         .writePublisher(
           receiveOn: queue,

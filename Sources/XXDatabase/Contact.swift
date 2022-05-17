@@ -13,7 +13,7 @@ struct ContactRecord: Codable, FetchableRecord, PersistableRecord {
     static let nickname = Column(CodingKeys.nickname)
   }
 
-  static var databaseTableName: String = "contacts"
+  static let databaseTableName: String = "contacts"
 
   var id: Data
   var marshaled: Data
