@@ -8,14 +8,25 @@ public struct Migration {
 extension Sequence where Element == Migration {
   public static var all: [Migration] {[
     Migration(id: "0") { db in
-      try db.create(table: ContactRecord.databaseTableName) { t in
-        t.column(ContactRecord.Columns.id.name, .blob).notNull()
-        t.column(ContactRecord.Columns.marshaled.name, .blob).notNull()
-        t.column(ContactRecord.Columns.username.name, .text)
-        t.column(ContactRecord.Columns.email.name, .text)
-        t.column(ContactRecord.Columns.phone.name, .text)
-        t.column(ContactRecord.Columns.nickname.name, .text)
-        t.primaryKey([ContactRecord.Columns.id.name])
+      try db.create(table: "contacts") { t in
+        t.column("id", .blob).notNull().primaryKey()
+        t.column("marshaled", .blob)
+        t.column("username", .text)
+        t.column("email", .text)
+        t.column("phone", .text)
+        t.column("nickname", .text)
+      }
+
+      try db.create(table: "groups") { t in
+        t.column("id", .blob).notNull().primaryKey()
+        t.column("name", .text).notNull()
+        t.column("leaderId", .blob).notNull().references("contacts", column: "id")
+        t.column("createdAt", .datetime).notNull()
+      }
+
+      try db.create(table: "groupMembers") { t in
+        t.column("groupId").notNull().references("groups", column: "id")
+        t.column("contactId").notNull().references("contacts", column: "id")
       }
     }
   ]}
