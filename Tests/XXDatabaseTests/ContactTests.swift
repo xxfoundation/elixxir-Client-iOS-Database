@@ -15,9 +15,10 @@ final class ContactTests: XCTestCase {
   }
 
   func testDatabaseOperations() throws {
-    let insert: Contact.Insert = db.insert(_:)
     let fetch: Contact.Fetch = db.fetch(Contact.request(_:_:))
+    let insert: Contact.Insert = db.insert(_:)
     let update: Contact.Update = db.update(_:)
+    let save: Contact.Save = db.save(_:)
     let delete: Contact.Delete = db.delete(_:)
 
     // Insert contact A:
@@ -65,17 +66,44 @@ final class ContactTests: XCTestCase {
       try fetch(.all, .username()),
       [contactA, updatedContactB]
     )
+
+    // Save updated contact A:
+
+    var updatedContactA = contactA
+    updatedContactA.username!.append("-updated")
+    XCTAssertEqual(try update(updatedContactA), updatedContactA)
+
+    // Fetch contacts:
+
+    XCTAssertEqual(
+      try fetch(.all, .username()),
+      [updatedContactA, updatedContactB]
+    )
+
+    // Save new contact D:
+
+    let contactD = Contact.stub(4)
+    XCTAssertEqual(try save(contactD), contactD)
+
+    // Fetch contacts:
+
+    XCTAssertEqual(
+      try fetch(.all, .username()),
+      [updatedContactA, updatedContactB, contactD]
+    )
   }
 
   func testDatabaseOperationPublishers() {
-    let insert: Contact.InsertPublisher = db.insertPublisher(_:)
     let fetch: Contact.FetchPublisher = db.fetchPublisher(Contact.request(_:_:))
+    let insert: Contact.InsertPublisher = db.insertPublisher(_:)
     let update: Contact.UpdatePublisher = db.updatePublisher(_:)
+    let save: Contact.SavePublisher = db.savePublisher(_:)
     let delete: Contact.DeletePublisher = db.deletePublisher(_:)
 
     let fetchAssertion = PublisherAssertion<[Contact], Error>()
     let insertAssertion = PublisherAssertion<Contact, Error>()
     let updateAssertion = PublisherAssertion<Contact, Error>()
+    let saveAssertion = PublisherAssertion<Contact, Error>()
     let deleteAssertion = PublisherAssertion<Bool, Error>()
 
     // Subscribe to fetch publisher:
@@ -165,6 +193,39 @@ final class ContactTests: XCTestCase {
     XCTAssertEqual(deleteAssertion.receivedValues(), [true])
     XCTAssert(deleteAssertion.receivedCompletion()?.isFinished == true)
     XCTAssertEqual(fetchAssertion.receivedValues(), [[contactA, updatedContactB]])
+
+    // Save updated contact A:
+
+    var updatedContactA = contactA
+    updatedContactA.username!.append("-updated")
+    saveAssertion.expectValue()
+    saveAssertion.expectCompletion()
+    fetchAssertion.expectValue()
+    saveAssertion.subscribe(to: save(updatedContactA))
+    saveAssertion.waitForValues()
+    saveAssertion.waitForCompletion()
+    fetchAssertion.waitForValues()
+
+    XCTAssertEqual(saveAssertion.receivedValues(), [updatedContactA])
+    XCTAssert(saveAssertion.receivedCompletion()?.isFinished == true)
+    XCTAssertEqual(fetchAssertion.receivedValues(), [[updatedContactA, updatedContactB]])
+    XCTAssertNil(fetchAssertion.receivedCompletion())
+
+    // Save new contact D:
+
+    let contactD = Contact.stub(4)
+    saveAssertion.expectValue()
+    saveAssertion.expectCompletion()
+    fetchAssertion.expectValue()
+    saveAssertion.subscribe(to: save(contactD))
+    saveAssertion.waitForValues()
+    saveAssertion.waitForCompletion()
+    fetchAssertion.waitForValues()
+
+    XCTAssertEqual(saveAssertion.receivedValues(), [contactD])
+    XCTAssert(saveAssertion.receivedCompletion()?.isFinished == true)
+    XCTAssertEqual(fetchAssertion.receivedValues(), [[updatedContactA, updatedContactB, contactD]])
+    XCTAssertNil(fetchAssertion.receivedCompletion())
 
     // Check if fetch publisher completed:
 

@@ -110,6 +110,28 @@ extension Database {
     .eraseToAnyPublisher()
   }
 
+  public func save<Record>(
+    _ record: Record
+  ) throws -> Record
+  where Record: PersistableRecord {
+    try queue.sync {
+      try writer.write { db in
+        try record.saved(db)
+      }
+    }
+  }
+
+  public func savePublisher<Record>(
+    _ record: Record
+  ) -> AnyPublisher<Record, Error>
+  where Record: PersistableRecord {
+    writer.writePublisher(
+      receiveOn: queue,
+      updates: record.saved(_:)
+    )
+    .eraseToAnyPublisher()
+  }
+
   public func delete<Record>(
     _ record: Record
   ) throws -> Bool

@@ -33,6 +33,8 @@ extension Contact {
   public typealias InsertPublisher = (Contact) -> AnyPublisher<Contact, Error>
   public typealias Update = (Contact) throws -> Contact
   public typealias UpdatePublisher = (Contact) -> AnyPublisher<Contact, Error>
+  public typealias Save = (Contact) throws -> Contact
+  public typealias SavePublisher = (Contact) -> AnyPublisher<Contact, Error>
   public typealias Delete = (Contact) throws -> Bool
   public typealias DeletePublisher = (Contact) -> AnyPublisher<Bool, Error>
 
