@@ -1,4 +1,5 @@
 import Combine
+import CustomDump
 import XCTest
 import XXModels
 @testable import XXDatabase
@@ -24,21 +25,21 @@ final class ContactTests: XCTestCase {
     // Insert contact A:
 
     let contactA = Contact.stub(1)
-    XCTAssertEqual(try insert(contactA), contactA)
+    XCTAssertNoDifference(try insert(contactA), contactA)
 
     // Insert contact B:
 
     let contactB = Contact.stub(2)
-    XCTAssertEqual(try insert(contactB), contactB)
+    XCTAssertNoDifference(try insert(contactB), contactB)
 
     // Insert contact C:
 
     let contactC = Contact.stub(3)
-    XCTAssertEqual(try insert(contactC), contactC)
+    XCTAssertNoDifference(try insert(contactC), contactC)
 
     // Fetch contacts:
 
-    XCTAssertEqual(
+    XCTAssertNoDifference(
       try fetch(.all, .username()),
       [contactA, contactB, contactC]
     )
@@ -47,22 +48,22 @@ final class ContactTests: XCTestCase {
 
     var updatedContactB = contactB
     updatedContactB.username!.append("-updated")
-    XCTAssertEqual(try update(updatedContactB), updatedContactB)
+    XCTAssertNoDifference(try update(updatedContactB), updatedContactB)
 
     // Fetch contacts:
 
-    XCTAssertEqual(
+    XCTAssertNoDifference(
       try fetch(.all, .username(desc: true)),
       [contactC, updatedContactB, contactA]
     )
 
     // Delete contact C:
 
-    XCTAssertEqual(try delete(contactC), true)
+    XCTAssertNoDifference(try delete(contactC), true)
 
     // Fetch contacts:
 
-    XCTAssertEqual(
+    XCTAssertNoDifference(
       try fetch(.all, .username()),
       [contactA, updatedContactB]
     )
@@ -71,11 +72,11 @@ final class ContactTests: XCTestCase {
 
     var updatedContactA = contactA
     updatedContactA.username!.append("-updated")
-    XCTAssertEqual(try update(updatedContactA), updatedContactA)
+    XCTAssertNoDifference(try update(updatedContactA), updatedContactA)
 
     // Fetch contacts:
 
-    XCTAssertEqual(
+    XCTAssertNoDifference(
       try fetch(.all, .username()),
       [updatedContactA, updatedContactB]
     )
@@ -83,11 +84,11 @@ final class ContactTests: XCTestCase {
     // Save new contact D:
 
     let contactD = Contact.stub(4)
-    XCTAssertEqual(try save(contactD), contactD)
+    XCTAssertNoDifference(try save(contactD), contactD)
 
     // Fetch contacts:
 
-    XCTAssertEqual(
+    XCTAssertNoDifference(
       try fetch(.all, .username()),
       [updatedContactA, updatedContactB, contactD]
     )
@@ -112,7 +113,7 @@ final class ContactTests: XCTestCase {
     fetchAssertion.subscribe(to: fetch(.all, .username()))
     fetchAssertion.waitForValues()
 
-    XCTAssertEqual(fetchAssertion.receivedValues(), [[]])
+    XCTAssertNoDifference(fetchAssertion.receivedValues(), [[]])
     XCTAssertNil(fetchAssertion.receivedCompletion())
 
     // Insert contact A:
@@ -126,9 +127,9 @@ final class ContactTests: XCTestCase {
     insertAssertion.waitForCompletion()
     fetchAssertion.waitForValues()
 
-    XCTAssertEqual(insertAssertion.receivedValues(), [contactA])
+    XCTAssertNoDifference(insertAssertion.receivedValues(), [contactA])
     XCTAssert(insertAssertion.receivedCompletion()?.isFinished == true)
-    XCTAssertEqual(fetchAssertion.receivedValues(), [[contactA]])
+    XCTAssertNoDifference(fetchAssertion.receivedValues(), [[contactA]])
     XCTAssertNil(fetchAssertion.receivedCompletion())
 
     // Insert contact B:
@@ -142,9 +143,9 @@ final class ContactTests: XCTestCase {
     insertAssertion.waitForCompletion()
     fetchAssertion.waitForValues()
 
-    XCTAssertEqual(insertAssertion.receivedValues(), [contactB])
+    XCTAssertNoDifference(insertAssertion.receivedValues(), [contactB])
     XCTAssert(insertAssertion.receivedCompletion()?.isFinished == true)
-    XCTAssertEqual(fetchAssertion.receivedValues(), [[contactA, contactB]])
+    XCTAssertNoDifference(fetchAssertion.receivedValues(), [[contactA, contactB]])
     XCTAssertNil(fetchAssertion.receivedCompletion())
 
     // Insert contact C:
@@ -158,9 +159,9 @@ final class ContactTests: XCTestCase {
     insertAssertion.waitForCompletion()
     fetchAssertion.waitForValues()
 
-    XCTAssertEqual(insertAssertion.receivedValues(), [contactC])
+    XCTAssertNoDifference(insertAssertion.receivedValues(), [contactC])
     XCTAssert(insertAssertion.receivedCompletion()?.isFinished == true)
-    XCTAssertEqual(fetchAssertion.receivedValues(), [[contactA, contactB, contactC]])
+    XCTAssertNoDifference(fetchAssertion.receivedValues(), [[contactA, contactB, contactC]])
     XCTAssertNil(fetchAssertion.receivedCompletion())
 
     // Update contact B:
@@ -175,9 +176,9 @@ final class ContactTests: XCTestCase {
     updateAssertion.waitForCompletion()
     fetchAssertion.waitForValues()
 
-    XCTAssertEqual(updateAssertion.receivedValues(), [updatedContactB])
+    XCTAssertNoDifference(updateAssertion.receivedValues(), [updatedContactB])
     XCTAssert(updateAssertion.receivedCompletion()?.isFinished == true)
-    XCTAssertEqual(fetchAssertion.receivedValues(), [[contactA, updatedContactB, contactC]])
+    XCTAssertNoDifference(fetchAssertion.receivedValues(), [[contactA, updatedContactB, contactC]])
     XCTAssertNil(fetchAssertion.receivedCompletion())
 
     // Delete contact C:
@@ -190,9 +191,10 @@ final class ContactTests: XCTestCase {
     deleteAssertion.waitForCompletion()
     fetchAssertion.waitForValues()
 
-    XCTAssertEqual(deleteAssertion.receivedValues(), [true])
+    XCTAssertNoDifference(deleteAssertion.receivedValues(), [true])
     XCTAssert(deleteAssertion.receivedCompletion()?.isFinished == true)
-    XCTAssertEqual(fetchAssertion.receivedValues(), [[contactA, updatedContactB]])
+    XCTAssertNoDifference(fetchAssertion.receivedValues(), [[contactA, updatedContactB]])
+    XCTAssertNil(fetchAssertion.receivedCompletion())
 
     // Save updated contact A:
 
@@ -206,9 +208,9 @@ final class ContactTests: XCTestCase {
     saveAssertion.waitForCompletion()
     fetchAssertion.waitForValues()
 
-    XCTAssertEqual(saveAssertion.receivedValues(), [updatedContactA])
+    XCTAssertNoDifference(saveAssertion.receivedValues(), [updatedContactA])
     XCTAssert(saveAssertion.receivedCompletion()?.isFinished == true)
-    XCTAssertEqual(fetchAssertion.receivedValues(), [[updatedContactA, updatedContactB]])
+    XCTAssertNoDifference(fetchAssertion.receivedValues(), [[updatedContactA, updatedContactB]])
     XCTAssertNil(fetchAssertion.receivedCompletion())
 
     // Save new contact D:
@@ -222,9 +224,9 @@ final class ContactTests: XCTestCase {
     saveAssertion.waitForCompletion()
     fetchAssertion.waitForValues()
 
-    XCTAssertEqual(saveAssertion.receivedValues(), [contactD])
+    XCTAssertNoDifference(saveAssertion.receivedValues(), [contactD])
     XCTAssert(saveAssertion.receivedCompletion()?.isFinished == true)
-    XCTAssertEqual(fetchAssertion.receivedValues(), [[updatedContactA, updatedContactB, contactD]])
+    XCTAssertNoDifference(fetchAssertion.receivedValues(), [[updatedContactA, updatedContactB, contactD]])
     XCTAssertNil(fetchAssertion.receivedCompletion())
 
     // Check if fetch publisher completed:
