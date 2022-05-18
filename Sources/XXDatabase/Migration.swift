@@ -16,6 +16,14 @@ extension Sequence where Element == Migration {
         t.column("phone", .text)
         t.column("nickname", .text)
       }
+
+      try db.create(table: "groups") { t in
+        t.column("id", .blob).notNull().primaryKey()
+        t.column("name", .text).notNull()
+        t.column("leaderId", .blob).notNull()
+          .references("contacts", column: "id", onDelete: .cascade, onUpdate: .cascade)
+        t.column("createdAt", .datetime).notNull()
+      }
     }
   ]}
 }
