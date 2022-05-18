@@ -1,4 +1,3 @@
-import Combine
 import Foundation
 
 public struct GroupMember: Equatable, Codable {

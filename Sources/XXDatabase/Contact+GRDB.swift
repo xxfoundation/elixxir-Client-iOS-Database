@@ -1,6 +1,5 @@
 import GRDB
 import XXModels
-import Combine
 
 extension Contact: FetchableRecord, PersistableRecord {
   enum Columns {
