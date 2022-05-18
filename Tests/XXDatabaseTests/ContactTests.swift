@@ -22,17 +22,17 @@ final class ContactTests: XCTestCase {
 
     // Insert contact A:
 
-    let contactA = Contact.stub("a")
+    let contactA = Contact.stub(1)
     XCTAssertEqual(try insert(contactA), contactA)
 
     // Insert contact B:
 
-    let contactB = Contact.stub("b")
+    let contactB = Contact.stub(2)
     XCTAssertEqual(try insert(contactB), contactB)
 
     // Insert contact C:
 
-    let contactC = Contact.stub("c")
+    let contactC = Contact.stub(3)
     XCTAssertEqual(try insert(contactC), contactC)
 
     // Fetch contacts:
@@ -98,7 +98,7 @@ final class ContactTests: XCTestCase {
 
     // Insert contact A:
 
-    let contactA = Contact.stub("a")
+    let contactA = Contact.stub(1)
     insertAssertion.expectValue()
     insertAssertion.expectCompletion()
     fetchAssertion.expectValue()
@@ -114,7 +114,7 @@ final class ContactTests: XCTestCase {
 
     // Insert contact B:
 
-    let contactB = Contact.stub("b")
+    let contactB = Contact.stub(2)
     insertAssertion.expectValue()
     insertAssertion.expectCompletion()
     fetchAssertion.expectValue()
@@ -130,7 +130,7 @@ final class ContactTests: XCTestCase {
 
     // Insert contact C:
 
-    let contactC = Contact.stub("c")
+    let contactC = Contact.stub(3)
     insertAssertion.expectValue()
     insertAssertion.expectCompletion()
     fetchAssertion.expectValue()
@@ -178,18 +178,5 @@ final class ContactTests: XCTestCase {
     // Check if fetch publisher completed:
 
     XCTAssertNil(fetchAssertion.receivedCompletion())
-  }
-}
-
-private extension Contact {
-  static func stub(_ id: String) -> Contact {
-    Contact(
-      id: id.data(using: .utf8)!,
-      marshaled: "\(id)-marshaled".data(using: .utf8)!,
-      username: "Contact_\(id)",
-      email: "\(id)@elixxir.io",
-      phone: "tel:\(id)",
-      nickname: "\(id)"
-    )
   }
 }
