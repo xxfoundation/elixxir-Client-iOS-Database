@@ -24,6 +24,14 @@ extension Sequence where Element == Migration {
           .references("contacts", column: "id", onDelete: .cascade, onUpdate: .cascade)
         t.column("createdAt", .datetime).notNull()
       }
+
+      try db.create(table: "groupMembers") { t in
+        t.column("groupId").notNull()
+          .references("groups", column: "id", onDelete: .cascade, onUpdate: .cascade)
+        t.column("contactId").notNull()
+          .references("contacts", column: "id", onDelete: .cascade, onUpdate: .cascade)
+        t.primaryKey(["groupId", "contactId"])
+      }
     }
   ]}
 }
