@@ -38,10 +38,7 @@ final class ContactTests: XCTestCase {
     // Fetch contacts:
 
     XCTAssertEqual(
-      try fetch(
-        Contact.Query(),
-        Contact.Order.username()
-      ),
+      try fetch(.all, .username()),
       [contactA, contactB, contactC]
     )
 
@@ -54,10 +51,7 @@ final class ContactTests: XCTestCase {
     // Fetch contacts:
 
     XCTAssertEqual(
-      try fetch(
-        Contact.Query(),
-        Contact.Order.username(desc: true)
-      ),
+      try fetch(.all, .username(desc: true)),
       [contactC, updatedContactB, contactA]
     )
 
@@ -68,10 +62,7 @@ final class ContactTests: XCTestCase {
     // Fetch contacts:
 
     XCTAssertEqual(
-      try fetch(
-        Contact.Query(),
-        Contact.Order.username()
-      ),
+      try fetch(.all, .username()),
       [contactA, updatedContactB]
     )
   }
@@ -90,7 +81,7 @@ final class ContactTests: XCTestCase {
     // Subscribe to fetch publisher:
 
     fetchAssertion.expectValue()
-    fetchAssertion.subscribe(to: fetch(Contact.Query(), Contact.Order.username()))
+    fetchAssertion.subscribe(to: fetch(.all, .username()))
     fetchAssertion.waitForValues()
 
     XCTAssertEqual(fetchAssertion.receivedValues(), [[]])

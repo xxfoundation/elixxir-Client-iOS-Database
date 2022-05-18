@@ -37,6 +37,8 @@ extension Contact {
   public typealias DeletePublisher = (Contact) -> AnyPublisher<Bool, Error>
 
   public struct Query: Equatable {
+    public static let all = Query()
+
     public init() {}
   }
 
