@@ -15,10 +15,10 @@ final class ContactTests: XCTestCase {
   }
 
   func testDatabaseOperations() throws {
-    let insert: Contact.Insert = db.insert()
-    let fetch: Contact.Fetch = db.fetch()
-    let update: Contact.Update = db.update()
-    let delete: Contact.Delete = db.delete()
+    let insert: Contact.Insert = db.insert(_:)
+    let fetch: Contact.Fetch = db.fetch(Contact.request(_:_:))
+    let update: Contact.Update = db.update(_:)
+    let delete: Contact.Delete = db.delete(_:)
 
     // Insert contact A:
 
@@ -77,10 +77,10 @@ final class ContactTests: XCTestCase {
   }
 
   func testDatabaseOperationPublishers() {
-    let insert: Contact.InsertPublisher = db.insertPublisher()
-    let fetch: Contact.FetchPublisher = db.fetchPublisher()
-    let update: Contact.UpdatePublisher = db.updatePublisher()
-    let delete: Contact.DeletePublisher = db.deletePublisher()
+    let insert: Contact.InsertPublisher = db.insertPublisher(_:)
+    let fetch: Contact.FetchPublisher = db.fetchPublisher(Contact.request(_:_:))
+    let update: Contact.UpdatePublisher = db.updatePublisher(_:)
+    let delete: Contact.DeletePublisher = db.deletePublisher(_:)
 
     let fetchAssertion = PublisherAssertion<[Contact], Error>()
     let insertAssertion = PublisherAssertion<Contact, Error>()

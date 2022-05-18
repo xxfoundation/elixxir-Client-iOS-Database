@@ -1,7 +1,6 @@
 import Combine
 import Foundation
 import GRDB
-import XXModels
 
 public struct Database {
   let writer: DatabaseWriter
@@ -23,131 +22,111 @@ extension Database {
     try db.migrate(migrations)
     return db
   }
-}
 
-extension Database {
-  func fetch<Model, Query, Order, Record>(
-    request: @escaping (Query, Order) -> QueryInterfaceRequest<Record>,
-    toModel: @escaping (Record) -> Model
-  ) -> (Query, Order) throws -> [Model]
+  public func fetch<Record, RowDecoder>(
+    _ request: QueryInterfaceRequest<RowDecoder>
+  ) throws -> [Record]
+  where Record: FetchableRecord {
+    try queue.sync {
+      try writer.read { db in
+        try Record.fetchAll(db, request)
+      }
+    }
+  }
+
+  public func fetch<Record, RowDecoder, Query, Order>(
+    _ request: @escaping (Query, Order) -> QueryInterfaceRequest<RowDecoder>
+  ) -> (Query, Order) throws -> [Record]
   where Record: FetchableRecord {
     { query, order in
-      try queue.sync {
-        try writer.read { db in
-          try Record
-            .fetchAll(db, request(query, order))
-            .map(toModel)
-        }
-      }
+      try fetch(request(query, order))
     }
   }
 
-  func fetchPublisher<Model, Query, Order, Record>(
-    request: @escaping (Query, Order) -> QueryInterfaceRequest<Record>,
-    toModel: @escaping (Record) -> Model
-  ) -> (Query, Order) -> AnyPublisher<[Model], Error>
+  public func fetchPublisher<Record, RowDecoder>(
+    _ request: QueryInterfaceRequest<RowDecoder>
+  ) -> AnyPublisher<[Record], Error>
+  where Record: FetchableRecord {
+    ValueObservation
+      .tracking { try Record.fetchAll($0, request) }
+      .publisher(in: writer, scheduling: .async(onQueue: queue))
+      .eraseToAnyPublisher()
+  }
+
+  public func fetchPublisher<Record, RowDecoder, Query, Order>(
+    _ request: @escaping (Query, Order) -> QueryInterfaceRequest<RowDecoder>
+  ) -> (Query, Order) -> AnyPublisher<[Record], Error>
   where Record: FetchableRecord {
     { query, order in
-      ValueObservation
-        .tracking(request(query, order).fetchAll(_:))
-        .publisher(
-          in: writer,
-          scheduling: .async(onQueue: queue)
-        )
-        .map { $0.map(toModel) }
-        .eraseToAnyPublisher()
+      fetchPublisher(request(query, order))
     }
   }
 
-  func insert<Model, Record>(
-    toRecord: @escaping (Model) -> Record,
-    toModel: @escaping (Record) -> Model
-  ) -> (Model) throws -> Model
+  public func insert<Record>(
+    _ record: Record
+  ) throws -> Record
   where Record: PersistableRecord {
-    { model in
-      try queue.sync {
-        try writer.write { db in
-          toModel(try toRecord(model).inserted(db))
-        }
+    try queue.sync {
+      try writer.write { db in
+        try record.inserted(db)
       }
     }
   }
 
-  func insertPublisher<Model, Record>(
-    toRecord: @escaping (Model) -> Record,
-    toModel: @escaping (Record) -> Model
-  ) -> (Model) -> AnyPublisher<Model, Error>
+  public func insertPublisher<Record>(
+    _ record: Record
+  ) -> AnyPublisher<Record, Error>
   where Record: PersistableRecord {
-    { model in
-      writer
-        .writePublisher(
-          receiveOn: queue,
-          updates: toRecord(model).inserted(_:)
-        )
-        .map(toModel)
-        .eraseToAnyPublisher()
-    }
+    writer.writePublisher(
+      receiveOn: queue,
+      updates: record.inserted(_:)
+    )
+    .eraseToAnyPublisher()
   }
 
-  func update<Model, Record>(
-    toRecord: @escaping (Model) -> Record,
-    toModel: @escaping (Record) -> Model
-  ) -> (Model) throws -> Model
+  public func update<Record>(
+    _ record: Record
+  ) throws -> Record
   where Record: PersistableRecord {
-    { model in
-      try queue.sync {
-        try writer.write { db in
-          try toRecord(model).update(db)
-          return model
-        }
+    try queue.sync {
+      try writer.write { db in
+        try record.update(db)
+        return record
       }
     }
   }
 
-  func updatePublisher<Model, Record>(
-    toRecord: @escaping (Model) -> Record,
-    toModel: @escaping (Record) -> Model
-  ) -> (Model) -> AnyPublisher<Model, Error>
+  public func updatePublisher<Record>(
+    _ record: Record
+  ) -> AnyPublisher<Record, Error>
   where Record: PersistableRecord {
-    { model in
-      writer
-        .writePublisher(
-          receiveOn: queue,
-          updates: { db in
-            let record = toRecord(model)
-            try record.update(db)
-            return record
-          }
-        )
-        .map(toModel)
-        .eraseToAnyPublisher()
-    }
-  }
-
-  func delete<Model, Record>(
-    toRecord: @escaping (Model) -> Record
-  ) -> (Model) throws -> Bool
-  where Record: PersistableRecord {
-    { model in
-      try queue.sync {
-        try writer.write { db in
-          try toRecord(model).delete(db)
-        }
+    writer.writePublisher(
+      receiveOn: queue,
+      updates: { db in
+        try record.update(db)
+        return record
       }
+    )
+    .eraseToAnyPublisher()
+  }
+
+  public func delete<Record>(
+    _ record: Record
+  ) throws -> Bool
+  where Record: PersistableRecord {
+    try queue.sync {
+      try writer.write(record.delete(_:))
     }
   }
 
-  func deletePublisher<Model, Record>(
-    toRecord: @escaping (Model) -> Record
-  ) -> (Model) -> AnyPublisher<Bool, Error>
+  public func deletePublisher<Record>(
+    _ record: Record
+  ) -> AnyPublisher<Bool, Error>
   where Record: PersistableRecord {
-    { model in
-      writer
-        .writePublisher(
-          receiveOn: queue,
-          updates: { try toRecord(model).delete($0) }
-        )
-        .eraseToAnyPublisher()
-    }
+    writer.writePublisher(
+      receiveOn: queue,
+      updates: record.delete(_:)
+    )
+    .eraseToAnyPublisher()
   }
 }

@@ -4,7 +4,7 @@ import Foundation
 public struct Contact: Identifiable, Equatable, Codable {
   public init(
     id: Data,
-    marshaled: Data,
+    marshaled: Data? = nil,
     username: String? = nil,
     email: String? = nil,
     phone: String? = nil,
@@ -19,7 +19,7 @@ public struct Contact: Identifiable, Equatable, Codable {
   }
 
   public var id: Data
-  public var marshaled: Data
+  public var marshaled: Data?
   public var username: String?
   public var email: String?
   public var phone: String?
