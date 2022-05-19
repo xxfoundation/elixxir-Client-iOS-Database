@@ -38,17 +38,13 @@ extension Message {
   public typealias DeletePublisher = (Message) -> AnyPublisher<Bool, Error>
 
   public struct Query: Equatable {
-    public static func directChat(contactIds id1: Data, _ id2: Data) -> Query {
-      Query(chat: .direct(id1, id2))
-    }
-
-    public static func groupChat(groupId: Data) -> Query {
-      Query(chat: .group(groupId))
-    }
-
     public enum Chat: Equatable {
-      case direct(Data, Data)
-      case group(Data)
+      case direct(Contact.ID, Contact.ID)
+      case group(Group.ID)
+    }
+
+    public init(chat: Chat) {
+      self.chat = chat
     }
 
     public var chat: Chat

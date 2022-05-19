@@ -82,7 +82,10 @@ final class MessageTests: XCTestCase {
     // Fetch conversation between contacts A and B:
 
     XCTAssertNoDifference(
-      try fetch(.directChat(contactIds: contactA.id, contactB.id), .date()),
+      try fetch(
+        Message.Query(chat: .direct(contactA.id, contactB.id)),
+        Message.Order.date()
+      ),
       [
         message1,
         message2,
@@ -186,7 +189,10 @@ final class MessageTests: XCTestCase {
     // Fetch messages in group A:
 
     XCTAssertNoDifference(
-      try fetch(.groupChat(groupId: groupA.id), .date(desc: true)),
+      try fetch(
+        Message.Query(chat: .group(groupA.id)),
+        Message.Order.date(desc: true)
+      ),
       [
         message3,
         message2,
