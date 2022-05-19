@@ -1,4 +1,5 @@
 import Combine
+import CustomDump
 import XCTest
 import XXModels
 @testable import XXDatabase
@@ -15,33 +16,31 @@ final class ContactTests: XCTestCase {
   }
 
   func testDatabaseOperations() throws {
-    let insert: Contact.Insert = db.insert()
-    let fetch: Contact.Fetch = db.fetch()
-    let update: Contact.Update = db.update()
-    let delete: Contact.Delete = db.delete()
+    let fetch: Contact.Fetch = db.fetch(Contact.request(_:_:))
+    let insert: Contact.Insert = db.insert(_:)
+    let update: Contact.Update = db.update(_:)
+    let save: Contact.Save = db.save(_:)
+    let delete: Contact.Delete = db.delete(_:)
 
     // Insert contact A:
 
-    let contactA = Contact.stub("a")
-    XCTAssertEqual(try insert(contactA), contactA)
+    let contactA = Contact.stub(1)
+    XCTAssertNoDifference(try insert(contactA), contactA)
 
     // Insert contact B:
 
-    let contactB = Contact.stub("b")
-    XCTAssertEqual(try insert(contactB), contactB)
+    let contactB = Contact.stub(2)
+    XCTAssertNoDifference(try insert(contactB), contactB)
 
     // Insert contact C:
 
-    let contactC = Contact.stub("c")
-    XCTAssertEqual(try insert(contactC), contactC)
+    let contactC = Contact.stub(3)
+    XCTAssertNoDifference(try insert(contactC), contactC)
 
     // Fetch contacts:
 
-    XCTAssertEqual(
-      try fetch(
-        Contact.Query(),
-        Contact.Order.username()
-      ),
+    XCTAssertNoDifference(
+      try fetch(.all, .username()),
       [contactA, contactB, contactC]
     )
 
@@ -49,56 +48,77 @@ final class ContactTests: XCTestCase {
 
     var updatedContactB = contactB
     updatedContactB.username!.append("-updated")
-    XCTAssertEqual(try update(updatedContactB), updatedContactB)
+    XCTAssertNoDifference(try update(updatedContactB), updatedContactB)
 
     // Fetch contacts:
 
-    XCTAssertEqual(
-      try fetch(
-        Contact.Query(),
-        Contact.Order.username(desc: true)
-      ),
+    XCTAssertNoDifference(
+      try fetch(.all, .username(desc: true)),
       [contactC, updatedContactB, contactA]
     )
 
     // Delete contact C:
 
-    XCTAssertEqual(try delete(contactC), true)
+    XCTAssertNoDifference(try delete(contactC), true)
 
     // Fetch contacts:
 
-    XCTAssertEqual(
-      try fetch(
-        Contact.Query(),
-        Contact.Order.username()
-      ),
+    XCTAssertNoDifference(
+      try fetch(.all, .username()),
       [contactA, updatedContactB]
+    )
+
+    // Save updated contact A:
+
+    var updatedContactA = contactA
+    updatedContactA.username!.append("-updated")
+    XCTAssertNoDifference(try update(updatedContactA), updatedContactA)
+
+    // Fetch contacts:
+
+    XCTAssertNoDifference(
+      try fetch(.all, .username()),
+      [updatedContactA, updatedContactB]
+    )
+
+    // Save new contact D:
+
+    let contactD = Contact.stub(4)
+    XCTAssertNoDifference(try save(contactD), contactD)
+
+    // Fetch contacts:
+
+    XCTAssertNoDifference(
+      try fetch(.all, .username()),
+      [updatedContactA, updatedContactB, contactD]
     )
   }
 
   func testDatabaseOperationPublishers() {
-    let insert: Contact.InsertPublisher = db.insertPublisher()
-    let fetch: Contact.FetchPublisher = db.fetchPublisher()
-    let update: Contact.UpdatePublisher = db.updatePublisher()
-    let delete: Contact.DeletePublisher = db.deletePublisher()
+    let fetch: Contact.FetchPublisher = db.fetchPublisher(Contact.request(_:_:))
+    let insert: Contact.InsertPublisher = db.insertPublisher(_:)
+    let update: Contact.UpdatePublisher = db.updatePublisher(_:)
+    let save: Contact.SavePublisher = db.savePublisher(_:)
+    let delete: Contact.DeletePublisher = db.deletePublisher(_:)
 
     let fetchAssertion = PublisherAssertion<[Contact], Error>()
     let insertAssertion = PublisherAssertion<Contact, Error>()
     let updateAssertion = PublisherAssertion<Contact, Error>()
+    let saveAssertion = PublisherAssertion<Contact, Error>()
     let deleteAssertion = PublisherAssertion<Bool, Error>()
 
     // Subscribe to fetch publisher:
 
     fetchAssertion.expectValue()
-    fetchAssertion.subscribe(to: fetch(Contact.Query(), Contact.Order.username()))
+    fetchAssertion.subscribe(to: fetch(.all, .username()))
     fetchAssertion.waitForValues()
 
-    XCTAssertEqual(fetchAssertion.receivedValues(), [[]])
+    XCTAssertNoDifference(fetchAssertion.receivedValues(), [[]])
     XCTAssertNil(fetchAssertion.receivedCompletion())
 
     // Insert contact A:
 
-    let contactA = Contact.stub("a")
+    let contactA = Contact.stub(1)
     insertAssertion.expectValue()
     insertAssertion.expectCompletion()
     fetchAssertion.expectValue()
@@ -107,14 +127,14 @@ final class ContactTests: XCTestCase {
     insertAssertion.waitForCompletion()
     fetchAssertion.waitForValues()
 
-    XCTAssertEqual(insertAssertion.receivedValues(), [contactA])
+    XCTAssertNoDifference(insertAssertion.receivedValues(), [contactA])
     XCTAssert(insertAssertion.receivedCompletion()?.isFinished == true)
-    XCTAssertEqual(fetchAssertion.receivedValues(), [[contactA]])
+    XCTAssertNoDifference(fetchAssertion.receivedValues(), [[contactA]])
     XCTAssertNil(fetchAssertion.receivedCompletion())
 
     // Insert contact B:
 
-    let contactB = Contact.stub("b")
+    let contactB = Contact.stub(2)
     insertAssertion.expectValue()
     insertAssertion.expectCompletion()
     fetchAssertion.expectValue()
@@ -123,14 +143,14 @@ final class ContactTests: XCTestCase {
     insertAssertion.waitForCompletion()
     fetchAssertion.waitForValues()
 
-    XCTAssertEqual(insertAssertion.receivedValues(), [contactB])
+    XCTAssertNoDifference(insertAssertion.receivedValues(), [contactB])
     XCTAssert(insertAssertion.receivedCompletion()?.isFinished == true)
-    XCTAssertEqual(fetchAssertion.receivedValues(), [[contactA, contactB]])
+    XCTAssertNoDifference(fetchAssertion.receivedValues(), [[contactA, contactB]])
     XCTAssertNil(fetchAssertion.receivedCompletion())
 
     // Insert contact C:
 
-    let contactC = Contact.stub("c")
+    let contactC = Contact.stub(3)
     insertAssertion.expectValue()
     insertAssertion.expectCompletion()
     fetchAssertion.expectValue()
@@ -139,9 +159,9 @@ final class ContactTests: XCTestCase {
     insertAssertion.waitForCompletion()
     fetchAssertion.waitForValues()
 
-    XCTAssertEqual(insertAssertion.receivedValues(), [contactC])
+    XCTAssertNoDifference(insertAssertion.receivedValues(), [contactC])
     XCTAssert(insertAssertion.receivedCompletion()?.isFinished == true)
-    XCTAssertEqual(fetchAssertion.receivedValues(), [[contactA, contactB, contactC]])
+    XCTAssertNoDifference(fetchAssertion.receivedValues(), [[contactA, contactB, contactC]])
     XCTAssertNil(fetchAssertion.receivedCompletion())
 
     // Update contact B:
@@ -156,9 +176,9 @@ final class ContactTests: XCTestCase {
     updateAssertion.waitForCompletion()
     fetchAssertion.waitForValues()
 
-    XCTAssertEqual(updateAssertion.receivedValues(), [updatedContactB])
+    XCTAssertNoDifference(updateAssertion.receivedValues(), [updatedContactB])
     XCTAssert(updateAssertion.receivedCompletion()?.isFinished == true)
-    XCTAssertEqual(fetchAssertion.receivedValues(), [[contactA, updatedContactB, contactC]])
+    XCTAssertNoDifference(fetchAssertion.receivedValues(), [[contactA, updatedContactB, contactC]])
     XCTAssertNil(fetchAssertion.receivedCompletion())
 
     // Delete contact C:
@@ -171,25 +191,46 @@ final class ContactTests: XCTestCase {
     deleteAssertion.waitForCompletion()
     fetchAssertion.waitForValues()
 
-    XCTAssertEqual(deleteAssertion.receivedValues(), [true])
+    XCTAssertNoDifference(deleteAssertion.receivedValues(), [true])
     XCTAssert(deleteAssertion.receivedCompletion()?.isFinished == true)
-    XCTAssertEqual(fetchAssertion.receivedValues(), [[contactA, updatedContactB]])
+    XCTAssertNoDifference(fetchAssertion.receivedValues(), [[contactA, updatedContactB]])
+    XCTAssertNil(fetchAssertion.receivedCompletion())
+
+    // Save updated contact A:
+
+    var updatedContactA = contactA
+    updatedContactA.username!.append("-updated")
+    saveAssertion.expectValue()
+    saveAssertion.expectCompletion()
+    fetchAssertion.expectValue()
+    saveAssertion.subscribe(to: save(updatedContactA))
+    saveAssertion.waitForValues()
+    saveAssertion.waitForCompletion()
+    fetchAssertion.waitForValues()
+
+    XCTAssertNoDifference(saveAssertion.receivedValues(), [updatedContactA])
+    XCTAssert(saveAssertion.receivedCompletion()?.isFinished == true)
+    XCTAssertNoDifference(fetchAssertion.receivedValues(), [[updatedContactA, updatedContactB]])
+    XCTAssertNil(fetchAssertion.receivedCompletion())
+
+    // Save new contact D:
+
+    let contactD = Contact.stub(4)
+    saveAssertion.expectValue()
+    saveAssertion.expectCompletion()
+    fetchAssertion.expectValue()
+    saveAssertion.subscribe(to: save(contactD))
+    saveAssertion.waitForValues()
+    saveAssertion.waitForCompletion()
+    fetchAssertion.waitForValues()
+
+    XCTAssertNoDifference(saveAssertion.receivedValues(), [contactD])
+    XCTAssert(saveAssertion.receivedCompletion()?.isFinished == true)
+    XCTAssertNoDifference(fetchAssertion.receivedValues(), [[updatedContactA, updatedContactB, contactD]])
+    XCTAssertNil(fetchAssertion.receivedCompletion())
 
     // Check if fetch publisher completed:
 
     XCTAssertNil(fetchAssertion.receivedCompletion())
-  }
-}
-
-private extension Contact {
-  static func stub(_ id: String) -> Contact {
-    Contact(
-      id: id.data(using: .utf8)!,
-      marshaled: "\(id)-marshaled".data(using: .utf8)!,
-      username: "Contact_\(id)",
-      email: "\(id)@elixxir.io",
-      phone: "tel:\(id)",
-      nickname: "\(id)"
-    )
   }
 }

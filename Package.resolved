@@ -8,6 +8,24 @@
         "revision" : "fead2ea634c1bf7dd81a3e02f796154992165ffd",
         "version" : "5.24.0"
       }
+    },
+    {
+      "identity" : "swift-custom-dump",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pointfreeco/swift-custom-dump.git",
+      "state" : {
+        "revision" : "c4f78db9b90ca57b7b6abc2223e235242739ea3c",
+        "version" : "0.4.0"
+      }
+    },
+    {
+      "identity" : "xctest-dynamic-overlay",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pointfreeco/xctest-dynamic-overlay",
+      "state" : {
+        "revision" : "50a70a9d3583fe228ce672e8923010c8df2deddd",
+        "version" : "0.2.1"
+      }
     }
   ],
   "version" : 2

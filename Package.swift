@@ -33,6 +33,10 @@ let package = Package(
       url: "https://github.com/groue/GRDB.swift",
       .upToNextMajor(from: "5.24.0")
     ),
+    .package(
+      url: "https://github.com/pointfreeco/swift-custom-dump.git",
+      .upToNextMajor(from: "0.4.0")
+    ),
   ],
   targets: [
     .target(
@@ -62,7 +66,13 @@ let package = Package(
     .testTarget(
       name: "XXDatabaseTests",
       dependencies: [
-        .target(name: "XXDatabase"),
+        .target(
+          name: "XXDatabase"
+        ),
+        .product(
+          name: "CustomDump",
+          package: "swift-custom-dump"
+        ),
       ],
       swiftSettings: swiftSettings
     ),
