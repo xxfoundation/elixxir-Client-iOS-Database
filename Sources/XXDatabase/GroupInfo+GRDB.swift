@@ -8,7 +8,9 @@ extension GroupInfo: FetchableRecord {
       .including(all: Group.Association.members)
       .asRequest(of: GroupInfo.self)
 
-    // TODO: handle query
+    if let groupId = query.groupId {
+      request = request.filter(Group.Column.id == groupId)
+    }
 
     switch order {
     case .groupName(desc: false):
