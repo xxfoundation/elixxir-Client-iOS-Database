@@ -30,3 +30,22 @@ extension Group {
     )
   }
 }
+
+extension Message {
+  static func stub(
+    senderId: Data,
+    recipientId: Data,
+    date: Date,
+    text: String
+  ) -> Message {
+    Message(
+      id: nil,
+      networkId: nil,
+      senderId: senderId,
+      recipientId: recipientId,
+      date: date,
+      isUnread: true,
+      text: text
+    )
+  }
+}
