@@ -2,16 +2,16 @@ import GRDB
 import XXModels
 
 extension Contact: FetchableRecord, PersistableRecord {
-  enum Columns {
-    static let id = Column("id")
-    static let marshaled = Column("marshaled")
-    static let username = Column("username")
-    static let email = Column("email")
-    static let phone = Column("phone")
-    static let nickname = Column("nickname")
+  enum Column: String, ColumnExpression {
+    case id
+    case marshaled
+    case username
+    case email
+    case phone
+    case nickname
   }
 
-  public static let databaseTableName: String = "contacts"
+  public static let databaseTableName = "contacts"
 
   public static func request(_ query: Query, _ order: Order) -> QueryInterfaceRequest<Self> {
     var request = Self.all()
@@ -20,10 +20,10 @@ extension Contact: FetchableRecord, PersistableRecord {
 
     switch order {
     case .username(desc: false):
-      request = request.order(Columns.username)
+      request = request.order(Column.username)
 
     case .username(desc: true):
-      request = request.order(Columns.username.desc)
+      request = request.order(Column.username.desc)
     }
 
     return request
