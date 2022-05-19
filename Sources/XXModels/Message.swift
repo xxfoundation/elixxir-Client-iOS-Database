@@ -33,9 +33,7 @@ extension Message {
   public typealias Fetch = (Query, Order) throws -> [Message]
   public typealias FetchPublisher = (Query, Order) -> AnyPublisher<[Message], Error>
   public typealias Save = (Message) throws -> Message
-  public typealias SavePublisher = (Message) -> AnyPublisher<Message, Error>
   public typealias Delete = (Message) throws -> Bool
-  public typealias DeletePublisher = (Message) -> AnyPublisher<Bool, Error>
 
   public struct Query: Equatable {
     public enum Chat: Equatable {
