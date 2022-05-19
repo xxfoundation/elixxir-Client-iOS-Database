@@ -13,8 +13,8 @@ extension Contact: FetchableRecord, PersistableRecord {
 
   public static let databaseTableName = "contacts"
 
-  public static func request(_ query: Query, _ order: Order) -> QueryInterfaceRequest<Self> {
-    var request = Self.all()
+  public static func request(_ query: Query, _ order: Order) -> QueryInterfaceRequest<Contact> {
+    var request = Contact.all()
 
     // TODO: handle query
 
