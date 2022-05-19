@@ -65,7 +65,7 @@ extension Database {
   public func insert<Record>(
     _ record: Record
   ) throws -> Record
-  where Record: PersistableRecord {
+  where Record: MutablePersistableRecord {
     try queue.sync {
       try writer.write { db in
         try record.inserted(db)
@@ -76,7 +76,7 @@ extension Database {
   public func insertPublisher<Record>(
     _ record: Record
   ) -> AnyPublisher<Record, Error>
-  where Record: PersistableRecord {
+  where Record: MutablePersistableRecord {
     writer.writePublisher(
       receiveOn: queue,
       updates: record.inserted(_:)
@@ -87,7 +87,7 @@ extension Database {
   public func update<Record>(
     _ record: Record
   ) throws -> Record
-  where Record: PersistableRecord {
+  where Record: MutablePersistableRecord {
     try queue.sync {
       try writer.write { db in
         try record.update(db)
@@ -99,7 +99,7 @@ extension Database {
   public func updatePublisher<Record>(
     _ record: Record
   ) -> AnyPublisher<Record, Error>
-  where Record: PersistableRecord {
+  where Record: MutablePersistableRecord {
     writer.writePublisher(
       receiveOn: queue,
       updates: { db in
@@ -113,7 +113,7 @@ extension Database {
   public func save<Record>(
     _ record: Record
   ) throws -> Record
-  where Record: PersistableRecord {
+  where Record: MutablePersistableRecord {
     try queue.sync {
       try writer.write { db in
         try record.saved(db)
@@ -124,7 +124,7 @@ extension Database {
   public func savePublisher<Record>(
     _ record: Record
   ) -> AnyPublisher<Record, Error>
-  where Record: PersistableRecord {
+  where Record: MutablePersistableRecord {
     writer.writePublisher(
       receiveOn: queue,
       updates: record.saved(_:)
