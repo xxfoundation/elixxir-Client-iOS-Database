@@ -34,8 +34,6 @@ extension Group {
 
   public struct Query: Equatable {
     public static let all = Query()
-
-    public init() {}
   }
 
   public enum Order: Equatable {
