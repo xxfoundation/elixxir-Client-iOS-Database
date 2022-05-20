@@ -24,17 +24,17 @@ final class ContactTests: XCTestCase {
 
     // Insert contact A:
 
-    let contactA = Contact.stub(1)
+    let contactA = Contact.stub("A")
     XCTAssertNoDifference(try insert(contactA), contactA)
 
     // Insert contact B:
 
-    let contactB = Contact.stub(2)
+    let contactB = Contact.stub("B")
     XCTAssertNoDifference(try insert(contactB), contactB)
 
     // Insert contact C:
 
-    let contactC = Contact.stub(3)
+    let contactC = Contact.stub("C")
     XCTAssertNoDifference(try insert(contactC), contactC)
 
     // Fetch contacts:
@@ -83,7 +83,7 @@ final class ContactTests: XCTestCase {
 
     // Save new contact D:
 
-    let contactD = Contact.stub(4)
+    let contactD = Contact.stub("D")
     XCTAssertNoDifference(try save(contactD), contactD)
 
     // Fetch contacts:
@@ -118,7 +118,7 @@ final class ContactTests: XCTestCase {
 
     // Insert contact A:
 
-    let contactA = Contact.stub(1)
+    let contactA = Contact.stub("A")
     insertAssertion.expectValue()
     insertAssertion.expectCompletion()
     fetchAssertion.expectValue()
@@ -134,7 +134,7 @@ final class ContactTests: XCTestCase {
 
     // Insert contact B:
 
-    let contactB = Contact.stub(2)
+    let contactB = Contact.stub("B")
     insertAssertion.expectValue()
     insertAssertion.expectCompletion()
     fetchAssertion.expectValue()
@@ -150,7 +150,7 @@ final class ContactTests: XCTestCase {
 
     // Insert contact C:
 
-    let contactC = Contact.stub(3)
+    let contactC = Contact.stub("C")
     insertAssertion.expectValue()
     insertAssertion.expectCompletion()
     fetchAssertion.expectValue()
@@ -215,7 +215,7 @@ final class ContactTests: XCTestCase {
 
     // Save new contact D:
 
-    let contactD = Contact.stub(4)
+    let contactD = Contact.stub("D")
     saveAssertion.expectValue()
     saveAssertion.expectCompletion()
     fetchAssertion.expectValue()

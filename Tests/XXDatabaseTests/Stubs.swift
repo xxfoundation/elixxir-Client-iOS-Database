@@ -8,7 +8,7 @@ extension Date {
 }
 
 extension Contact {
-  static func stub(_ id: Int) -> Contact {
+  static func stub(_ id: String) -> Contact {
     Contact(
       id: "contact-id-\(id)".data(using: .utf8)!,
       marshaled: "contact-marshaled-\(id)".data(using: .utf8)!,
@@ -21,12 +21,12 @@ extension Contact {
 }
 
 extension Group {
-  static func stub(_ id: Int, leaderId: Data) -> Group {
+  static func stub(_ id: String, leaderId: Data, createdAt: Date) -> Group {
     Group(
       id: "group-id-\(id)".data(using: .utf8)!,
       name: "group-name-\(id)",
       leaderId: leaderId,
-      createdAt: Date.stub(TimeInterval(id))
+      createdAt: createdAt
     )
   }
 }
@@ -40,8 +40,6 @@ extension Message {
     text: String
   ) -> Message {
     Message(
-      id: nil,
-      networkId: nil,
       senderId: senderId,
       recipientId: recipientId,
       date: date,

@@ -18,8 +18,8 @@ final class GroupTests: XCTestCase {
     let save: Group.Save = db.save(_:)
     let delete: Group.Delete = db.delete(_:)
 
-    let contactA = Contact.stub(1)
-    let contactB = Contact.stub(2)
+    let contactA = Contact.stub("A")
+    let contactB = Contact.stub("B")
 
     _ = try db.save(contactA)
     _ = try db.save(contactB)
@@ -30,9 +30,9 @@ final class GroupTests: XCTestCase {
 
     // Save new groups A, B, and C:
 
-    let groupA = Group.stub(1, leaderId: contactA.id)
-    let groupB = Group.stub(2, leaderId: contactB.id)
-    let groupC = Group.stub(3, leaderId: contactA.id)
+    let groupA = Group.stub("A", leaderId: contactA.id, createdAt: .stub(1))
+    let groupB = Group.stub("B", leaderId: contactB.id, createdAt: .stub(2))
+    let groupC = Group.stub("C", leaderId: contactA.id, createdAt: .stub(3))
 
     XCTAssertNoDifference(try save(groupA), groupA)
     XCTAssertNoDifference(try save(groupB), groupB)

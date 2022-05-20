@@ -18,9 +18,9 @@ final class MessageTests: XCTestCase {
     let fetch: Message.Fetch = db.fetch(Message.request(_:))
     let save: Message.Save = db.save(_:)
 
-    let contactA = Contact.stub(1)
-    let contactB = Contact.stub(2)
-    let contactC = Contact.stub(3)
+    let contactA = Contact.stub("A")
+    let contactB = Contact.stub("B")
+    let contactC = Contact.stub("C")
 
     _ = try db.insert(contactA)
     _ = try db.insert(contactB)
@@ -95,16 +95,16 @@ final class MessageTests: XCTestCase {
     let fetch: Message.Fetch = db.fetch(Message.request(_:))
     let save: Message.Save = db.save(_:)
 
-    let contactA = Contact.stub(1)
-    let contactB = Contact.stub(2)
-    let contactC = Contact.stub(3)
+    let contactA = Contact.stub("A")
+    let contactB = Contact.stub("B")
+    let contactC = Contact.stub("C")
 
     _ = try db.insert(contactA)
     _ = try db.insert(contactB)
     _ = try db.insert(contactC)
 
-    let groupA = Group.stub(1, leaderId: contactA.id)
-    let groupB = Group.stub(2, leaderId: contactB.id)
+    let groupA = Group.stub("A", leaderId: contactA.id, createdAt: .stub(1))
+    let groupB = Group.stub("B", leaderId: contactB.id, createdAt: .stub(2))
 
     _ = try db.save(groupA)
     _ = try db.save(groupB)
