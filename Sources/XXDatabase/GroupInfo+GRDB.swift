@@ -2,10 +2,16 @@ import GRDB
 import XXModels
 
 extension GroupInfo: FetchableRecord {
+  enum Column: String, ColumnExpression {
+    case group
+    case leader
+    case members
+  }
+
   public static func request(_ query: Query, _ order: Order) -> QueryInterfaceRequest<GroupInfo> {
     var request = Group
-      .including(required: Group.Association.leader)
-      .including(all: Group.Association.members)
+      .including(required: Group.Association.leader.forKey(Column.leader.rawValue))
+      .including(all: Group.Association.members.forKey(Column.members.rawValue))
       .asRequest(of: GroupInfo.self)
 
     if let groupId = query.groupId {
