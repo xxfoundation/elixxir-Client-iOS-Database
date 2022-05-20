@@ -24,6 +24,12 @@ extension GroupInfo {
 
   public struct Query: Equatable {
     public static let all = Query()
+
+    public init(groupId: Group.ID? = nil) {
+      self.groupId = groupId
+    }
+
+    public var groupId: Group.ID?
   }
 
   public enum Order: Equatable {

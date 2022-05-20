@@ -32,6 +32,16 @@ extension Sequence where Element == Migration {
           .references("contacts", column: "id", onDelete: .cascade, onUpdate: .cascade)
         t.primaryKey(["groupId", "contactId"])
       }
+
+      try db.create(table: "messages") { t in
+        t.column("id", .integer).notNull().primaryKey(autoincrement: true)
+        t.column("networkId", .blob)
+        t.column("senderId", .blob).notNull()
+        t.column("recipientId", .blob).notNull()
+        t.column("date", .datetime).notNull()
+        t.column("isUnread", .boolean).notNull()
+        t.column("text", .text).notNull()
+      }
     }
   ]}
 }

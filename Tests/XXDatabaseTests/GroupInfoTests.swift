@@ -14,7 +14,7 @@ final class GroupInfoTests: XCTestCase {
     db = nil
   }
 
-  func testDatabaseOperations() throws {
+  func testFetchingGroupInfo() throws {
     let fetch: GroupInfo.Fetch = db.fetch(GroupInfo.request(_:_:))
 
     let contactA = Contact.stub(1)
@@ -69,5 +69,17 @@ final class GroupInfoTests: XCTestCase {
       GroupInfo(group: groupA, leader: contactA, members: [contactC]),
       GroupInfo(group: groupC, leader: contactC, members: [contactA, contactC]),
     ])
+
+    // Fetch group C:
+
+    XCTAssertNoDifference(
+      try fetch(
+        GroupInfo.Query(groupId: groupC.id),
+        GroupInfo.Order.groupName()
+      ),
+      [
+        GroupInfo(group: groupC, leader: contactC, members: [contactA, contactC]),
+      ]
+    )
   }
 }

@@ -14,34 +14,33 @@ final class GroupTests: XCTestCase {
     db = nil
   }
 
-  func testDatabaseOperations() throws {
+  func testSavingAndDeleting() throws {
     let save: Group.Save = db.save(_:)
-    let fetch: Group.Fetch = db.fetch(Group.request(_:_:))
     let delete: Group.Delete = db.delete(_:)
 
     let contactA = Contact.stub(1)
     let contactB = Contact.stub(2)
-    let groupA = Group.stub(1, leaderId: contactA.id)
-    let groupB = Group.stub(2, leaderId: contactB.id)
-    let groupC = Group.stub(3, leaderId: contactA.id)
 
     _ = try db.save(contactA)
     _ = try db.save(contactB)
 
-    // Insert groups A, B, and C:
+    func fetchAll() throws -> [Group] {
+      try db.fetch(Group.order(Group.Column.name))
+    }
+
+    // Save new groups A, B, and C:
+
+    let groupA = Group.stub(1, leaderId: contactA.id)
+    let groupB = Group.stub(2, leaderId: contactB.id)
+    let groupC = Group.stub(3, leaderId: contactA.id)
 
     XCTAssertNoDifference(try save(groupA), groupA)
     XCTAssertNoDifference(try save(groupB), groupB)
     XCTAssertNoDifference(try save(groupC), groupC)
 
     XCTAssertNoDifference(
-      try fetch(.all, .name()),
+      try fetchAll(),
       [groupA, groupB, groupC]
-    )
-
-    XCTAssertNoDifference(
-      try fetch(.all, .name(desc: true)),
-      [groupC, groupB, groupA]
     )
 
     // Delete group A:
@@ -49,7 +48,7 @@ final class GroupTests: XCTestCase {
     XCTAssertNoDifference(try delete(groupA), true)
 
     XCTAssertNoDifference(
-      try fetch(.all, .name()),
+      try fetchAll(),
       [groupB, groupC]
     )
 
@@ -58,7 +57,7 @@ final class GroupTests: XCTestCase {
     _ = try db.delete(contactA)
 
     XCTAssertNoDifference(
-      try fetch(.all, .name()),
+      try fetchAll(),
       [groupB]
     )
   }

@@ -31,20 +31,4 @@ extension Group: PersistableRecord, FetchableRecord {
   }
 
   public static let databaseTableName = "groups"
-
-  public static func request(_ query: Query, _ order: Order) -> QueryInterfaceRequest<Group> {
-    var request = Group.all()
-
-    // TODO: handle query
-
-    switch order {
-    case .name(desc: false):
-      request = request.order(Column.name)
-
-    case .name(desc: true):
-      request = request.order(Column.name.desc)
-    }
-
-    return request
-  }
 }
