@@ -34,12 +34,12 @@ extension Database {
     }
   }
 
-  public func fetch<Record, RowDecoder, Query, Order>(
-    _ request: @escaping (Query, Order) -> QueryInterfaceRequest<RowDecoder>
-  ) -> (Query, Order) throws -> [Record]
+  public func fetch<Record, RowDecoder, Query>(
+    _ request: @escaping (Query) -> QueryInterfaceRequest<RowDecoder>
+  ) -> (Query) throws -> [Record]
   where Record: FetchableRecord {
-    { query, order in
-      try fetch(request(query, order))
+    { query in
+      try fetch(request(query))
     }
   }
 
@@ -53,12 +53,12 @@ extension Database {
       .eraseToAnyPublisher()
   }
 
-  public func fetchPublisher<Record, RowDecoder, Query, Order>(
-    _ request: @escaping (Query, Order) -> QueryInterfaceRequest<RowDecoder>
-  ) -> (Query, Order) -> AnyPublisher<[Record], Error>
+  public func fetchPublisher<Record, RowDecoder, Query>(
+    _ request: @escaping (Query) -> QueryInterfaceRequest<RowDecoder>
+  ) -> (Query) -> AnyPublisher<[Record], Error>
   where Record: FetchableRecord {
-    { query, order in
-      fetchPublisher(request(query, order))
+    { query in
+      fetchPublisher(request(query))
     }
   }
 

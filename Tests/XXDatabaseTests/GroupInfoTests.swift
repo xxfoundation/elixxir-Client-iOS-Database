@@ -15,7 +15,7 @@ final class GroupInfoTests: XCTestCase {
   }
 
   func testFetchingGroupInfo() throws {
-    let fetch: GroupInfo.Fetch = db.fetch(GroupInfo.request(_:_:))
+    let fetch: GroupInfo.Fetch = db.fetch(GroupInfo.request(_:))
 
     let contactA = Contact.stub(1)
     let contactB = Contact.stub(2)
@@ -34,13 +34,13 @@ final class GroupInfoTests: XCTestCase {
 
     // Fetch group infos:
 
-    XCTAssertNoDifference(try fetch(.all, .groupName()), [
+    XCTAssertNoDifference(try fetch(GroupInfo.Query(sortBy: .groupName())), [
       GroupInfo(group: groupA, leader: contactA, members: []),
       GroupInfo(group: groupB, leader: contactB, members: []),
       GroupInfo(group: groupC, leader: contactC, members: []),
     ])
 
-    XCTAssertNoDifference(try fetch(.all, .groupName(desc: true)), [
+    XCTAssertNoDifference(try fetch(GroupInfo.Query(sortBy: .groupName(desc: true))), [
       GroupInfo(group: groupC, leader: contactC, members: []),
       GroupInfo(group: groupB, leader: contactB, members: []),
       GroupInfo(group: groupA, leader: contactA, members: []),
@@ -55,7 +55,7 @@ final class GroupInfoTests: XCTestCase {
     _ = try db.insert(GroupMember(groupId: groupC.id, contactId: contactA.id))
     _ = try db.insert(GroupMember(groupId: groupC.id, contactId: contactC.id))
 
-    XCTAssertNoDifference(try fetch(.all, .groupName()), [
+    XCTAssertNoDifference(try fetch(GroupInfo.Query(sortBy: .groupName())), [
       GroupInfo(group: groupA, leader: contactA, members: [contactB, contactC]),
       GroupInfo(group: groupB, leader: contactB, members: [contactA, contactB]),
       GroupInfo(group: groupC, leader: contactC, members: [contactA, contactC]),
@@ -65,7 +65,7 @@ final class GroupInfoTests: XCTestCase {
 
     _ = try db.delete(contactB)
 
-    XCTAssertNoDifference(try fetch(.all, .groupName()), [
+    XCTAssertNoDifference(try fetch(GroupInfo.Query(sortBy: .groupName())), [
       GroupInfo(group: groupA, leader: contactA, members: [contactC]),
       GroupInfo(group: groupC, leader: contactC, members: [contactA, contactC]),
     ])
@@ -73,13 +73,8 @@ final class GroupInfoTests: XCTestCase {
     // Fetch group C:
 
     XCTAssertNoDifference(
-      try fetch(
-        GroupInfo.Query(groupId: groupC.id),
-        GroupInfo.Order.groupName()
-      ),
-      [
-        GroupInfo(group: groupC, leader: contactC, members: [contactA, contactC]),
-      ]
+      try fetch(GroupInfo.Query(groupId: groupC.id, sortBy: .groupName())),
+      [GroupInfo(group: groupC, leader: contactC, members: [contactA, contactC])]
     )
   }
 }

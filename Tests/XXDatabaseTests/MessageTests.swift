@@ -15,7 +15,7 @@ final class MessageTests: XCTestCase {
   }
 
   func testFetchingDirectMessages() throws {
-    let fetch: Message.Fetch = db.fetch(Message.request(_:_:))
+    let fetch: Message.Fetch = db.fetch(Message.request(_:))
     let save: Message.Save = db.save(_:)
 
     let contactA = Contact.stub(1)
@@ -82,10 +82,7 @@ final class MessageTests: XCTestCase {
     // Fetch conversation between contacts A and B:
 
     XCTAssertNoDifference(
-      try fetch(
-        Message.Query(chat: .direct(contactA.id, contactB.id)),
-        Message.Order.date()
-      ),
+      try fetch(Message.Query(chat: .direct(contactA.id, contactB.id), sortBy: .date())),
       [
         message1,
         message2,
@@ -95,7 +92,7 @@ final class MessageTests: XCTestCase {
   }
 
   func testFetchingGroupMessages() throws {
-    let fetch: Message.Fetch = db.fetch(Message.request(_:_:))
+    let fetch: Message.Fetch = db.fetch(Message.request(_:))
     let save: Message.Save = db.save(_:)
 
     let contactA = Contact.stub(1)
@@ -189,10 +186,7 @@ final class MessageTests: XCTestCase {
     // Fetch messages in group A:
 
     XCTAssertNoDifference(
-      try fetch(
-        Message.Query(chat: .group(groupA.id)),
-        Message.Order.date(desc: true)
-      ),
+      try fetch(Message.Query(chat: .group(groupA.id), sortBy: .date(desc: true))),
       [
         message3,
         message2,

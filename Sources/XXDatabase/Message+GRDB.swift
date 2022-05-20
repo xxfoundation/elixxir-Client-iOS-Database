@@ -14,7 +14,7 @@ extension Message: FetchableRecord, MutablePersistableRecord {
 
   public static let databaseTableName = "messages"
 
-  public static func request(_ query: Query, _ order: Order) -> QueryInterfaceRequest<Message> {
+  public static func request(_ query: Query) -> QueryInterfaceRequest<Message> {
     var request = Message.all()
 
     switch query.chat {
@@ -28,7 +28,7 @@ extension Message: FetchableRecord, MutablePersistableRecord {
       )
     }
 
-    switch order {
+    switch query.sortBy {
     case .date(desc: false):
       request = request.order(Column.date)
 

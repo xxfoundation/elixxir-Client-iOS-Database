@@ -16,7 +16,7 @@ final class ContactTests: XCTestCase {
   }
 
   func testDatabaseOperations() throws {
-    let fetch: Contact.Fetch = db.fetch(Contact.request(_:_:))
+    let fetch: Contact.Fetch = db.fetch(Contact.request(_:))
     let insert: Contact.Insert = db.insert(_:)
     let update: Contact.Update = db.update(_:)
     let save: Contact.Save = db.save(_:)
@@ -40,7 +40,7 @@ final class ContactTests: XCTestCase {
     // Fetch contacts:
 
     XCTAssertNoDifference(
-      try fetch(.all, .username()),
+      try fetch(Contact.Query(sortBy: .username())),
       [contactA, contactB, contactC]
     )
 
@@ -53,7 +53,7 @@ final class ContactTests: XCTestCase {
     // Fetch contacts:
 
     XCTAssertNoDifference(
-      try fetch(.all, .username(desc: true)),
+      try fetch(Contact.Query(sortBy: .username(desc: true))),
       [contactC, updatedContactB, contactA]
     )
 
@@ -64,7 +64,7 @@ final class ContactTests: XCTestCase {
     // Fetch contacts:
 
     XCTAssertNoDifference(
-      try fetch(.all, .username()),
+      try fetch(Contact.Query(sortBy: .username())),
       [contactA, updatedContactB]
     )
 
@@ -77,7 +77,7 @@ final class ContactTests: XCTestCase {
     // Fetch contacts:
 
     XCTAssertNoDifference(
-      try fetch(.all, .username()),
+      try fetch(Contact.Query(sortBy: .username())),
       [updatedContactA, updatedContactB]
     )
 
@@ -89,13 +89,13 @@ final class ContactTests: XCTestCase {
     // Fetch contacts:
 
     XCTAssertNoDifference(
-      try fetch(.all, .username()),
+      try fetch(Contact.Query(sortBy: .username())),
       [updatedContactA, updatedContactB, contactD]
     )
   }
 
   func testDatabaseOperationPublishers() {
-    let fetch: Contact.FetchPublisher = db.fetchPublisher(Contact.request(_:_:))
+    let fetch: Contact.FetchPublisher = db.fetchPublisher(Contact.request(_:))
     let insert: Contact.InsertPublisher = db.insertPublisher(_:)
     let update: Contact.UpdatePublisher = db.updatePublisher(_:)
     let save: Contact.SavePublisher = db.savePublisher(_:)
@@ -110,7 +110,7 @@ final class ContactTests: XCTestCase {
     // Subscribe to fetch publisher:
 
     fetchAssertion.expectValue()
-    fetchAssertion.subscribe(to: fetch(.all, .username()))
+    fetchAssertion.subscribe(to: fetch(Contact.Query(sortBy: .username())))
     fetchAssertion.waitForValues()
 
     XCTAssertNoDifference(fetchAssertion.receivedValues(), [[]])

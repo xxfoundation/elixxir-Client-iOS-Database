@@ -8,7 +8,7 @@ extension GroupInfo: FetchableRecord {
     case members
   }
 
-  public static func request(_ query: Query, _ order: Order) -> QueryInterfaceRequest<GroupInfo> {
+  public static func request(_ query: Query) -> QueryInterfaceRequest<GroupInfo> {
     var request = Group
       .including(required: Group.Association.leader.forKey(Column.leader.rawValue))
       .including(all: Group.Association.members.forKey(Column.members.rawValue))
@@ -18,7 +18,7 @@ extension GroupInfo: FetchableRecord {
       request = request.filter(Group.Column.id == groupId)
     }
 
-    switch order {
+    switch query.sortBy {
     case .groupName(desc: false):
       request = request.order(Group.Column.name)
 

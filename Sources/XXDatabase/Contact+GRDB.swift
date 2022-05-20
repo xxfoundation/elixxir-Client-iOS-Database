@@ -13,12 +13,10 @@ extension Contact: FetchableRecord, PersistableRecord {
 
   public static let databaseTableName = "contacts"
 
-  public static func request(_ query: Query, _ order: Order) -> QueryInterfaceRequest<Contact> {
+  public static func request(_ query: Query) -> QueryInterfaceRequest<Contact> {
     var request = Contact.all()
 
-    // TODO: handle query
-
-    switch order {
+    switch query.sortBy {
     case .username(desc: false):
       request = request.order(Column.username)
 

@@ -30,8 +30,8 @@ public struct Message: Identifiable, Equatable, Codable {
 }
 
 extension Message {
-  public typealias Fetch = (Query, Order) throws -> [Message]
-  public typealias FetchPublisher = (Query, Order) -> AnyPublisher<[Message], Error>
+  public typealias Fetch = (Query) throws -> [Message]
+  public typealias FetchPublisher = (Query) -> AnyPublisher<[Message], Error>
   public typealias Save = (Message) throws -> Message
   public typealias Delete = (Message) throws -> Bool
 
@@ -41,14 +41,19 @@ extension Message {
       case group(Group.ID)
     }
 
-    public init(chat: Chat) {
+    public enum SortOrder: Equatable {
+      case date(desc: Bool = false)
+    }
+
+    public init(
+      chat: Chat,
+      sortBy: SortOrder
+    ) {
       self.chat = chat
+      self.sortBy = sortBy
     }
 
     public var chat: Chat
-  }
-
-  public enum Order: Equatable {
-    case date(desc: Bool = false)
+    public var sortBy: SortOrder
   }
 }
