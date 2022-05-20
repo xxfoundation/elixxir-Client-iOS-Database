@@ -2,8 +2,10 @@ import Combine
 import Foundation
 
 public struct Contact: Identifiable, Equatable, Codable {
+  public typealias ID = Data
+
   public init(
-    id: Data,
+    id: ID,
     marshaled: Data? = nil,
     username: String? = nil,
     email: String? = nil,
@@ -18,7 +20,7 @@ public struct Contact: Identifiable, Equatable, Codable {
     self.nickname = nickname
   }
 
-  public var id: Data
+  public var id: ID
   public var marshaled: Data?
   public var username: String?
   public var email: String?
