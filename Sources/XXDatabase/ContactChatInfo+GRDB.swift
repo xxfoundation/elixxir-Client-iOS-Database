@@ -22,9 +22,9 @@ extension ContactChatInfo: FetchableRecord {
     let lastMessageAssociation = Contact
       .association(
         to: lastMessageExpression,
-        on: { contact, lastMessage in
-          lastMessage[Message.Column.senderId] == contact[Contact.Column.id] ||
-          lastMessage[Message.Column.recipientId] == contact[Contact.Column.id]
+        on: { contactTable, messageTable in
+          messageTable[Message.Column.senderId] == contactTable[Contact.Column.id] ||
+          messageTable[Message.Column.recipientId] == contactTable[Contact.Column.id]
         }
       )
       .order(Message.Column.date.desc)
