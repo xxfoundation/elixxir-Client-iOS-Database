@@ -36,6 +36,7 @@ extension Message {
     senderId: Data,
     recipientId: Data,
     date: Date,
+    isUnread: Bool = false,
     text: String
   ) -> Message {
     Message(
@@ -44,8 +45,23 @@ extension Message {
       senderId: senderId,
       recipientId: recipientId,
       date: date,
-      isUnread: true,
+      isUnread: isUnread,
       text: text
+    )
+  }
+
+  static func stub(
+    from sender: Contact,
+    to recipient: Contact,
+    at timeInterval: TimeInterval,
+    isUnread: Bool = false
+  ) -> Message {
+    Message(
+      senderId: sender.id,
+      recipientId: recipient.id,
+      date: .stub(timeInterval),
+      isUnread: isUnread,
+      text: "\(sender.username ?? "?") → \(recipient.username ?? "?") @ \(timeInterval)"
     )
   }
 }
