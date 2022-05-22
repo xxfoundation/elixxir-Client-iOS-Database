@@ -23,10 +23,13 @@ extension Database {
     return db
   }
 
-  public func fetch<Record, RowDecoder>(
-    _ request: QueryInterfaceRequest<RowDecoder>
+  public func fetch<Record, Request, Decoder>(
+    _ request: Request
   ) throws -> [Record]
-  where Record: FetchableRecord {
+  where Record: FetchableRecord,
+        Request: FetchRequest,
+        Request.RowDecoder == Decoder
+  {
     try queue.sync {
       try writer.read { db in
         try Record.fetchAll(db, request)
@@ -34,29 +37,38 @@ extension Database {
     }
   }
 
-  public func fetch<Record, RowDecoder, Query>(
-    _ request: @escaping (Query) -> QueryInterfaceRequest<RowDecoder>
+  public func fetch<Record, Query, Request, Decoder>(
+    _ request: @escaping (Query) -> Request
   ) -> (Query) throws -> [Record]
-  where Record: FetchableRecord {
+  where Record: FetchableRecord,
+        Request: FetchRequest,
+        Request.RowDecoder == Decoder
+  {
     { query in
       try fetch(request(query))
     }
   }
 
-  public func fetchPublisher<Record, RowDecoder>(
-    _ request: QueryInterfaceRequest<RowDecoder>
+  public func fetchPublisher<Record, Request, Decoder>(
+    _ request: Request
   ) -> AnyPublisher<[Record], Error>
-  where Record: FetchableRecord {
+  where Record: FetchableRecord,
+        Request: FetchRequest,
+        Request.RowDecoder == Decoder
+  {
     ValueObservation
       .tracking { try Record.fetchAll($0, request) }
       .publisher(in: writer, scheduling: .async(onQueue: queue))
       .eraseToAnyPublisher()
   }
 
-  public func fetchPublisher<Record, RowDecoder, Query>(
-    _ request: @escaping (Query) -> QueryInterfaceRequest<RowDecoder>
+  public func fetchPublisher<Record, Query, Request, Decoder>(
+    _ request: @escaping (Query) -> Request
   ) -> (Query) -> AnyPublisher<[Record], Error>
-  where Record: FetchableRecord {
+  where Record: FetchableRecord,
+        Request: FetchRequest,
+        Request.RowDecoder == Decoder
+  {
     { query in
       fetchPublisher(request(query))
     }
