@@ -7,35 +7,42 @@ extension ContactChatInfo: FetchableRecord {
     case lastMessage
   }
 
-  public static func request(_ query: Query) -> QueryInterfaceRequest<ContactChatInfo> {
-#warning("FIXME !!!")
-
-    let lastMessageRequest = Message
-      .annotated(with: max(Message.Column.date))
-      .group(Message.Column.senderId || Message.Column.recipientId)
-
-    let lastMessageExpression = CommonTableExpression<Message>(
-      named: Column.lastMessage.rawValue,
-      request: lastMessageRequest
+  public static func request(_ query: Query) -> AdaptedFetchRequest<SQLRequest<ContactChatInfo>> {
+    SQLRequest(
+      sql: """
+        SELECT
+          -- All contact columns:
+          c2.*,
+          -- All message columns:
+          m.*,
+          -- Latest message date column:
+          MAX(m.date) AS date
+        FROM
+          messages m
+        INNER JOIN contacts c1
+          ON c1.id IN (m.senderId, m.recipientId)
+        INNER JOIN contacts c2
+          ON c2.id IN (m.senderId, m.recipientId)
+          AND c1.id <> c2.id
+        WHERE
+          c1.id = :userId
+        GROUP BY
+          c2.id
+        ORDER BY
+          date DESC;
+        """,
+      arguments: [
+        "userId": query.userId
+      ]
     )
-
-    let lastMessageAssociation = Contact
-      .association(
-        to: lastMessageExpression,
-        on: { contactTable, messageTable in
-          messageTable[Message.Column.senderId] == contactTable[Contact.Column.id] ||
-          messageTable[Message.Column.recipientId] == contactTable[Contact.Column.id]
-        }
-      )
-      .order(Message.Column.date.desc)
-
-    let request = Contact
-      .filter(Contact.Column.id != query.userId)
-      .with(lastMessageExpression)
-      .including(required: lastMessageAssociation)
-      .order(sql: "\(lastMessageExpression.tableName).\(Message.Column.date.rawValue) DESC")
-      .asRequest(of: ContactChatInfo.self)
-
-    return request
+    .adapted { db in
+      let adapters = try splittingRowAdapters(columnCounts: [
+        Contact.numberOfSelectedColumns(db)
+      ])
+      return ScopeAdapter([
+        ContactChatInfo.Column.contact.rawValue: adapters[0],
+        ContactChatInfo.Column.lastMessage.rawValue: adapters[1],
+      ])
+    }
   }
 }
