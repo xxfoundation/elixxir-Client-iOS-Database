@@ -22,6 +22,8 @@ final class ContactChatInfoTests: XCTestCase {
     let contactA = try db.insert(Contact.stub("A"))
     let contactB = try db.insert(Contact.stub("B"))
     let contactC = try db.insert(Contact.stub("C"))
+    let contactD = try db.insert(Contact.stub("D"))
+    let contactE = try db.insert(Contact.stub("E"))
 
     // Mock up conversation between contact A and B:
 
@@ -69,6 +71,20 @@ final class ContactChatInfoTests: XCTestCase {
       from: contactC,
       to: contactB,
       at: 7
+    ))
+
+    // Mock up conversation between contact D and E:
+
+    _ = try db.insert(Message.stub(
+      from: contactD,
+      to: contactE,
+      at: 8
+    ))
+
+    _ = try db.insert(Message.stub(
+      from: contactE,
+      to: contactD,
+      at: 9
     ))
 
     // Fetch contact chat infos for user A:
