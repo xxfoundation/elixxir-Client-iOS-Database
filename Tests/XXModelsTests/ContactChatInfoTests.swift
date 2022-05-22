@@ -15,7 +15,8 @@ final class ContactChatInfoTests: XCTestCase {
 
     let chatInfo = ContactChatInfo(
       contact: contact,
-      lastMessage: message
+      lastMessage: message,
+      unreadCount: 1234
     )
 
     XCTAssertEqual(chatInfo.id, contact.id)

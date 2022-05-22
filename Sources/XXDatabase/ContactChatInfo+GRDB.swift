@@ -5,6 +5,7 @@ extension ContactChatInfo: FetchableRecord {
   enum Column: String, ColumnExpression {
     case contact
     case lastMessage
+    case unreadCount
   }
 
   public static func request(_ query: Query) -> AdaptedFetchRequest<SQLRequest<ContactChatInfo>> {
@@ -13,6 +14,8 @@ extension ContactChatInfo: FetchableRecord {
         SELECT
           -- All contact columns:
           c2.*,
+          -- Unread messages count column:
+          0 AS unreadCount,
           -- All message columns:
           m.*,
           -- Latest message date column:
@@ -37,11 +40,13 @@ extension ContactChatInfo: FetchableRecord {
     )
     .adapted { db in
       let adapters = try splittingRowAdapters(columnCounts: [
-        Contact.numberOfSelectedColumns(db)
+        Contact.numberOfSelectedColumns(db), // all contact columns
+        1, // unread messages count column
       ])
       return ScopeAdapter([
         ContactChatInfo.Column.contact.rawValue: adapters[0],
-        ContactChatInfo.Column.lastMessage.rawValue: adapters[1],
+        ContactChatInfo.Column.unreadCount.rawValue: adapters[1],
+        ContactChatInfo.Column.lastMessage.rawValue: adapters[2],
       ])
     }
   }

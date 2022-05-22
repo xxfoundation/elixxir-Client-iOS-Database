@@ -5,15 +5,18 @@ public struct ContactChatInfo: Identifiable, Equatable, Codable {
 
   public init(
     contact: Contact,
-    lastMessage: Message
+    lastMessage: Message,
+    unreadCount: Int
   ) {
     self.contact = contact
     self.lastMessage = lastMessage
+    self.unreadCount = unreadCount
   }
 
   public var id: ID { contact.id }
   public var contact: Contact
   public var lastMessage: Message
+  public var unreadCount: Int
 }
 
 extension ContactChatInfo {

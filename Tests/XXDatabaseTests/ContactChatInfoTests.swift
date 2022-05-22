@@ -99,22 +99,46 @@ final class ContactChatInfoTests: XCTestCase {
     // Fetch contact chat infos for user A:
 
     XCTAssertNoDifference(try fetch(ContactChatInfo.Query(userId: contactA.id)), [
-      ContactChatInfo(contact: contactC, lastMessage: lastMessage_betweenAandC_at5),
-      ContactChatInfo(contact: contactB, lastMessage: lastMessage_betweenAandB_at3),
+      ContactChatInfo(
+        contact: contactC,
+        lastMessage: lastMessage_betweenAandC_at5,
+        unreadCount: 0
+      ),
+      ContactChatInfo(
+        contact: contactB,
+        lastMessage: lastMessage_betweenAandB_at3,
+        unreadCount: 0
+      ),
     ])
 
     // Fetch contact chat infos for user B:
 
     XCTAssertNoDifference(try fetch(ContactChatInfo.Query(userId: contactB.id)), [
-      ContactChatInfo(contact: contactC, lastMessage: lastMessage_betweenBandC_at7),
-      ContactChatInfo(contact: contactA, lastMessage: lastMessage_betweenAandB_at3),
+      ContactChatInfo(
+        contact: contactC,
+        lastMessage: lastMessage_betweenBandC_at7,
+        unreadCount: 0
+      ),
+      ContactChatInfo(
+        contact: contactA,
+        lastMessage: lastMessage_betweenAandB_at3,
+        unreadCount: 0
+      ),
     ])
 
     // Fetch contact chat infos for user C:
 
     XCTAssertNoDifference(try fetch(ContactChatInfo.Query(userId: contactC.id)), [
-      ContactChatInfo(contact: contactB, lastMessage: lastMessage_betweenBandC_at7),
-      ContactChatInfo(contact: contactA, lastMessage: lastMessage_betweenAandC_at5),
+      ContactChatInfo(
+        contact: contactB,
+        lastMessage: lastMessage_betweenBandC_at7,
+        unreadCount: 0
+      ),
+      ContactChatInfo(
+        contact: contactA,
+        lastMessage: lastMessage_betweenAandC_at5,
+        unreadCount: 0
+      ),
     ])
   }
 }
