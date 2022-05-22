@@ -16,7 +16,6 @@ final class ContactChatInfoTests: XCTestCase {
 
   func testFetching() throws {
     let fetch: ContactChatInfo.Fetch = db.fetch(ContactChatInfo.request(_:))
-    var results = [ContactChatInfo]()
 
     // Mock up contacts:
 
@@ -74,51 +73,23 @@ final class ContactChatInfoTests: XCTestCase {
 
     // Fetch contact chat infos for user A:
 
-    results = try fetch(ContactChatInfo.Query(userId: contactA.id))
-
-    XCTAssertNoDifference(results, [
+    XCTAssertNoDifference(try fetch(ContactChatInfo.Query(userId: contactA.id)), [
       ContactChatInfo(contact: contactC, lastMessage: lastMessage_betweenAandC_at5),
       ContactChatInfo(contact: contactB, lastMessage: lastMessage_betweenAandB_at3),
     ])
-    XCTAssertEqual(results.count, 2)
-    XCTAssertNoDifference(results.get(0)?.contact, contactC)
-    XCTAssertNoDifference(results.get(0)?.lastMessage, lastMessage_betweenAandC_at5)
-    XCTAssertNoDifference(results.get(1)?.contact, contactB)
-    XCTAssertNoDifference(results.get(1)?.lastMessage, lastMessage_betweenAandB_at3)
 
     // Fetch contact chat infos for user B:
 
-    results = try fetch(ContactChatInfo.Query(userId: contactB.id))
-
-    XCTAssertNoDifference(results, [
+    XCTAssertNoDifference(try fetch(ContactChatInfo.Query(userId: contactB.id)), [
       ContactChatInfo(contact: contactC, lastMessage: lastMessage_betweenBandC_at7),
       ContactChatInfo(contact: contactA, lastMessage: lastMessage_betweenAandB_at3),
     ])
-    XCTAssertEqual(results.count, 2)
-    XCTAssertNoDifference(results.get(0)?.contact, contactC)
-    XCTAssertNoDifference(results.get(0)?.lastMessage, lastMessage_betweenBandC_at7)
-    XCTAssertNoDifference(results.get(1)?.contact, contactA)
-    XCTAssertNoDifference(results.get(1)?.lastMessage, lastMessage_betweenAandB_at3)
 
     // Fetch contact chat infos for user C:
 
-    results = try fetch(ContactChatInfo.Query(userId: contactC.id))
-
-    XCTAssertNoDifference(results, [
+    XCTAssertNoDifference(try fetch(ContactChatInfo.Query(userId: contactC.id)), [
       ContactChatInfo(contact: contactB, lastMessage: lastMessage_betweenBandC_at7),
       ContactChatInfo(contact: contactA, lastMessage: lastMessage_betweenAandC_at5),
     ])
-    XCTAssertEqual(results.count, 2)
-    XCTAssertNoDifference(results.get(0)?.contact, contactB)
-    XCTAssertNoDifference(results.get(0)?.lastMessage, lastMessage_betweenBandC_at7)
-    XCTAssertNoDifference(results.get(1)?.contact, contactA)
-    XCTAssertNoDifference(results.get(1)?.lastMessage, lastMessage_betweenAandC_at5)
-  }
-}
-
-private extension Array {
-  func get(_ index: Index) -> Element? {
-    guard indices.contains(index) else { return nil }
-    return self[index]
   }
 }
