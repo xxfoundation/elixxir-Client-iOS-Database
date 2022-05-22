@@ -52,7 +52,7 @@ extension Message {
     from sender: Contact,
     to recipient: Contact,
     at timeInterval: TimeInterval,
-    isUnread: Bool = false
+    isUnread: Bool
   ) -> Message {
     Message(
       senderId: sender.id,

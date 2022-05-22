@@ -30,19 +30,22 @@ final class ContactChatInfoTests: XCTestCase {
     _ = try db.insert(Message.stub(
       from: contactA,
       to: contactB,
-      at: 1
+      at: 1,
+      isUnread: false
     ))
 
     _ = try db.insert(Message.stub(
       from: contactB,
       to: contactA,
-      at: 2
+      at: 2,
+      isUnread: false
     ))
 
     let lastMessage_betweenAandB_at3 = try db.insert(Message.stub(
       from: contactA,
       to: contactB,
-      at: 3
+      at: 3,
+      isUnread: false
     ))
 
     // Mock up conversation between contact A and C:
@@ -50,13 +53,15 @@ final class ContactChatInfoTests: XCTestCase {
     _ = try db.insert(Message.stub(
       from: contactA,
       to: contactC,
-      at: 4
+      at: 4,
+      isUnread: false
     ))
 
     let lastMessage_betweenAandC_at5 = try db.insert(Message.stub(
       from: contactC,
       to: contactA,
-      at: 5
+      at: 5,
+      isUnread: false
     ))
 
     // Mock up conversation between contact B and C:
@@ -64,13 +69,15 @@ final class ContactChatInfoTests: XCTestCase {
     _ = try db.insert(Message.stub(
       from: contactB,
       to: contactC,
-      at: 6
+      at: 6,
+      isUnread: false
     ))
 
     let lastMessage_betweenBandC_at7 = try db.insert(Message.stub(
       from: contactC,
       to: contactB,
-      at: 7
+      at: 7,
+      isUnread: false
     ))
 
     // Mock up conversation between contact D and E:
@@ -78,13 +85,15 @@ final class ContactChatInfoTests: XCTestCase {
     _ = try db.insert(Message.stub(
       from: contactD,
       to: contactE,
-      at: 8
+      at: 8,
+      isUnread: false
     ))
 
     _ = try db.insert(Message.stub(
       from: contactE,
       to: contactD,
-      at: 9
+      at: 9,
+      isUnread: false
     ))
 
     // Fetch contact chat infos for user A:
