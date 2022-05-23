@@ -61,4 +61,43 @@ final class GroupTests: XCTestCase {
       [groupB]
     )
   }
+
+  func testFetching() throws {
+    let fetch: Group.Fetch = db.fetch(Group.request(_:))
+
+    // Mock up contacts:
+
+    let contactA = try db.insert(Contact.stub("A"))
+    let contactB = try db.insert(Contact.stub("B"))
+
+    // Mock up groups:
+
+    let groupA = try db.insert(Group.stub(
+      "A",
+      leaderId: contactA.id,
+      createdAt: .stub(1)
+    ))
+
+    let groupB = try db.insert(Group.stub(
+      "B",
+      leaderId: contactB.id,
+      createdAt: .stub(2)
+    ))
+
+    let groupC = try db.insert(Group.stub(
+      "C",
+      leaderId: contactB.id,
+      createdAt: .stub(3)
+    ))
+
+    // Fetch groups:
+
+    XCTAssertNoDifference(try fetch(Group.Query(sortBy: .createdAt())), [
+      groupA, groupB, groupC,
+    ])
+
+    XCTAssertNoDifference(try fetch(Group.Query(sortBy: .createdAt(desc: true))), [
+      groupC, groupB, groupA,
+    ])
+  }
 }
