@@ -38,14 +38,14 @@ final class ContactChatInfoTests: XCTestCase {
       from: contactB,
       to: contactA,
       at: 2,
-      isUnread: false
+      isUnread: true
     ))
 
     let lastMessage_betweenAandB_at3 = try db.insert(Message.stub(
       from: contactA,
       to: contactB,
       at: 3,
-      isUnread: false
+      isUnread: true
     ))
 
     // Mock up conversation between contact A and C:
@@ -54,7 +54,7 @@ final class ContactChatInfoTests: XCTestCase {
       from: contactA,
       to: contactC,
       at: 4,
-      isUnread: false
+      isUnread: true
     ))
 
     let lastMessage_betweenAandC_at5 = try db.insert(Message.stub(
@@ -102,12 +102,12 @@ final class ContactChatInfoTests: XCTestCase {
       ContactChatInfo(
         contact: contactC,
         lastMessage: lastMessage_betweenAandC_at5,
-        unreadCount: 0
+        unreadCount: 1
       ),
       ContactChatInfo(
         contact: contactB,
         lastMessage: lastMessage_betweenAandB_at3,
-        unreadCount: 0
+        unreadCount: 2
       ),
     ])
 
@@ -122,7 +122,7 @@ final class ContactChatInfoTests: XCTestCase {
       ContactChatInfo(
         contact: contactA,
         lastMessage: lastMessage_betweenAandB_at3,
-        unreadCount: 0
+        unreadCount: 2
       ),
     ])
 
@@ -137,7 +137,7 @@ final class ContactChatInfoTests: XCTestCase {
       ContactChatInfo(
         contact: contactA,
         lastMessage: lastMessage_betweenAandC_at5,
-        unreadCount: 0
+        unreadCount: 1
       ),
     ])
   }

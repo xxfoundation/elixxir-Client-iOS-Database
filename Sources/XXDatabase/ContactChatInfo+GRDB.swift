@@ -15,7 +15,7 @@ extension ContactChatInfo: FetchableRecord {
           -- All contact columns:
           c2.*,
           -- Unread messages count column:
-          0 AS unreadCount,
+          COUNT(CASE WHEN m.isUnread THEN 1 END) AS unreadCount,
           -- All message columns:
           m.*,
           -- Latest message date column:
