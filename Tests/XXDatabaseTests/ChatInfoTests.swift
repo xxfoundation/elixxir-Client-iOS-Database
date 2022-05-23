@@ -47,7 +47,7 @@ final class ChatInfoTests: XCTestCase {
     _ = try db.insert(GroupMember(groupId: groupB.id, contactId: contactC.id))
     _ = try db.insert(GroupMember(groupId: groupB.id, contactId: contactD.id))
 
-    _ = try db.insert(Group.stub(
+    let groupC_createdAt5 = try db.insert(Group.stub(
       "C",
       leaderId: contactC.id,
       createdAt: .stub(5)
@@ -172,6 +172,7 @@ final class ChatInfoTests: XCTestCase {
         lastMessage: lastMessage_betweenAandB_at6,
         unreadCount: 1
       )),
+      .group(groupC_createdAt5),
       .groupChat(GroupChatInfo(
         group: groupA,
         lastMessage: lastMessage_inGroupA_at4,

@@ -60,4 +60,18 @@ final class ChatInfoTests: XCTestCase {
     XCTAssertEqual(chatInfo.id, .groupChat(groupChatInfo.id))
     XCTAssertEqual(chatInfo.date, groupChatInfo.lastMessage.date)
   }
+
+  func testGroup() {
+    let group = Group(
+      id: "group-id".data(using: .utf8)!,
+      name: "",
+      leaderId: "leader-contact-id".data(using: .utf8)!,
+      createdAt: Date()
+    )
+
+    let chatInfo = ChatInfo.group(group)
+
+    XCTAssertEqual(chatInfo.id, .group(group.id))
+    XCTAssertEqual(chatInfo.date, group.createdAt)
+  }
 }

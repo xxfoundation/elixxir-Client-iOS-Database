@@ -5,10 +5,12 @@ public enum ChatInfo: Identifiable, Equatable, Codable {
   public enum ID: Hashable {
     case contactChat(ContactChatInfo.ID)
     case groupChat(GroupChatInfo.ID)
+    case group(Group.ID)
   }
 
   case contactChat(ContactChatInfo)
   case groupChat(GroupChatInfo)
+  case group(Group)
 
   public var id: ID {
     switch self {
@@ -16,6 +18,8 @@ public enum ChatInfo: Identifiable, Equatable, Codable {
       return .contactChat(info.id)
     case .groupChat(let info):
       return .groupChat(info.id)
+    case .group(let group):
+      return .group(group.id)
     }
   }
 
@@ -25,6 +29,8 @@ public enum ChatInfo: Identifiable, Equatable, Codable {
       return info.lastMessage.date
     case .groupChat(let info):
       return info.lastMessage.date
+    case .group(let group):
+      return group.createdAt
     }
   }
 }

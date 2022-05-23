@@ -6,6 +6,7 @@ extension Database {
   public func fetch(_ query: ChatInfo.Query) throws -> [ChatInfo] {
     let fetchContactChats: ContactChatInfo.Fetch = fetch(ContactChatInfo.request(_:))
     let fetchGroupChats: GroupChatInfo.Fetch = fetch(GroupChatInfo.request(_:))
+    let fetchGroups: Group.Fetch = fetch(Group.request(_:))
 
     let contactChatsQuery = ContactChatInfo.Query(userId: query.userId)
     let contactChats = try fetchContactChats(contactChatsQuery)
@@ -15,7 +16,14 @@ extension Database {
     let groupChats = try fetchGroupChats(groupChatsQuery)
       .map(ChatInfo.groupChat)
 
-    let chats = (contactChats + groupChats)
+    let groupsQuery = Group.Query(
+      withoutMessages: true,
+      sortBy: .createdAt(desc: true)
+    )
+    let groups = try fetchGroups(groupsQuery)
+      .map(ChatInfo.group)
+
+    let chats = (contactChats + groupChats + groups)
       .sorted(by: { $0.date > $1.date })
 
     return chats
@@ -28,15 +36,20 @@ extension Database {
     let fetchGroupChats: GroupChatInfo.FetchPublisher
     = fetchPublisher(GroupChatInfo.request(_:))
 
+    let fetchGroups: Group.FetchPublisher
+    = fetchPublisher(Group.request(_:))
+
     let contactChatsQuery = ContactChatInfo.Query(userId: query.userId)
     let groupChatsQuery = GroupChatInfo.Query()
+    let groupsQuery = Group.Query(withoutMessages: true, sortBy: .createdAt(desc: true))
 
     return Publishers
-      .CombineLatest(
+      .CombineLatest3(
         fetchContactChats(contactChatsQuery).map { $0.map(ChatInfo.contactChat) },
-        fetchGroupChats(groupChatsQuery).map { $0.map(ChatInfo.groupChat) }
+        fetchGroupChats(groupChatsQuery).map { $0.map(ChatInfo.groupChat) },
+        fetchGroups(groupsQuery).map { $0.map(ChatInfo.group) }
       )
-      .map { $0 + $1 }
+      .map { $0 + $1 + $2 }
       .map { $0.sorted(by: { $0.date > $1.date }) }
       .eraseToAnyPublisher()
   }
