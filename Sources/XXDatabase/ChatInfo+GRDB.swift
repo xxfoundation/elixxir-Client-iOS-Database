@@ -49,8 +49,14 @@ extension Database {
         fetchGroupChats(groupChatsQuery).map { $0.map(ChatInfo.groupChat) },
         fetchGroups(groupsQuery).map { $0.map(ChatInfo.group) }
       )
-      .map { $0 + $1 + $2 }
-      .map { $0.sorted(by: { $0.date > $1.date }) }
+      .map { (contactChats: [ChatInfo],
+              groupChats: [ChatInfo],
+              groups: [ChatInfo]) -> [ChatInfo] in
+        contactChats + groupChats + groups
+      }
+      .map { (infos: [ChatInfo]) -> [ChatInfo] in
+        infos.sorted(by: { $0.date > $1.date })
+      }
       .eraseToAnyPublisher()
   }
 }
