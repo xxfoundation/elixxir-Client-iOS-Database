@@ -36,14 +36,14 @@ extension Group {
     }
 
     public init(
-      withoutMessages: Bool = false,
+      withMessages: Bool? = nil,
       sortBy: SortOrder
     ) {
-      self.withoutMessages = withoutMessages
+      self.withMessages = withMessages
       self.sortBy = sortBy
     }
 
     public var sortBy: SortOrder
-    public var withoutMessages: Bool
+    public var withMessages: Bool?
   }
 }

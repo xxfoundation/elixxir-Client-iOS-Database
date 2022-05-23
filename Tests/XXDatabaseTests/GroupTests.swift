@@ -98,7 +98,7 @@ final class GroupTests: XCTestCase {
       at: 1
     ))
 
-    // Fetch groups:
+    // Fetch all groups:
 
     XCTAssertNoDifference(try fetch(Group.Query(sortBy: .createdAt())), [
       groupA, groupB, groupC,
@@ -108,7 +108,15 @@ final class GroupTests: XCTestCase {
       groupC, groupB, groupA,
     ])
 
-    XCTAssertNoDifference(try fetch(Group.Query(withoutMessages: true, sortBy: .createdAt())), [
+    // Fetch groups with messages:
+
+    XCTAssertNoDifference(try fetch(Group.Query(withMessages: true, sortBy: .createdAt())), [
+      groupA,
+    ])
+
+    // Fetch groups without messages:
+
+    XCTAssertNoDifference(try fetch(Group.Query(withMessages: false, sortBy: .createdAt())), [
       groupB, groupC,
     ])
   }

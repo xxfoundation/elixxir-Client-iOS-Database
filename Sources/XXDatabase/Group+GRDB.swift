@@ -37,11 +37,11 @@ extension Group: PersistableRecord, FetchableRecord {
   public static func request(_ query: Query) -> QueryInterfaceRequest<Group> {
     var request = Group.all()
 
-    if query.withoutMessages {
+    if let withMessages = query.withMessages {
       let messageAlias = TableAlias()
       request = request
         .joining(optional: Association.messages.aliased(messageAlias))
-        .filter(!messageAlias.exists)
+        .filter(withMessages ? messageAlias.exists : !messageAlias.exists)
     }
 
     switch query.sortBy {

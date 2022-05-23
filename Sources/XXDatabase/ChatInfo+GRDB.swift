@@ -17,7 +17,7 @@ extension Database {
       .map(ChatInfo.groupChat)
 
     let groupsQuery = Group.Query(
-      withoutMessages: true,
+      withMessages: false,
       sortBy: .createdAt(desc: true)
     )
     let groups = try fetchGroups(groupsQuery)
@@ -41,7 +41,7 @@ extension Database {
 
     let contactChatsQuery = ContactChatInfo.Query(userId: query.userId)
     let groupChatsQuery = GroupChatInfo.Query()
-    let groupsQuery = Group.Query(withoutMessages: true, sortBy: .createdAt(desc: true))
+    let groupsQuery = Group.Query(withMessages: false, sortBy: .createdAt(desc: true))
 
     return Publishers
       .CombineLatest3(
