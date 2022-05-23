@@ -25,12 +25,24 @@ extension Group: PersistableRecord, FetchableRecord {
       through: groupMembers,
       using: GroupMember.Association.contact
     )
+
+    static let messages = hasMany(
+      Message.self,
+      using: .init([Message.Column.groupId], to: [Column.id])
+    )
   }
 
   public static let databaseTableName = "groups"
 
   public static func request(_ query: Query) -> QueryInterfaceRequest<Group> {
     var request = Group.all()
+
+    if query.withoutMessages {
+      let messageAlias = TableAlias()
+      request = request
+        .joining(optional: Association.messages.aliased(messageAlias))
+        .filter(!messageAlias.exists)
+    }
 
     switch query.sortBy {
     case .createdAt(desc: false):

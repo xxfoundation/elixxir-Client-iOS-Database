@@ -90,6 +90,14 @@ final class GroupTests: XCTestCase {
       createdAt: .stub(3)
     ))
 
+    // Mock up messages:
+
+    _ = try db.insert(Message.stub(
+      from: contactA,
+      to: groupA,
+      at: 1
+    ))
+
     // Fetch groups:
 
     XCTAssertNoDifference(try fetch(Group.Query(sortBy: .createdAt())), [
@@ -98,6 +106,10 @@ final class GroupTests: XCTestCase {
 
     XCTAssertNoDifference(try fetch(Group.Query(sortBy: .createdAt(desc: true))), [
       groupC, groupB, groupA,
+    ])
+
+    XCTAssertNoDifference(try fetch(Group.Query(withoutMessages: true, sortBy: .createdAt())), [
+      groupB, groupC,
     ])
   }
 }

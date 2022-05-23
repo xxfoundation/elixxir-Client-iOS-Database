@@ -35,10 +35,15 @@ extension Group {
       case createdAt(desc: Bool = false)
     }
 
-    public init(sortBy: SortOrder) {
+    public init(
+      withoutMessages: Bool = false,
+      sortBy: SortOrder
+    ) {
+      self.withoutMessages = withoutMessages
       self.sortBy = sortBy
     }
 
     public var sortBy: SortOrder
+    public var withoutMessages: Bool
   }
 }
