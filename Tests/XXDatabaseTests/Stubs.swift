@@ -62,4 +62,19 @@ extension Message {
       text: "\(sender.username ?? "?") → \(recipient.username ?? "?") @ \(timeInterval)"
     )
   }
+
+  static func stub(
+    from sender: Contact,
+    to group: Group,
+    at timeInterval: TimeInterval,
+    isUnread: Bool
+  ) -> Message {
+    Message(
+      senderId: sender.id,
+      recipientId: group.id,
+      date: .stub(timeInterval),
+      isUnread: isUnread,
+      text: "\(sender.username ?? "?") → G:\(group.name) @ \(timeInterval)"
+    )
+  }
 }
