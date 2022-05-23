@@ -4,7 +4,7 @@ import GRDB
 
 public struct Database {
   let writer: DatabaseWriter
-  let queue = DispatchQueue(label: "XXDatabase")
+  let queue: DispatchQueue
 
   private func migrate(_ migrations: [Migration]) throws {
     var migrator = DatabaseMigrator()
@@ -17,8 +17,10 @@ public struct Database {
 
 extension Database {
   public static func inMemory(migrations: [Migration] = .all) throws -> Database {
-    let writer = DatabaseQueue()
-    let db = Database(writer: writer)
+    let db = Database(
+      writer: DatabaseQueue(),
+      queue: DispatchQueue(label: "XXDatabase")
+    )
     try db.migrate(migrations)
     return db
   }
