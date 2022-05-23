@@ -3,37 +3,28 @@ import Foundation
 
 public enum ChatInfo: Identifiable, Equatable, Codable {
   public enum ID: Hashable {
-    case contact(ContactChatInfo.ID)
-    case group(GroupChatInfo.ID)
+    case contactChat(ContactChatInfo.ID)
+    case groupChat(GroupChatInfo.ID)
   }
 
-  case contact(ContactChatInfo)
-  case group(GroupChatInfo)
+  case contactChat(ContactChatInfo)
+  case groupChat(GroupChatInfo)
 
   public var id: ID {
     switch self {
-    case .contact(let info):
-      return .contact(info.id)
-    case .group(let info):
-      return .group(info.id)
+    case .contactChat(let info):
+      return .contactChat(info.id)
+    case .groupChat(let info):
+      return .groupChat(info.id)
     }
   }
 
-  public var lastMessage: Message {
+  public var date: Date {
     switch self {
-    case .contact(let info):
-      return info.lastMessage
-    case .group(let info):
-      return info.lastMessage
-    }
-  }
-
-  public var unreadCount: Int {
-    switch self {
-    case .contact(let info):
-      return info.unreadCount
-    case .group(let info):
-      return info.unreadCount
+    case .contactChat(let info):
+      return info.lastMessage.date
+    case .groupChat(let info):
+      return info.lastMessage.date
     }
   }
 }

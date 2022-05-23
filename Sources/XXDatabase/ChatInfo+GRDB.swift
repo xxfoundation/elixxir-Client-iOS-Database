@@ -9,32 +9,35 @@ extension Database {
 
     let contactChatsQuery = ContactChatInfo.Query(userId: query.userId)
     let contactChats = try fetchContactChats(contactChatsQuery)
-      .map(ChatInfo.contact)
+      .map(ChatInfo.contactChat)
 
     let groupChatsQuery = GroupChatInfo.Query()
     let groupChats = try fetchGroupChats(groupChatsQuery)
-      .map(ChatInfo.group)
+      .map(ChatInfo.groupChat)
 
     let chats = (contactChats + groupChats)
-      .sorted(by: { $0.lastMessage.date > $1.lastMessage.date })
+      .sorted(by: { $0.date > $1.date })
 
     return chats
   }
 
   public func fetchPublisher(_ query: ChatInfo.Query) -> AnyPublisher<[ChatInfo], Error> {
-    let contacts: ContactChatInfo.FetchPublisher = fetchPublisher(ContactChatInfo.request(_:))
-    let groups: GroupChatInfo.FetchPublisher = fetchPublisher(GroupChatInfo.request(_:))
+    let fetchContactChats: ContactChatInfo.FetchPublisher
+    = fetchPublisher(ContactChatInfo.request(_:))
+
+    let fetchGroupChats: GroupChatInfo.FetchPublisher
+    = fetchPublisher(GroupChatInfo.request(_:))
 
     let contactChatsQuery = ContactChatInfo.Query(userId: query.userId)
     let groupChatsQuery = GroupChatInfo.Query()
 
     return Publishers
       .CombineLatest(
-        contacts(contactChatsQuery).map { $0.map(ChatInfo.contact) },
-        groups(groupChatsQuery).map { $0.map(ChatInfo.group) }
+        fetchContactChats(contactChatsQuery).map { $0.map(ChatInfo.contactChat) },
+        fetchGroupChats(groupChatsQuery).map { $0.map(ChatInfo.groupChat) }
       )
       .map { $0 + $1 }
-      .map { $0.sorted(by: { $0.lastMessage.date > $1.lastMessage.date }) }
+      .map { $0.sorted(by: { $0.date > $1.date }) }
       .eraseToAnyPublisher()
   }
 }

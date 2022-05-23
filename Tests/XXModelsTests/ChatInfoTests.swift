@@ -24,14 +24,13 @@ final class ChatInfoTests: XCTestCase {
       unreadCount: 222
     )
 
-    let chatInfo = ChatInfo.contact(contactChatInfo)
+    let chatInfo = ChatInfo.contactChat(contactChatInfo)
 
-    XCTAssertEqual(chatInfo.id, .contact(contactChatInfo.id))
-    XCTAssertEqual(chatInfo.lastMessage, contactChatInfo.lastMessage)
-    XCTAssertEqual(chatInfo.unreadCount, contactChatInfo.unreadCount)
+    XCTAssertEqual(chatInfo.id, .contactChat(contactChatInfo.id))
+    XCTAssertEqual(chatInfo.date, contactChatInfo.lastMessage.date)
   }
 
-  func testGroupChatInfo() {
+  func testGroupChat() {
     let group = Group(
       id: "group-id".data(using: .utf8)!,
       name: "",
@@ -56,10 +55,9 @@ final class ChatInfoTests: XCTestCase {
       unreadCount: 222
     )
 
-    let chatInfo = ChatInfo.group(groupChatInfo)
+    let chatInfo = ChatInfo.groupChat(groupChatInfo)
 
-    XCTAssertEqual(chatInfo.id, .group(groupChatInfo.id))
-    XCTAssertEqual(chatInfo.lastMessage, groupChatInfo.lastMessage)
-    XCTAssertEqual(chatInfo.unreadCount, groupChatInfo.unreadCount)
+    XCTAssertEqual(chatInfo.id, .groupChat(groupChatInfo.id))
+    XCTAssertEqual(chatInfo.date, groupChatInfo.lastMessage.date)
   }
 }

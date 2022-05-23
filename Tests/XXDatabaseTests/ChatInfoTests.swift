@@ -50,7 +50,7 @@ final class ChatInfoTests: XCTestCase {
     _ = try db.insert(Group.stub(
       "C",
       leaderId: contactC.id,
-      createdAt: .stub(3)
+      createdAt: .stub(5)
     ))
 
     // Mock up messages in group A:
@@ -157,22 +157,22 @@ final class ChatInfoTests: XCTestCase {
     // Fetch chat infos for user A:
 
     let expectedFetchResults: [ChatInfo] = [
-      .contact(ContactChatInfo(
+      .contactChat(ContactChatInfo(
         contact: contactC,
         lastMessage: lastMessage_betweenAandC_at11,
         unreadCount: 2
       )),
-      .group(GroupChatInfo(
+      .groupChat(GroupChatInfo(
         group: groupB,
         lastMessage: lastMessage_inGroupB_at7,
         unreadCount: 0
       )),
-      .contact(ContactChatInfo(
+      .contactChat(ContactChatInfo(
         contact: contactB,
         lastMessage: lastMessage_betweenAandB_at6,
         unreadCount: 1
       )),
-      .group(GroupChatInfo(
+      .groupChat(GroupChatInfo(
         group: groupA,
         lastMessage: lastMessage_inGroupA_at4,
         unreadCount: 2
