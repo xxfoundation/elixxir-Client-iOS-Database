@@ -5,7 +5,7 @@ public struct GroupChatInfo: Identifiable, Equatable, Codable {
 
   public init(
     group: Group,
-    lastMessage: Message?,
+    lastMessage: Message,
     unreadCount: Int
   ) {
     self.group = group
@@ -15,7 +15,7 @@ public struct GroupChatInfo: Identifiable, Equatable, Codable {
 
   public var id: ID { group.id }
   public var group: Group
-  public var lastMessage: Message?
+  public var lastMessage: Message
   public var unreadCount: Int
 }
 
