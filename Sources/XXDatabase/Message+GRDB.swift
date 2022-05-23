@@ -7,6 +7,7 @@ extension Message: FetchableRecord, MutablePersistableRecord {
     case networkId
     case senderId
     case recipientId
+    case groupId
     case date
     case isUnread
     case text
@@ -19,7 +20,7 @@ extension Message: FetchableRecord, MutablePersistableRecord {
 
     switch query.chat {
     case .group(let groupId):
-      request = request.filter(Column.recipientId == groupId)
+      request = request.filter(Column.groupId == groupId)
 
     case .direct(let id1, let id2):
       request = request.filter(

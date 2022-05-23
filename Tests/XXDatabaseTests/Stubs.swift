@@ -34,7 +34,8 @@ extension Group {
 extension Message {
   static func stub(
     senderId: Data,
-    recipientId: Data,
+    recipientId: Data?,
+    groupId: Data?,
     date: Date,
     isUnread: Bool = false,
     text: String
@@ -42,6 +43,7 @@ extension Message {
     Message(
       senderId: senderId,
       recipientId: recipientId,
+      groupId: groupId,
       date: date,
       isUnread: isUnread,
       text: text
@@ -52,11 +54,12 @@ extension Message {
     from sender: Contact,
     to recipient: Contact,
     at timeInterval: TimeInterval,
-    isUnread: Bool
+    isUnread: Bool = false
   ) -> Message {
     Message(
       senderId: sender.id,
       recipientId: recipient.id,
+      groupId: nil,
       date: .stub(timeInterval),
       isUnread: isUnread,
       text: "\(sender.username ?? "?") → \(recipient.username ?? "?") @ \(timeInterval)"
@@ -67,11 +70,12 @@ extension Message {
     from sender: Contact,
     to group: Group,
     at timeInterval: TimeInterval,
-    isUnread: Bool
+    isUnread: Bool = false
   ) -> Message {
     Message(
       senderId: sender.id,
-      recipientId: group.id,
+      recipientId: nil,
+      groupId: group.id,
       date: .stub(timeInterval),
       isUnread: isUnread,
       text: "\(sender.username ?? "?") → G:\(group.name) @ \(timeInterval)"

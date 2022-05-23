@@ -22,7 +22,7 @@ extension GroupChatInfo: FetchableRecord {
       FROM
         messages m
       INNER JOIN groups g
-        ON g.id = m.recipientId
+        ON g.id = m.groupId
       GROUP BY
         g.id
       ORDER BY

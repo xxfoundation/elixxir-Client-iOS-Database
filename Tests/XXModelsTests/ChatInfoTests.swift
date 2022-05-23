@@ -11,7 +11,8 @@ final class ChatInfoTests: XCTestCase {
       id: 111,
       networkId: nil,
       senderId: Data(),
-      recipientId: Data(),
+      recipientId: nil,
+      groupId: nil,
       date: Date(),
       isUnread: false,
       text: ""
@@ -42,7 +43,8 @@ final class ChatInfoTests: XCTestCase {
       id: 111,
       networkId: nil,
       senderId: Data(),
-      recipientId: Data(),
+      recipientId: nil,
+      groupId: nil,
       date: Date(),
       isUnread: false,
       text: ""

@@ -29,54 +29,47 @@ final class MessageTests: XCTestCase {
     // Save conversation between contacts A and B:
 
     let message1 = try save(.stub(
-      senderId: contactA.id,
-      recipientId: contactB.id,
-      date: .stub(1),
-      text: "Hello B"
+      from: contactA,
+      to: contactB,
+      at: 1
     ))
 
     let message2 = try save(.stub(
-      senderId: contactB.id,
-      recipientId: contactA.id,
-      date: .stub(2),
-      text: "Hi A, how are you?"
+      from: contactB,
+      to: contactA,
+      at: 2
     ))
 
     let message3 = try save(.stub(
-      senderId: contactA.id,
-      recipientId: contactB.id,
-      date: .stub(3),
-      text: "I'm fine, thank you!"
+      from: contactA,
+      to: contactB,
+      at: 3
     ))
 
     // Save other messages:
 
     _ = try save(.stub(
-      senderId: contactA.id,
-      recipientId: contactC.id,
-      date: .stub(1),
-      text: ""
+      from: contactA,
+      to: contactC,
+      at: 1
     ))
 
     _ = try save(.stub(
-      senderId: contactC.id,
-      recipientId: contactA.id,
-      date: .stub(1),
-      text: ""
+      from: contactC,
+      to: contactA,
+      at: 1
     ))
 
     _ = try save(.stub(
-      senderId: contactB.id,
-      recipientId: contactC.id,
-      date: .stub(1),
-      text: ""
+      from: contactB,
+      to: contactC,
+      at: 1
     ))
 
     _ = try save(.stub(
-      senderId: contactC.id,
-      recipientId: contactB.id,
-      date: .stub(1),
-      text: ""
+      from: contactC,
+      to: contactB,
+      at: 1
     ))
 
     // Fetch conversation between contacts A and B:
@@ -112,75 +105,65 @@ final class MessageTests: XCTestCase {
     // Save group A messages:
 
     let message1 = try save(.stub(
-      senderId: contactA.id,
-      recipientId: groupA.id,
-      date: .stub(1),
-      text: "Hello everyone. Welcome in my group!"
+      from: contactA,
+      to: groupA,
+      at: 1
     ))
 
     let message2 = try save(.stub(
-      senderId: contactB.id,
-      recipientId: groupA.id,
-      date: .stub(2),
-      text: "Hello A!"
+      from: contactB,
+      to: groupA,
+      at: 2
     ))
 
     let message3 = try save(.stub(
-      senderId: contactC.id,
-      recipientId: groupA.id,
-      date: .stub(3),
-      text: "Greetings from C!"
+      from: contactC,
+      to: groupA,
+      at: 3
     ))
 
     // Save other messages:
 
     _ = try save(.stub(
-      senderId: contactA.id,
-      recipientId: contactC.id,
-      date: .stub(1),
-      text: ""
+      from: contactA,
+      to: contactC,
+      at: 1
     ))
 
     _ = try save(.stub(
-      senderId: contactC.id,
-      recipientId: contactA.id,
-      date: .stub(1),
-      text: ""
+      from: contactC,
+      to: contactA,
+      at: 1
     ))
 
     _ = try save(.stub(
-      senderId: contactB.id,
-      recipientId: contactC.id,
-      date: .stub(1),
-      text: ""
+      from: contactB,
+      to: contactC,
+      at: 1
     ))
 
     _ = try save(.stub(
-      senderId: contactC.id,
-      recipientId: contactB.id,
-      date: .stub(1),
-      text: ""
+      from: contactC,
+      to: contactB,
+      at: 1
     ))
 
     _ = try save(.stub(
-      senderId: contactA.id,
-      recipientId: groupB.id,
-      date: .stub(1),
-      text: ""
+      from: contactA,
+      to: groupB,
+      at: 1
     ))
 
     _ = try save(.stub(
-      senderId: contactB.id,
-      recipientId: groupB.id,
-      date: .stub(1),
-      text: ""
+      from: contactB,
+      to: groupB,
+      at: 1
     ))
 
     _ = try save(.stub(
-      senderId: contactC.id,
-      recipientId: groupB.id,
-      date: .stub(1),
-      text: ""
+      from: contactC,
+      to: groupB,
+      at: 1
     ))
 
     // Fetch messages in group A:

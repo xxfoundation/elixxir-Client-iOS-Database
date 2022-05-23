@@ -16,7 +16,8 @@ final class GroupChatInfoTests: XCTestCase {
 
     let message = Message(
       senderId: "sender-id".data(using: .utf8)!,
-      recipientId: "recipient-id".data(using: .utf8)!,
+      recipientId: nil,
+      groupId: nil,
       date: Date(timeIntervalSince1970: 1234),
       isUnread: true,
       text: "text"

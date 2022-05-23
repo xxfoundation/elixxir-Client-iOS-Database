@@ -38,8 +38,10 @@ extension Sequence where Element == Migration {
         t.column("networkId", .blob)
         t.column("senderId", .blob).notNull()
           .references("contacts", column: "id", onDelete: .cascade, onUpdate: .cascade)
-        t.column("recipientId", .blob).notNull()
-          // TODO: recipientId should reference either contacts.id or groups.id
+        t.column("recipientId", .blob)
+          .references("contacts", column: "id", onDelete: .cascade, onUpdate: .cascade)
+        t.column("groupId", .blob)
+          .references("groups", column: "id", onDelete: .cascade, onUpdate: .cascade)
         t.column("date", .datetime).notNull()
         t.column("isUnread", .boolean).notNull()
         t.column("text", .text).notNull()

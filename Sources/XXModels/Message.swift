@@ -7,8 +7,9 @@ public struct Message: Identifiable, Equatable, Codable {
   public init(
     id: ID = nil,
     networkId: Data? = nil,
-    senderId: Data,
-    recipientId: Data,
+    senderId: Contact.ID,
+    recipientId: Contact.ID?,
+    groupId: Group.ID?,
     date: Date,
     isUnread: Bool,
     text: String
@@ -17,6 +18,7 @@ public struct Message: Identifiable, Equatable, Codable {
     self.networkId = networkId
     self.senderId = senderId
     self.recipientId = recipientId
+    self.groupId = groupId
     self.date = date
     self.isUnread = isUnread
     self.text = text
@@ -25,7 +27,8 @@ public struct Message: Identifiable, Equatable, Codable {
   public var id: ID
   public var networkId: Data?
   public var senderId: Contact.ID
-  public var recipientId: Data // TODO: handle contact and group recipients separately
+  public var recipientId: Contact.ID?
+  public var groupId: Group.ID?
   public var date: Date
   public var isUnread: Bool
   public var text: String
