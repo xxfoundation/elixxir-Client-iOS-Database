@@ -3,7 +3,7 @@ import XCTest
 import XXModels
 @testable import XXDatabase
 
-final class GroupInfoTests: XCTestCase {
+final class GroupInfoGRDBTests: XCTestCase {
   var db: Database!
 
   override func setUp() async throws {

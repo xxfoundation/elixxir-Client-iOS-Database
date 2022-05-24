@@ -3,7 +3,7 @@ import XCTest
 import XXModels
 @testable import XXDatabase
 
-final class MessageTests: XCTestCase {
+final class MessageGRDBTests: XCTestCase {
   var db: Database!
 
   override func setUp() async throws {
