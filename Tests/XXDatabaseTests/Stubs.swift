@@ -33,24 +33,6 @@ extension Group {
 
 extension Message {
   static func stub(
-    senderId: Data,
-    recipientId: Data?,
-    groupId: Data?,
-    date: Date,
-    isUnread: Bool = false,
-    text: String
-  ) -> Message {
-    Message(
-      senderId: senderId,
-      recipientId: recipientId,
-      groupId: groupId,
-      date: date,
-      isUnread: isUnread,
-      text: text
-    )
-  }
-
-  static func stub(
     from sender: Contact,
     to recipient: Contact,
     at timeInterval: TimeInterval,
