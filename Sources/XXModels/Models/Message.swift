@@ -35,10 +35,10 @@ public struct Message: Identifiable, Equatable, Codable {
 }
 
 extension Message {
-  public typealias Fetch = (Query) throws -> [Message]
-  public typealias FetchPublisher = (Query) -> AnyPublisher<[Message], Error>
-  public typealias Save = (Message) throws -> Message
-  public typealias Delete = (Message) throws -> Bool
+  public typealias Fetch = XXModels.Fetch<Message, Query>
+  public typealias FetchPublisher = XXModels.FetchPublisher<Message, Query>
+  public typealias Save = XXModels.Save<Message>
+  public typealias Delete = XXModels.Delete<Message>
 
   public struct Query: Equatable {
     public enum Chat: Equatable {

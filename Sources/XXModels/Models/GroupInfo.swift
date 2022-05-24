@@ -19,8 +19,8 @@ public struct GroupInfo: Identifiable, Equatable, Decodable {
 }
 
 extension GroupInfo {
-  public typealias Fetch = (Query) throws -> [GroupInfo]
-  public typealias FetchPublisher = (Query) -> AnyPublisher<[GroupInfo], Error>
+  public typealias Fetch = XXModels.Fetch<GroupInfo, Query>
+  public typealias FetchPublisher = XXModels.FetchPublisher<GroupInfo, Query>
 
   public struct Query: Equatable {
     public enum SortOrder: Equatable {

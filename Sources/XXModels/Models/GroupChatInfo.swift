@@ -20,8 +20,8 @@ public struct GroupChatInfo: Identifiable, Equatable, Codable {
 }
 
 extension GroupChatInfo {
-  public typealias Fetch = (Query) throws -> [GroupChatInfo]
-  public typealias FetchPublisher = (Query) -> AnyPublisher<[GroupChatInfo], Error>
+  public typealias Fetch = XXModels.Fetch<GroupChatInfo, Query>
+  public typealias FetchPublisher = XXModels.FetchPublisher<GroupChatInfo, Query>
 
   public struct Query: Equatable {
     public init() {}

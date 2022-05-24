@@ -14,6 +14,6 @@ public struct GroupMember: Equatable, Codable {
 }
 
 extension GroupMember {
-  public typealias Save = (GroupMember) throws -> GroupMember
-  public typealias Delete = (GroupMember) throws -> Bool
+  public typealias Save = XXModels.Save<GroupMember>
+  public typealias Delete = XXModels.Delete<GroupMember>
 }

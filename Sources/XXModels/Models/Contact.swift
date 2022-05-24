@@ -29,16 +29,16 @@ public struct Contact: Identifiable, Equatable, Codable {
 }
 
 extension Contact {
-  public typealias Fetch = (Query) throws -> [Contact]
-  public typealias FetchPublisher = (Query) -> AnyPublisher<[Contact], Error>
-  public typealias Insert = (Contact) throws -> Contact
-  public typealias InsertPublisher = (Contact) -> AnyPublisher<Contact, Error>
-  public typealias Update = (Contact) throws -> Contact
-  public typealias UpdatePublisher = (Contact) -> AnyPublisher<Contact, Error>
-  public typealias Save = (Contact) throws -> Contact
-  public typealias SavePublisher = (Contact) -> AnyPublisher<Contact, Error>
-  public typealias Delete = (Contact) throws -> Bool
-  public typealias DeletePublisher = (Contact) -> AnyPublisher<Bool, Error>
+  public typealias Fetch = XXModels.Fetch<Contact, Query>
+  public typealias FetchPublisher = XXModels.FetchPublisher<Contact, Query>
+  public typealias Insert = XXModels.Insert<Contact>
+  public typealias InsertPublisher = XXModels.InsertPublisher<Contact>
+  public typealias Update = XXModels.Update<Contact>
+  public typealias UpdatePublisher = XXModels.UpdatePublisher<Contact>
+  public typealias Save = XXModels.Save<Contact>
+  public typealias SavePublisher = XXModels.SavePublisher<Contact>
+  public typealias Delete = XXModels.Delete<Contact>
+  public typealias DeletePublisher = XXModels.DeletePublisher<Contact>
 
   public struct Query: Equatable {
     public enum SortOrder: Equatable {

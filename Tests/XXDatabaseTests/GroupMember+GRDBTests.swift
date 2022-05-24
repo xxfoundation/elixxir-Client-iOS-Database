@@ -15,8 +15,8 @@ final class GroupMemberGRDBTests: XCTestCase {
   }
 
   func testDatabaseOperations() throws {
-    let save: GroupMember.Save = db.save(_:)
-    let delete: GroupMember.Delete = db.delete(_:)
+    let save: GroupMember.Save = db.save()
+    let delete: GroupMember.Delete = db.delete()
 
     func fetchAll() throws -> [GroupMember] {
       try db.fetch(GroupMember.all())

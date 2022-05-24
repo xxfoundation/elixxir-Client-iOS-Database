@@ -15,8 +15,8 @@ final class ChatInfoGRDBTests: XCTestCase {
   }
 
   func testFetching() throws {
-    let fetch: ChatInfo.Fetch = db.fetch(_:)
-    let fetchPublisher: ChatInfo.FetchPublisher = db.fetchPublisher(_:)
+    let fetch: ChatInfo.Fetch = db.fetch()
+    let fetchPublisher: ChatInfo.FetchPublisher = db.fetchPublisher()
 
     // Mock up contacts:
 
