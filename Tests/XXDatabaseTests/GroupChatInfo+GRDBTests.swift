@@ -32,9 +32,9 @@ final class GroupChatInfoGRDBTests: XCTestCase {
       createdAt: .stub(1)
     ))
 
-    _ = try db.insert(GroupMember(groupId: groupA.id, contactId: contactA.id))
-    _ = try db.insert(GroupMember(groupId: groupA.id, contactId: contactB.id))
-    _ = try db.insert(GroupMember(groupId: groupA.id, contactId: contactC.id))
+    try db.insert(GroupMember(groupId: groupA.id, contactId: contactA.id))
+    try db.insert(GroupMember(groupId: groupA.id, contactId: contactB.id))
+    try db.insert(GroupMember(groupId: groupA.id, contactId: contactC.id))
 
     let groupB = try db.insert(Group.stub(
       "B",
@@ -42,11 +42,11 @@ final class GroupChatInfoGRDBTests: XCTestCase {
       createdAt: .stub(2)
     ))
 
-    _ = try db.insert(GroupMember(groupId: groupB.id, contactId: contactB.id))
-    _ = try db.insert(GroupMember(groupId: groupB.id, contactId: contactC.id))
-    _ = try db.insert(GroupMember(groupId: groupB.id, contactId: contactD.id))
+    try db.insert(GroupMember(groupId: groupB.id, contactId: contactB.id))
+    try db.insert(GroupMember(groupId: groupB.id, contactId: contactC.id))
+    try db.insert(GroupMember(groupId: groupB.id, contactId: contactD.id))
 
-    _ = try db.insert(Group.stub(
+    try db.insert(Group.stub(
       "C",
       leaderId: contactC.id,
       createdAt: .stub(3)
@@ -54,21 +54,21 @@ final class GroupChatInfoGRDBTests: XCTestCase {
 
     // Mock up messages in group A:
 
-    _ = try db.insert(Message.stub(
+    try db.insert(Message.stub(
       from: contactA,
       to: groupA,
       at: 1,
       isUnread: true
     ))
 
-    _ = try db.insert(Message.stub(
+    try db.insert(Message.stub(
       from: contactB,
       to: groupA,
       at: 2,
       isUnread: false
     ))
 
-    _ = try db.insert(Message.stub(
+    try db.insert(Message.stub(
       from: contactC,
       to: groupA,
       at: 3,
@@ -84,14 +84,14 @@ final class GroupChatInfoGRDBTests: XCTestCase {
 
     // Mock up messages in group B:
 
-    _ = try db.insert(Message.stub(
+    try db.insert(Message.stub(
       from: contactD,
       to: groupB,
       at: 5,
       isUnread: false
     ))
 
-    _ = try db.insert(Message.stub(
+    try db.insert(Message.stub(
       from: contactC,
       to: groupB,
       at: 6,

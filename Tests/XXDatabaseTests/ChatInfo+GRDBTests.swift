@@ -33,9 +33,9 @@ final class ChatInfoGRDBTests: XCTestCase {
       createdAt: .stub(1)
     ))
 
-    _ = try db.insert(GroupMember(groupId: groupA.id, contactId: contactA.id))
-    _ = try db.insert(GroupMember(groupId: groupA.id, contactId: contactB.id))
-    _ = try db.insert(GroupMember(groupId: groupA.id, contactId: contactC.id))
+    try db.insert(GroupMember(groupId: groupA.id, contactId: contactA.id))
+    try db.insert(GroupMember(groupId: groupA.id, contactId: contactB.id))
+    try db.insert(GroupMember(groupId: groupA.id, contactId: contactC.id))
 
     let groupB = try db.insert(Group.stub(
       "B",
@@ -43,9 +43,9 @@ final class ChatInfoGRDBTests: XCTestCase {
       createdAt: .stub(2)
     ))
 
-    _ = try db.insert(GroupMember(groupId: groupB.id, contactId: contactB.id))
-    _ = try db.insert(GroupMember(groupId: groupB.id, contactId: contactC.id))
-    _ = try db.insert(GroupMember(groupId: groupB.id, contactId: contactD.id))
+    try db.insert(GroupMember(groupId: groupB.id, contactId: contactB.id))
+    try db.insert(GroupMember(groupId: groupB.id, contactId: contactC.id))
+    try db.insert(GroupMember(groupId: groupB.id, contactId: contactD.id))
 
     let groupC_createdAt5 = try db.insert(Group.stub(
       "C",
@@ -55,21 +55,21 @@ final class ChatInfoGRDBTests: XCTestCase {
 
     // Mock up messages in group A:
 
-    _ = try db.insert(Message.stub(
+    try db.insert(Message.stub(
       from: contactA,
       to: groupA,
       at: 1,
       isUnread: true
     ))
 
-    _ = try db.insert(Message.stub(
+    try db.insert(Message.stub(
       from: contactB,
       to: groupA,
       at: 2,
       isUnread: false
     ))
 
-    _ = try db.insert(Message.stub(
+    try db.insert(Message.stub(
       from: contactC,
       to: groupA,
       at: 3,
@@ -85,7 +85,7 @@ final class ChatInfoGRDBTests: XCTestCase {
 
     // Mock up messages between contact A and B:
 
-    _ = try db.insert(Message.stub(
+    try db.insert(Message.stub(
       from: contactA,
       to: contactB,
       at: 5,
@@ -101,14 +101,14 @@ final class ChatInfoGRDBTests: XCTestCase {
 
     // Mock up messages in group B:
 
-    _ = try db.insert(Message.stub(
+    try db.insert(Message.stub(
       from: contactD,
       to: groupB,
       at: 5,
       isUnread: false
     ))
 
-    _ = try db.insert(Message.stub(
+    try db.insert(Message.stub(
       from: contactC,
       to: groupB,
       at: 6,
@@ -124,14 +124,14 @@ final class ChatInfoGRDBTests: XCTestCase {
 
     // Mock up messages between contact B and C:
 
-    _ = try db.insert(Message.stub(
+    try db.insert(Message.stub(
       from: contactB,
       to: contactC,
       at: 8,
       isUnread: false
     ))
 
-    let _ = try db.insert(Message.stub(
+    try db.insert(Message.stub(
       from: contactC,
       to: contactB,
       at: 9,
@@ -140,7 +140,7 @@ final class ChatInfoGRDBTests: XCTestCase {
 
     // Mock up messages between contact A and C:
 
-    _ = try db.insert(Message.stub(
+    try db.insert(Message.stub(
       from: contactA,
       to: contactC,
       at: 10,

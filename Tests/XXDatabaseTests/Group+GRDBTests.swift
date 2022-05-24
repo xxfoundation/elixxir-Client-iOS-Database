@@ -21,8 +21,8 @@ final class GroupGRDBTests: XCTestCase {
     let contactA = Contact.stub("A")
     let contactB = Contact.stub("B")
 
-    _ = try db.save(contactA)
-    _ = try db.save(contactB)
+    try db.save(contactA)
+    try db.save(contactB)
 
     func fetchAll() throws -> [Group] {
       try db.fetch(Group.order(Group.Column.name))
@@ -54,7 +54,7 @@ final class GroupGRDBTests: XCTestCase {
 
     // Delete contact A - the leader of group A and C:
 
-    _ = try db.delete(contactA)
+    try db.delete(contactA)
 
     XCTAssertNoDifference(
       try fetchAll(),
@@ -92,7 +92,7 @@ final class GroupGRDBTests: XCTestCase {
 
     // Mock up messages:
 
-    _ = try db.insert(Message.stub(
+    try db.insert(Message.stub(
       from: contactA,
       to: groupA,
       at: 1

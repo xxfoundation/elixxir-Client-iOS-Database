@@ -25,12 +25,12 @@ final class GroupInfoGRDBTests: XCTestCase {
     let groupB = Group.stub("B", leaderId: contactB.id, createdAt: .stub(2))
     let groupC = Group.stub("C", leaderId: contactC.id, createdAt: .stub(3))
 
-    _ = try db.insert(contactA)
-    _ = try db.insert(contactB)
-    _ = try db.insert(contactC)
-    _ = try db.insert(groupA)
-    _ = try db.insert(groupB)
-    _ = try db.insert(groupC)
+    try db.insert(contactA)
+    try db.insert(contactB)
+    try db.insert(contactC)
+    try db.insert(groupA)
+    try db.insert(groupB)
+    try db.insert(groupC)
 
     // Fetch group infos:
 
@@ -48,12 +48,12 @@ final class GroupInfoGRDBTests: XCTestCase {
 
     // Add members to groups:
 
-    _ = try db.insert(GroupMember(groupId: groupA.id, contactId: contactB.id))
-    _ = try db.insert(GroupMember(groupId: groupA.id, contactId: contactC.id))
-    _ = try db.insert(GroupMember(groupId: groupB.id, contactId: contactA.id))
-    _ = try db.insert(GroupMember(groupId: groupB.id, contactId: contactB.id))
-    _ = try db.insert(GroupMember(groupId: groupC.id, contactId: contactA.id))
-    _ = try db.insert(GroupMember(groupId: groupC.id, contactId: contactC.id))
+    try db.insert(GroupMember(groupId: groupA.id, contactId: contactB.id))
+    try db.insert(GroupMember(groupId: groupA.id, contactId: contactC.id))
+    try db.insert(GroupMember(groupId: groupB.id, contactId: contactA.id))
+    try db.insert(GroupMember(groupId: groupB.id, contactId: contactB.id))
+    try db.insert(GroupMember(groupId: groupC.id, contactId: contactA.id))
+    try db.insert(GroupMember(groupId: groupC.id, contactId: contactC.id))
 
     XCTAssertNoDifference(try fetch(GroupInfo.Query(sortBy: .groupName())), [
       GroupInfo(group: groupA, leader: contactA, members: [contactB, contactC]),
@@ -63,7 +63,7 @@ final class GroupInfoGRDBTests: XCTestCase {
 
     // Delete contact B (member of groups A and B and leader of group B):
 
-    _ = try db.delete(contactB)
+    try db.delete(contactB)
 
     XCTAssertNoDifference(try fetch(GroupInfo.Query(sortBy: .groupName())), [
       GroupInfo(group: groupA, leader: contactA, members: [contactC]),

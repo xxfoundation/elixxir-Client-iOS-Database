@@ -22,9 +22,9 @@ final class MessageGRDBTests: XCTestCase {
     let contactB = Contact.stub("B")
     let contactC = Contact.stub("C")
 
-    _ = try db.insert(contactA)
-    _ = try db.insert(contactB)
-    _ = try db.insert(contactC)
+    try db.insert(contactA)
+    try db.insert(contactB)
+    try db.insert(contactC)
 
     // Save conversation between contacts A and B:
 
@@ -92,15 +92,15 @@ final class MessageGRDBTests: XCTestCase {
     let contactB = Contact.stub("B")
     let contactC = Contact.stub("C")
 
-    _ = try db.insert(contactA)
-    _ = try db.insert(contactB)
-    _ = try db.insert(contactC)
+    try db.insert(contactA)
+    try db.insert(contactB)
+    try db.insert(contactC)
 
     let groupA = Group.stub("A", leaderId: contactA.id, createdAt: .stub(1))
     let groupB = Group.stub("B", leaderId: contactB.id, createdAt: .stub(2))
 
-    _ = try db.save(groupA)
-    _ = try db.save(groupB)
+    try db.save(groupA)
+    try db.save(groupB)
 
     // Save group A messages:
 
