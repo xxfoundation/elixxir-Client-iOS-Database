@@ -4,7 +4,7 @@ import GRDB
 
 public struct Database {
   let writer: DatabaseWriter
-  let queue = DispatchQueue(label: "XXDatabase")
+  let queue: DispatchQueue
 
   private func migrate(_ migrations: [Migration]) throws {
     var migrator = DatabaseMigrator()
@@ -17,16 +17,21 @@ public struct Database {
 
 extension Database {
   public static func inMemory(migrations: [Migration] = .all) throws -> Database {
-    let writer = DatabaseQueue()
-    let db = Database(writer: writer)
+    let db = Database(
+      writer: DatabaseQueue(),
+      queue: DispatchQueue(label: "XXDatabase")
+    )
     try db.migrate(migrations)
     return db
   }
 
-  public func fetch<Record, RowDecoder>(
-    _ request: QueryInterfaceRequest<RowDecoder>
+  public func fetch<Record, Request, Decoder>(
+    _ request: Request
   ) throws -> [Record]
-  where Record: FetchableRecord {
+  where Record: FetchableRecord,
+        Request: FetchRequest,
+        Request.RowDecoder == Decoder
+  {
     try queue.sync {
       try writer.read { db in
         try Record.fetchAll(db, request)
@@ -34,34 +39,44 @@ extension Database {
     }
   }
 
-  public func fetch<Record, RowDecoder, Query, Order>(
-    _ request: @escaping (Query, Order) -> QueryInterfaceRequest<RowDecoder>
-  ) -> (Query, Order) throws -> [Record]
-  where Record: FetchableRecord {
-    { query, order in
-      try fetch(request(query, order))
+  public func fetch<Record, Query, Request, Decoder>(
+    _ request: @escaping (Query) -> Request
+  ) -> (Query) throws -> [Record]
+  where Record: FetchableRecord,
+        Request: FetchRequest,
+        Request.RowDecoder == Decoder
+  {
+    { query in
+      try fetch(request(query))
     }
   }
 
-  public func fetchPublisher<Record, RowDecoder>(
-    _ request: QueryInterfaceRequest<RowDecoder>
+  public func fetchPublisher<Record, Request, Decoder>(
+    _ request: Request
   ) -> AnyPublisher<[Record], Error>
-  where Record: FetchableRecord {
+  where Record: FetchableRecord,
+        Request: FetchRequest,
+        Request.RowDecoder == Decoder
+  {
     ValueObservation
       .tracking { try Record.fetchAll($0, request) }
       .publisher(in: writer, scheduling: .async(onQueue: queue))
       .eraseToAnyPublisher()
   }
 
-  public func fetchPublisher<Record, RowDecoder, Query, Order>(
-    _ request: @escaping (Query, Order) -> QueryInterfaceRequest<RowDecoder>
-  ) -> (Query, Order) -> AnyPublisher<[Record], Error>
-  where Record: FetchableRecord {
-    { query, order in
-      fetchPublisher(request(query, order))
+  public func fetchPublisher<Record, Query, Request, Decoder>(
+    _ request: @escaping (Query) -> Request
+  ) -> (Query) -> AnyPublisher<[Record], Error>
+  where Record: FetchableRecord,
+        Request: FetchRequest,
+        Request.RowDecoder == Decoder
+  {
+    { query in
+      fetchPublisher(request(query))
     }
   }
 
+  @discardableResult
   public func insert<Record>(
     _ record: Record
   ) throws -> Record
@@ -84,6 +99,7 @@ extension Database {
     .eraseToAnyPublisher()
   }
 
+  @discardableResult
   public func update<Record>(
     _ record: Record
   ) throws -> Record
@@ -110,6 +126,7 @@ extension Database {
     .eraseToAnyPublisher()
   }
 
+  @discardableResult
   public func save<Record>(
     _ record: Record
   ) throws -> Record
@@ -132,6 +149,7 @@ extension Database {
     .eraseToAnyPublisher()
   }
 
+  @discardableResult
   public func delete<Record>(
     _ record: Record
   ) throws -> Bool

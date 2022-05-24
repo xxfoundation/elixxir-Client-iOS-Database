@@ -19,20 +19,23 @@ public struct GroupInfo: Identifiable, Equatable, Decodable {
 }
 
 extension GroupInfo {
-  public typealias Fetch = (Query, Order) throws -> [GroupInfo]
-  public typealias FetchPublisher = (Query, Order) -> AnyPublisher<[GroupInfo], Error>
+  public typealias Fetch = (Query) throws -> [GroupInfo]
+  public typealias FetchPublisher = (Query) -> AnyPublisher<[GroupInfo], Error>
 
   public struct Query: Equatable {
-    public static let all = Query()
+    public enum SortOrder: Equatable {
+      case groupName(desc: Bool = false)
+    }
 
-    public init(groupId: Group.ID? = nil) {
+    public init(
+      groupId: Group.ID? = nil,
+      sortBy: SortOrder
+    ) {
       self.groupId = groupId
+      self.sortBy = sortBy
     }
 
     public var groupId: Group.ID?
-  }
-
-  public enum Order: Equatable {
-    case groupName(desc: Bool = false)
+    public var sortBy: SortOrder
   }
 }

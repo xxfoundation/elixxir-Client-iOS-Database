@@ -1,7 +1,7 @@
 # xx-client-ios-db
 
 ![Swift 5.6](https://img.shields.io/badge/swift-5.6-orange.svg)
-![platform iOS](https://img.shields.io/badge/platform-iOS-blue.svg)
+![platform iOS macOS](https://img.shields.io/badge/platform-iOS_macOS-blue.svg)
 
 Database layer for xx Messenger iOS app.
 

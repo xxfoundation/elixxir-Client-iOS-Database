@@ -4,7 +4,7 @@ import XCTest
 import XXModels
 @testable import XXDatabase
 
-final class ContactTests: XCTestCase {
+final class ContactGRDBTests: XCTestCase {
   var db: Database!
 
   override func setUp() async throws {
@@ -16,7 +16,7 @@ final class ContactTests: XCTestCase {
   }
 
   func testDatabaseOperations() throws {
-    let fetch: Contact.Fetch = db.fetch(Contact.request(_:_:))
+    let fetch: Contact.Fetch = db.fetch(Contact.request(_:))
     let insert: Contact.Insert = db.insert(_:)
     let update: Contact.Update = db.update(_:)
     let save: Contact.Save = db.save(_:)
@@ -24,23 +24,23 @@ final class ContactTests: XCTestCase {
 
     // Insert contact A:
 
-    let contactA = Contact.stub(1)
+    let contactA = Contact.stub("A")
     XCTAssertNoDifference(try insert(contactA), contactA)
 
     // Insert contact B:
 
-    let contactB = Contact.stub(2)
+    let contactB = Contact.stub("B")
     XCTAssertNoDifference(try insert(contactB), contactB)
 
     // Insert contact C:
 
-    let contactC = Contact.stub(3)
+    let contactC = Contact.stub("C")
     XCTAssertNoDifference(try insert(contactC), contactC)
 
     // Fetch contacts:
 
     XCTAssertNoDifference(
-      try fetch(.all, .username()),
+      try fetch(Contact.Query(sortBy: .username())),
       [contactA, contactB, contactC]
     )
 
@@ -53,7 +53,7 @@ final class ContactTests: XCTestCase {
     // Fetch contacts:
 
     XCTAssertNoDifference(
-      try fetch(.all, .username(desc: true)),
+      try fetch(Contact.Query(sortBy: .username(desc: true))),
       [contactC, updatedContactB, contactA]
     )
 
@@ -64,7 +64,7 @@ final class ContactTests: XCTestCase {
     // Fetch contacts:
 
     XCTAssertNoDifference(
-      try fetch(.all, .username()),
+      try fetch(Contact.Query(sortBy: .username())),
       [contactA, updatedContactB]
     )
 
@@ -77,25 +77,25 @@ final class ContactTests: XCTestCase {
     // Fetch contacts:
 
     XCTAssertNoDifference(
-      try fetch(.all, .username()),
+      try fetch(Contact.Query(sortBy: .username())),
       [updatedContactA, updatedContactB]
     )
 
     // Save new contact D:
 
-    let contactD = Contact.stub(4)
+    let contactD = Contact.stub("D")
     XCTAssertNoDifference(try save(contactD), contactD)
 
     // Fetch contacts:
 
     XCTAssertNoDifference(
-      try fetch(.all, .username()),
+      try fetch(Contact.Query(sortBy: .username())),
       [updatedContactA, updatedContactB, contactD]
     )
   }
 
   func testDatabaseOperationPublishers() {
-    let fetch: Contact.FetchPublisher = db.fetchPublisher(Contact.request(_:_:))
+    let fetch: Contact.FetchPublisher = db.fetchPublisher(Contact.request(_:))
     let insert: Contact.InsertPublisher = db.insertPublisher(_:)
     let update: Contact.UpdatePublisher = db.updatePublisher(_:)
     let save: Contact.SavePublisher = db.savePublisher(_:)
@@ -110,7 +110,7 @@ final class ContactTests: XCTestCase {
     // Subscribe to fetch publisher:
 
     fetchAssertion.expectValue()
-    fetchAssertion.subscribe(to: fetch(.all, .username()))
+    fetchAssertion.subscribe(to: fetch(Contact.Query(sortBy: .username())))
     fetchAssertion.waitForValues()
 
     XCTAssertNoDifference(fetchAssertion.receivedValues(), [[]])
@@ -118,7 +118,7 @@ final class ContactTests: XCTestCase {
 
     // Insert contact A:
 
-    let contactA = Contact.stub(1)
+    let contactA = Contact.stub("A")
     insertAssertion.expectValue()
     insertAssertion.expectCompletion()
     fetchAssertion.expectValue()
@@ -134,7 +134,7 @@ final class ContactTests: XCTestCase {
 
     // Insert contact B:
 
-    let contactB = Contact.stub(2)
+    let contactB = Contact.stub("B")
     insertAssertion.expectValue()
     insertAssertion.expectCompletion()
     fetchAssertion.expectValue()
@@ -150,7 +150,7 @@ final class ContactTests: XCTestCase {
 
     // Insert contact C:
 
-    let contactC = Contact.stub(3)
+    let contactC = Contact.stub("C")
     insertAssertion.expectValue()
     insertAssertion.expectCompletion()
     fetchAssertion.expectValue()
@@ -215,7 +215,7 @@ final class ContactTests: XCTestCase {
 
     // Save new contact D:
 
-    let contactD = Contact.stub(4)
+    let contactD = Contact.stub("D")
     saveAssertion.expectValue()
     saveAssertion.expectCompletion()
     fetchAssertion.expectValue()

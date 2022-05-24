@@ -10,13 +10,11 @@ extension GroupMember: FetchableRecord, PersistableRecord {
   enum Association {
     static let group = belongsTo(
       Group.self,
-      key: "group",
       using: .init([Column.groupId], to: [Group.Column.id])
     )
 
     static let contact = belongsTo(
       Contact.self,
-      key: "contact",
       using: .init([Column.contactId], to: [Contact.Column.id])
     )
   }

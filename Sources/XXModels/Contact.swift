@@ -2,8 +2,10 @@ import Combine
 import Foundation
 
 public struct Contact: Identifiable, Equatable, Codable {
+  public typealias ID = Data
+
   public init(
-    id: Data,
+    id: ID,
     marshaled: Data? = nil,
     username: String? = nil,
     email: String? = nil,
@@ -18,7 +20,7 @@ public struct Contact: Identifiable, Equatable, Codable {
     self.nickname = nickname
   }
 
-  public var id: Data
+  public var id: ID
   public var marshaled: Data?
   public var username: String?
   public var email: String?
@@ -27,8 +29,8 @@ public struct Contact: Identifiable, Equatable, Codable {
 }
 
 extension Contact {
-  public typealias Fetch = (Query, Order) throws -> [Contact]
-  public typealias FetchPublisher = (Query, Order) -> AnyPublisher<[Contact], Error>
+  public typealias Fetch = (Query) throws -> [Contact]
+  public typealias FetchPublisher = (Query) -> AnyPublisher<[Contact], Error>
   public typealias Insert = (Contact) throws -> Contact
   public typealias InsertPublisher = (Contact) -> AnyPublisher<Contact, Error>
   public typealias Update = (Contact) throws -> Contact
@@ -39,10 +41,14 @@ extension Contact {
   public typealias DeletePublisher = (Contact) -> AnyPublisher<Bool, Error>
 
   public struct Query: Equatable {
-    public static let all = Query()
-  }
+    public enum SortOrder: Equatable {
+      case username(desc: Bool = false)
+    }
 
-  public enum Order: Equatable {
-    case username(desc: Bool = false)
+    public init(sortBy: SortOrder) {
+      self.sortBy = sortBy
+    }
+
+    public var sortBy: SortOrder
   }
 }

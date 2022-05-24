@@ -7,6 +7,7 @@ extension Message: FetchableRecord, MutablePersistableRecord {
     case networkId
     case senderId
     case recipientId
+    case groupId
     case date
     case isUnread
     case text
@@ -14,12 +15,12 @@ extension Message: FetchableRecord, MutablePersistableRecord {
 
   public static let databaseTableName = "messages"
 
-  public static func request(_ query: Query, _ order: Order) -> QueryInterfaceRequest<Message> {
+  public static func request(_ query: Query) -> QueryInterfaceRequest<Message> {
     var request = Message.all()
 
     switch query.chat {
     case .group(let groupId):
-      request = request.filter(Column.recipientId == groupId)
+      request = request.filter(Column.groupId == groupId)
 
     case .direct(let id1, let id2):
       request = request.filter(
@@ -28,7 +29,7 @@ extension Message: FetchableRecord, MutablePersistableRecord {
       )
     }
 
-    switch order {
+    switch query.sortBy {
     case .date(desc: false):
       request = request.order(Column.date)
 

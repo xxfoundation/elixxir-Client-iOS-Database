@@ -2,15 +2,15 @@ import Foundation
 
 public struct GroupMember: Equatable, Codable {
   public init(
-    groupId: Data,
-    contactId: Data
+    groupId: Group.ID,
+    contactId: Contact.ID
   ) {
     self.groupId = groupId
     self.contactId = contactId
   }
 
-  public var groupId: Data
-  public var contactId: Data
+  public var groupId: Group.ID
+  public var contactId: Contact.ID
 }
 
 extension GroupMember {

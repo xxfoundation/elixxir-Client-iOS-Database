@@ -3,7 +3,7 @@ import XCTest
 import XXModels
 @testable import XXDatabase
 
-final class GroupMemberTests: XCTestCase {
+final class GroupMemberGRDBTests: XCTestCase {
   var db: Database!
 
   override func setUp() async throws {
@@ -22,17 +22,17 @@ final class GroupMemberTests: XCTestCase {
       try db.fetch(GroupMember.all())
     }
 
-    let contactA = Contact.stub(1)
-    let contactB = Contact.stub(2)
-    let contactC = Contact.stub(3)
-    let groupA = Group.stub(1, leaderId: contactA.id)
-    let groupB = Group.stub(2, leaderId: contactB.id)
+    let contactA = Contact.stub("A")
+    let contactB = Contact.stub("B")
+    let contactC = Contact.stub("C")
+    let groupA = Group.stub("A", leaderId: contactA.id, createdAt: .stub(1))
+    let groupB = Group.stub("B", leaderId: contactB.id, createdAt: .stub(2))
 
-    _ = try db.save(contactA)
-    _ = try db.save(contactB)
-    _ = try db.save(contactC)
-    _ = try db.save(groupA)
-    _ = try db.save(groupB)
+    try db.save(contactA)
+    try db.save(contactB)
+    try db.save(contactC)
+    try db.save(groupA)
+    try db.save(groupB)
 
     // Add contacts A and B as members of group A:
 
@@ -68,7 +68,7 @@ final class GroupMemberTests: XCTestCase {
 
     // Delete contact B (belonging to groups A and B):
 
-    _ = try db.delete(contactB)
+    try db.delete(contactB)
 
     XCTAssertNoDifference(try fetchAll(), [
       GroupMember(groupId: groupA.id, contactId: contactA.id),
@@ -76,7 +76,7 @@ final class GroupMemberTests: XCTestCase {
 
     // Delete group B:
 
-    _ = try db.delete(groupB)
+    try db.delete(groupB)
 
     XCTAssertNoDifference(try fetchAll(), [
       GroupMember(groupId: groupA.id, contactId: contactA.id),
@@ -84,7 +84,7 @@ final class GroupMemberTests: XCTestCase {
 
     // Delete group A:
 
-    _ = try db.delete(groupA)
+    try db.delete(groupA)
 
     XCTAssertNoDifference(try fetchAll(), [])
   }

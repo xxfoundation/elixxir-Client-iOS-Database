@@ -17,6 +17,7 @@ let package = Package(
   name: "xx-client-ios-db",
   platforms: [
     .iOS(.v14),
+    .macOS(.v12),
   ],
   products: [
     .library(
