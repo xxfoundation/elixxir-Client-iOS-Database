@@ -76,6 +76,7 @@ extension Database {
     }
   }
 
+  @discardableResult
   public func insert<Record>(
     _ record: Record
   ) throws -> Record
@@ -98,6 +99,7 @@ extension Database {
     .eraseToAnyPublisher()
   }
 
+  @discardableResult
   public func update<Record>(
     _ record: Record
   ) throws -> Record
@@ -124,6 +126,7 @@ extension Database {
     .eraseToAnyPublisher()
   }
 
+  @discardableResult
   public func save<Record>(
     _ record: Record
   ) throws -> Record
@@ -146,6 +149,7 @@ extension Database {
     .eraseToAnyPublisher()
   }
 
+  @discardableResult
   public func delete<Record>(
     _ record: Record
   ) throws -> Bool
