@@ -23,12 +23,12 @@ public struct Group: Identifiable, Equatable, Codable {
 }
 
 extension Group {
-  public typealias Fetch = (Query) throws -> [Group]
-  public typealias FetchPublisher = (Query) -> AnyPublisher<[Group], Error>
-  public typealias Save = (Group) throws -> Group
-  public typealias SavePublisher = (Group) -> AnyPublisher<Group, Error>
-  public typealias Delete = (Group) throws -> Bool
-  public typealias DeletePublisher = (Group) -> AnyPublisher<Bool, Error>
+  public typealias Fetch = XXModels.Fetch<Group, Query>
+  public typealias FetchPublisher = XXModels.FetchPublisher<Group, Query>
+  public typealias Save = XXModels.Save<Group>
+  public typealias SavePublisher = XXModels.SavePublisher<Group>
+  public typealias Delete = XXModels.Delete<Group>
+  public typealias DeletePublisher = XXModels.DeletePublisher<Group>
 
   public struct Query: Equatable {
     public enum SortOrder: Equatable {

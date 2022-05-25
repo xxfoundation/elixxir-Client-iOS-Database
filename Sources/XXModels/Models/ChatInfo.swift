@@ -36,8 +36,8 @@ public enum ChatInfo: Identifiable, Equatable, Codable {
 }
 
 extension ChatInfo {
-  public typealias Fetch = (Query) throws -> [ChatInfo]
-  public typealias FetchPublisher = (Query) -> AnyPublisher<[ChatInfo], Error>
+  public typealias Fetch = XXModels.Fetch<ChatInfo, Query>
+  public typealias FetchPublisher = XXModels.FetchPublisher<ChatInfo, Query>
 
   public struct Query: Equatable {
     public init(userId: Contact.ID) {

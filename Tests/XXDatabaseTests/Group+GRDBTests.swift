@@ -15,8 +15,8 @@ final class GroupGRDBTests: XCTestCase {
   }
 
   func testSavingAndDeleting() throws {
-    let save: Group.Save = db.save(_:)
-    let delete: Group.Delete = db.delete(_:)
+    let save: Group.Save = db.save()
+    let delete: Group.Delete = db.delete()
 
     let contactA = Contact.stub("A")
     let contactB = Contact.stub("B")

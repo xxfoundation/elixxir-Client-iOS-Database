@@ -17,10 +17,10 @@ final class ContactGRDBTests: XCTestCase {
 
   func testDatabaseOperations() throws {
     let fetch: Contact.Fetch = db.fetch(Contact.request(_:))
-    let insert: Contact.Insert = db.insert(_:)
-    let update: Contact.Update = db.update(_:)
-    let save: Contact.Save = db.save(_:)
-    let delete: Contact.Delete = db.delete(_:)
+    let insert: Contact.Insert = db.insert()
+    let update: Contact.Update = db.update()
+    let save: Contact.Save = db.save()
+    let delete: Contact.Delete = db.delete()
 
     // Insert contact A:
 
@@ -96,10 +96,10 @@ final class ContactGRDBTests: XCTestCase {
 
   func testDatabaseOperationPublishers() {
     let fetch: Contact.FetchPublisher = db.fetchPublisher(Contact.request(_:))
-    let insert: Contact.InsertPublisher = db.insertPublisher(_:)
-    let update: Contact.UpdatePublisher = db.updatePublisher(_:)
-    let save: Contact.SavePublisher = db.savePublisher(_:)
-    let delete: Contact.DeletePublisher = db.deletePublisher(_:)
+    let insert: Contact.InsertPublisher = db.insertPublisher()
+    let update: Contact.UpdatePublisher = db.updatePublisher()
+    let save: Contact.SavePublisher = db.savePublisher()
+    let delete: Contact.DeletePublisher = db.deletePublisher()
 
     let fetchAssertion = PublisherAssertion<[Contact], Error>()
     let insertAssertion = PublisherAssertion<Contact, Error>()

@@ -16,7 +16,7 @@ final class MessageGRDBTests: XCTestCase {
 
   func testFetchingDirectMessages() throws {
     let fetch: Message.Fetch = db.fetch(Message.request(_:))
-    let save: Message.Save = db.save(_:)
+    let save: Message.Save = db.save()
 
     let contactA = Contact.stub("A")
     let contactB = Contact.stub("B")
@@ -86,7 +86,7 @@ final class MessageGRDBTests: XCTestCase {
 
   func testFetchingGroupMessages() throws {
     let fetch: Message.Fetch = db.fetch(Message.request(_:))
-    let save: Message.Save = db.save(_:)
+    let save: Message.Save = db.save()
 
     let contactA = Contact.stub("A")
     let contactB = Contact.stub("B")
