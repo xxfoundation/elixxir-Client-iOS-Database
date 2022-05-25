@@ -38,10 +38,10 @@ public struct GroupInfo: Identifiable, Equatable, Decodable {
 }
 
 extension GroupInfo {
-  /// Fetch group infos
+  /// Fetch group infos operation
   public typealias Fetch = XXModels.Fetch<GroupInfo, Query>
 
-  /// Fetch group infos - publisher
+  /// Fetch group infos operation publisher
   public typealias FetchPublisher = XXModels.FetchPublisher<GroupInfo, Query>
 
   /// Query used for fetching group infos

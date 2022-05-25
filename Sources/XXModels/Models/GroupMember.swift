@@ -23,9 +23,9 @@ public struct GroupMember: Equatable, Codable {
 }
 
 extension GroupMember {
-  /// Save group-member relation
+  /// Save group-member relation operation
   public typealias Save = XXModels.Save<GroupMember>
 
-  /// Delete group-member relation
+  /// Delete group-member relation operation
   public typealias Delete = XXModels.Delete<GroupMember>
 }

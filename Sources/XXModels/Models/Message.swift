@@ -68,16 +68,16 @@ public struct Message: Identifiable, Equatable, Codable {
 }
 
 extension Message {
-  /// Fetch messages
+  /// Fetch messages operation
   public typealias Fetch = XXModels.Fetch<Message, Query>
 
-  /// Fetch messages - publisher
+  /// Fetch messages operation publisher
   public typealias FetchPublisher = XXModels.FetchPublisher<Message, Query>
 
-  /// Save message
+  /// Save message operation
   public typealias Save = XXModels.Save<Message>
 
-  /// Delete message
+  /// Delete message operation
   public typealias Delete = XXModels.Delete<Message>
 
   /// Query used for fetching messages

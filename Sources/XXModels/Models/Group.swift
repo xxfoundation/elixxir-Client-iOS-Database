@@ -39,22 +39,22 @@ public struct Group: Identifiable, Equatable, Codable {
 }
 
 extension Group {
-  /// Fetch groups
+  /// Fetch groups operation
   public typealias Fetch = XXModels.Fetch<Group, Query>
 
-  /// Fetch groups - publisher
+  /// Fetch groups operation publisher
   public typealias FetchPublisher = XXModels.FetchPublisher<Group, Query>
 
-  /// Save (insert new or update existing) group
+  /// Save (insert new or update existing) group operation
   public typealias Save = XXModels.Save<Group>
 
-  /// Save (insert new or update existing) group - publisher
+  /// Save (insert new or update existing) group operation publisher
   public typealias SavePublisher = XXModels.SavePublisher<Group>
 
-  /// Delete group
+  /// Delete group operation
   public typealias Delete = XXModels.Delete<Group>
 
-  /// Delete group - publisher
+  /// Delete group operation publisher
   public typealias DeletePublisher = XXModels.DeletePublisher<Group>
 
   /// Query used for fetching groups

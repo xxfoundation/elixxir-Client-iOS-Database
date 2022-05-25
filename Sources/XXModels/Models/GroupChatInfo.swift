@@ -37,10 +37,10 @@ public struct GroupChatInfo: Identifiable, Equatable, Codable {
 }
 
 extension GroupChatInfo {
-  /// Fetch group chat infos
+  /// Fetch group chat infos operation
   public typealias Fetch = XXModels.Fetch<GroupChatInfo, Query>
 
-  /// Fetch group chat infos publisher
+  /// Fetch group chat infos operation publisher
   public typealias FetchPublisher = XXModels.FetchPublisher<GroupChatInfo, Query>
 
   /// Query used for fetching group chat infos

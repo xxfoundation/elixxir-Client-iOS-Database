@@ -53,10 +53,10 @@ public enum ChatInfo: Identifiable, Equatable, Codable {
 }
 
 extension ChatInfo {
-  /// Fetch chat infos
+  /// Fetch chat infos operation
   public typealias Fetch = XXModels.Fetch<ChatInfo, Query>
 
-  /// Fetch chat infos - publisher
+  /// Fetch chat infos operation publisher
   public typealias FetchPublisher = XXModels.FetchPublisher<ChatInfo, Query>
 
   /// Query used for fetching chat infos

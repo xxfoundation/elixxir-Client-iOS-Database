@@ -37,10 +37,10 @@ public struct ContactChatInfo: Identifiable, Equatable, Codable {
 }
 
 extension ContactChatInfo {
-  /// Fetch contact chat infos
+  /// Fetch contact chat infos operation
   public typealias Fetch = XXModels.Fetch<ContactChatInfo, Query>
 
-  /// Fetch contact chat infos publisher
+  /// Fetch contact chat infos operation publisher
   public typealias FetchPublisher = XXModels.FetchPublisher<ContactChatInfo, Query>
 
   /// Query used for fetching chat infos

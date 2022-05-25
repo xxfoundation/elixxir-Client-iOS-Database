@@ -51,34 +51,34 @@ public struct Contact: Identifiable, Equatable, Codable {
 }
 
 extension Contact {
-  /// Fetch contacts
+  /// Fetch contacts operation
   public typealias Fetch = XXModels.Fetch<Contact, Query>
 
-  /// Fetch contacts - publisher
+  /// Fetch contacts operation publisher
   public typealias FetchPublisher = XXModels.FetchPublisher<Contact, Query>
 
-  /// Insert new contact
+  /// Insert new contact operation
   public typealias Insert = XXModels.Insert<Contact>
 
-  /// Insert new contact - publisher
+  /// Insert new contact operation publisher
   public typealias InsertPublisher = XXModels.InsertPublisher<Contact>
 
-  /// Update existing contact
+  /// Update existing contact operation
   public typealias Update = XXModels.Update<Contact>
 
-  /// Update existing contact - publisher
+  /// Update existing contact operation publisher
   public typealias UpdatePublisher = XXModels.UpdatePublisher<Contact>
 
-  /// Save (insert new or update existing) contact
+  /// Save (insert new or update existing) contact operation
   public typealias Save = XXModels.Save<Contact>
 
-  /// Save (insert new or update existing) contact - publisher
+  /// Save (insert new or update existing) contact operation publisher
   public typealias SavePublisher = XXModels.SavePublisher<Contact>
 
-  /// Delete contact
+  /// Delete contact operation
   public typealias Delete = XXModels.Delete<Contact>
 
-  /// Delete contact - publisher
+  /// Delete contact operation publisher
   public typealias DeletePublisher = XXModels.DeletePublisher<Contact>
 
   /// Query used for fetching contacts
