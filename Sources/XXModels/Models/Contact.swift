@@ -15,13 +15,16 @@ public struct Contact: Identifiable, Equatable, Codable {
   ///   - email: Contact email address
   ///   - phone: Contact phone number
   ///   - nickname: Contact nickname
+  ///   - connected: Boolean value indicating if secure channel connection was established with
+  ///     the contact
   public init(
     id: ID,
     marshaled: Data? = nil,
     username: String? = nil,
     email: String? = nil,
     phone: String? = nil,
-    nickname: String? = nil
+    nickname: String? = nil,
+    connected: Bool
   ) {
     self.id = id
     self.marshaled = marshaled
@@ -29,6 +32,7 @@ public struct Contact: Identifiable, Equatable, Codable {
     self.email = email
     self.phone = phone
     self.nickname = nickname
+    self.connected = connected
   }
 
   /// Unique identifier
@@ -48,6 +52,9 @@ public struct Contact: Identifiable, Equatable, Codable {
 
   /// Contact nickname
   public var nickname: String?
+
+  /// Boolean value indicating if secure channel connection was established with the contact
+  public var connected: Bool
 }
 
 extension Contact {

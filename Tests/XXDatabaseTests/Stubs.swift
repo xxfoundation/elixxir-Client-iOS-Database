@@ -8,14 +8,18 @@ extension Date {
 }
 
 extension Contact {
-  static func stub(_ id: String) -> Contact {
+  static func stub(
+    _ id: String,
+    connected: Bool = false
+  ) -> Contact {
     Contact(
       id: "contact-id-\(id)".data(using: .utf8)!,
       marshaled: "contact-marshaled-\(id)".data(using: .utf8)!,
       username: "contact-username-\(id)",
       email: "contact-\(id)@elixxir.io",
       phone: "contact-phone-\(id)",
-      nickname: "contact-nickname-\(id)"
+      nickname: "contact-nickname-\(id)",
+      connected: connected
     )
   }
 }
