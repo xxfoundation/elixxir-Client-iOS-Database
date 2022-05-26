@@ -125,12 +125,12 @@ extension Contact {
     ///     If set to `false`, only unauthorized contacts will be fetched.
     ///     If `nil` (default), the filter is not used.
     ///   - authRequest: Filter contacts by auth request status.
-    ///     If set, only contacts with provided auth request status will be fetched.
+    ///     If set, only contacts with any of the provided auth request statuses will be fetched.
     ///     If `nil` (default), the filter is not used.
     ///   - sortBy: Sort order
     public init(
       authorized: Bool? = nil,
-      authRequest: AuthRequest? = nil,
+      authRequest: Set<AuthRequest>? = nil,
       sortBy: SortOrder
     ) {
       self.authorized = authorized
@@ -147,9 +147,9 @@ extension Contact {
 
     /// Filter contacts by auth request status
     ///
-    /// If set, only contacts with provided auth request status will be fetched.
+    /// If set, only contacts with any of the provided auth request statuses will be fetched.
     /// If `nil`, the filter is not used.
-    public var authRequest: AuthRequest?
+    public var authRequest: Set<AuthRequest>?
 
     /// Contacts sort order
     public var sortBy: SortOrder

@@ -23,7 +23,7 @@ extension Contact: FetchableRecord, PersistableRecord {
     }
 
     if let authRequest = query.authRequest {
-      request = request.filter(Column.authRequest == authRequest.rawValue)
+      request = request.filter(Set(authRequest.map(\.rawValue)).contains(Column.authRequest))
     }
 
     switch query.sortBy {

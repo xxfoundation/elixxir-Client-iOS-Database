@@ -292,7 +292,7 @@ final class ContactGRDBTests: XCTestCase {
     // Fetch contacts with unknown auth request status:
 
     XCTAssertNoDifference(try fetch(Contact.Query(
-      authRequest: .unknown,
+      authRequest: [.unknown],
       sortBy: .username()
     )), [
       contactA,
@@ -302,7 +302,7 @@ final class ContactGRDBTests: XCTestCase {
     // Fetch contacts with auth request sent:
 
     XCTAssertNoDifference(try fetch(Contact.Query(
-      authRequest: .sent,
+      authRequest: [.sent],
       sortBy: .username()
     )), [
       contactB,
@@ -312,10 +312,22 @@ final class ContactGRDBTests: XCTestCase {
     // Fetch contacts with auth request received:
 
     XCTAssertNoDifference(try fetch(Contact.Query(
-      authRequest: .received,
+      authRequest: [.received],
       sortBy: .username()
     )), [
       contactC,
+      contactF,
+    ])
+
+    // Fetch contact with auth request sent OR received:
+
+    XCTAssertNoDifference(try fetch(Contact.Query(
+      authRequest: [.sent, .received],
+      sortBy: .username()
+    )), [
+      contactB,
+      contactC,
+      contactE,
       contactF,
     ])
 
