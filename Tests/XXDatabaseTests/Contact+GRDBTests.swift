@@ -276,4 +276,43 @@ final class ContactGRDBTests: XCTestCase {
       contactD,
     ])
   }
+
+  func testFetchingAuthRequest() throws {
+    let fetch: Contact.Fetch = db.fetch(Contact.request(_:))
+
+    // Mock up contacts:
+
+    let contactA = try db.save(Contact.stub("A", authRequest: nil))
+    let contactB = try db.save(Contact.stub("B", authRequest: .sent))
+    let contactC = try db.save(Contact.stub("C", authRequest: .received))
+
+    // Fetch contacts with auth request sent:
+
+    XCTAssertNoDifference(try fetch(Contact.Query(
+      authRequest: .sent,
+      sortBy: .username()
+    )), [
+      contactB,
+    ])
+
+    // Fetch contacts with auth request received:
+
+    XCTAssertNoDifference(try fetch(Contact.Query(
+      authRequest: .received,
+      sortBy: .username()
+    )), [
+      contactC,
+    ])
+
+    // Fetch all contacts:
+
+    XCTAssertNoDifference(try fetch(Contact.Query(
+      authRequest: nil,
+      sortBy: .username()
+    )), [
+      contactA,
+      contactB,
+      contactC,
+    ])
+  }
 }

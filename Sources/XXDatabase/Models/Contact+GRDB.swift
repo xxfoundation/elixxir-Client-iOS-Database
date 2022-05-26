@@ -10,6 +10,7 @@ extension Contact: FetchableRecord, PersistableRecord {
     case phone
     case nickname
     case authorized
+    case authRequest
   }
 
   public static let databaseTableName = "contacts"
@@ -19,6 +20,10 @@ extension Contact: FetchableRecord, PersistableRecord {
 
     if let authorized = query.authorized {
       request = request.filter(Column.authorized == authorized)
+    }
+
+    if let authRequest = query.authRequest {
+      request = request.filter(Column.authRequest == authRequest.rawValue)
     }
 
     switch query.sortBy {

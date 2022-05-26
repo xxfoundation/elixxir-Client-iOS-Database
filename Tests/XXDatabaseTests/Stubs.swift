@@ -10,7 +10,8 @@ extension Date {
 extension Contact {
   static func stub(
     _ id: String,
-    authorized: Bool = false
+    authorized: Bool = false,
+    authRequest: AuthRequest? = nil
   ) -> Contact {
     Contact(
       id: "contact-id-\(id)".data(using: .utf8)!,
@@ -19,7 +20,8 @@ extension Contact {
       email: "contact-\(id)@elixxir.io",
       phone: "contact-phone-\(id)",
       nickname: "contact-nickname-\(id)",
-      authorized: authorized
+      authorized: authorized,
+      authRequest: authRequest
     )
   }
 }

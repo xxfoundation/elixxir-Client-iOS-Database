@@ -6,6 +6,15 @@ public struct Contact: Identifiable, Equatable, Codable {
   /// Unique identifier of a contact
   public typealias ID = Data
 
+  /// Represents status of contact's auth request
+  public enum AuthRequest: String, Equatable, Codable {
+    /// Auth request was received from the contact
+    case received
+
+    /// Auth request was sent to the contact
+    case sent
+  }
+
   /// Instantiate contact representation
   ///
   /// - Parameters:
@@ -17,6 +26,7 @@ public struct Contact: Identifiable, Equatable, Codable {
   ///   - nickname: Contact nickname (defaults to `nil`)
   ///   - authorized: Boolean value indicating if connection with the contact is authorized
   ///     (defaults to `false`)
+  ///   - authRequest: Status of contact's auth request (defaults to `nil`)
   public init(
     id: ID,
     marshaled: Data? = nil,
@@ -24,7 +34,8 @@ public struct Contact: Identifiable, Equatable, Codable {
     email: String? = nil,
     phone: String? = nil,
     nickname: String? = nil,
-    authorized: Bool = false
+    authorized: Bool = false,
+    authRequest: AuthRequest? = nil
   ) {
     self.id = id
     self.marshaled = marshaled
@@ -33,6 +44,7 @@ public struct Contact: Identifiable, Equatable, Codable {
     self.phone = phone
     self.nickname = nickname
     self.authorized = authorized
+    self.authRequest = authRequest
   }
 
   /// Unique identifier
@@ -55,6 +67,9 @@ public struct Contact: Identifiable, Equatable, Codable {
 
   /// Boolean value indicating if connection with the contact is authorized
   public var authorized: Bool
+
+  /// Status of contact's auth request
+  public var authRequest: AuthRequest?
 }
 
 extension Contact {
@@ -106,12 +121,17 @@ extension Contact {
     ///     If set to `true`, only authorized contacts will be fetched.
     ///     If set to `false`, only unauthorized contacts will be fetched.
     ///     If `nil` (default), the filter is not used.
+    ///   - authRequest: Filter contacts by auth request status.
+    ///     If set, only contacts with provided auth request status will be fetched.
+    ///     If `nil` (default), the filter is not used.
     ///   - sortBy: Sort order
     public init(
       authorized: Bool? = nil,
+      authRequest: AuthRequest? = nil,
       sortBy: SortOrder
     ) {
       self.authorized = authorized
+      self.authRequest = authRequest
       self.sortBy = sortBy
     }
 
@@ -121,6 +141,12 @@ extension Contact {
     /// If set to `false`, only unauthorized contacts will be fetched.
     /// If `nil`, the filter is not used.
     public var authorized: Bool?
+
+    /// Filter contacts by auth request status
+    ///
+    /// If set, only contacts with provided auth request status will be fetched.
+    /// If `nil`, the filter is not used.
+    public var authRequest: AuthRequest?
 
     /// Contacts sort order
     public var sortBy: SortOrder
