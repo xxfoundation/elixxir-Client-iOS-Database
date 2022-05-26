@@ -1,8 +1,18 @@
+/// Model fetch operation
+///
+/// - Takes `Query` that should be used for the fetch.
+/// - Returns array of fetched `Model`s.
+/// - Throws `Error` on operation failure.
 public struct Fetch<Model, Query> {
+  /// Instantiate operation
+  ///
+  /// - Parameters:
+  ///   - run: Closure that performs the operation
   public init(run: @escaping (Query) throws -> [Model]) {
     self.run = run
   }
 
+  /// Closure that performs the operation
   public var run: (Query) throws -> [Model]
 
   @discardableResult
