@@ -10,11 +10,11 @@ public struct Contact: Identifiable, Equatable, Codable {
   ///
   /// - Parameters:
   ///   - id: Unique identifier
-  ///   - marshaled: Marshaled contact data
-  ///   - username: Contact username
-  ///   - email: Contact email address
-  ///   - phone: Contact phone number
-  ///   - nickname: Contact nickname
+  ///   - marshaled: Marshaled contact data (defaults to `nil`)
+  ///   - username: Contact username (defaults to `nil`)
+  ///   - email: Contact email address (defaults to `nil`)
+  ///   - phone: Contact phone number (defaults to `nil`)
+  ///   - nickname: Contact nickname (defaults to `nil`)
   ///   - authorized: Boolean value indicating if connection with the contact is authorized
   public init(
     id: ID,
