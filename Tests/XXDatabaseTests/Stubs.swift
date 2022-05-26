@@ -11,7 +11,7 @@ extension Contact {
   static func stub(
     _ id: String,
     authorized: Bool = false,
-    authRequest: AuthRequest? = nil
+    authRequest: AuthRequest = .unknown
   ) -> Contact {
     Contact(
       id: "contact-id-\(id)".data(using: .utf8)!,

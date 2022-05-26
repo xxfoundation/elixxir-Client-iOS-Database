@@ -8,6 +8,9 @@ public struct Contact: Identifiable, Equatable, Codable {
 
   /// Represents status of contact's auth request
   public enum AuthRequest: String, Equatable, Codable {
+    /// Unknown auth request status
+    case unknown
+
     /// Auth request was received from the contact
     case received
 
@@ -26,7 +29,7 @@ public struct Contact: Identifiable, Equatable, Codable {
   ///   - nickname: Contact nickname (defaults to `nil`)
   ///   - authorized: Boolean value indicating if connection with the contact is authorized
   ///     (defaults to `false`)
-  ///   - authRequest: Status of contact's auth request (defaults to `nil`)
+  ///   - authRequest: Status of contact's auth request (defaults to `.unknown`)
   public init(
     id: ID,
     marshaled: Data? = nil,
@@ -35,7 +38,7 @@ public struct Contact: Identifiable, Equatable, Codable {
     phone: String? = nil,
     nickname: String? = nil,
     authorized: Bool = false,
-    authRequest: AuthRequest? = nil
+    authRequest: AuthRequest = .unknown
   ) {
     self.id = id
     self.marshaled = marshaled
@@ -69,7 +72,7 @@ public struct Contact: Identifiable, Equatable, Codable {
   public var authorized: Bool
 
   /// Status of contact's auth request
-  public var authRequest: AuthRequest?
+  public var authRequest: AuthRequest
 }
 
 extension Contact {

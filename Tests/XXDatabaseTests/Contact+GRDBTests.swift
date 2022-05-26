@@ -282,9 +282,22 @@ final class ContactGRDBTests: XCTestCase {
 
     // Mock up contacts:
 
-    let contactA = try db.save(Contact.stub("A", authRequest: nil))
+    let contactA = try db.save(Contact.stub("A", authRequest: .unknown))
     let contactB = try db.save(Contact.stub("B", authRequest: .sent))
     let contactC = try db.save(Contact.stub("C", authRequest: .received))
+    let contactD = try db.save(Contact.stub("D", authRequest: .unknown))
+    let contactE = try db.save(Contact.stub("E", authRequest: .sent))
+    let contactF = try db.save(Contact.stub("F", authRequest: .received))
+
+    // Fetch contacts with unknown auth request status:
+
+    XCTAssertNoDifference(try fetch(Contact.Query(
+      authRequest: .unknown,
+      sortBy: .username()
+    )), [
+      contactA,
+      contactD,
+    ])
 
     // Fetch contacts with auth request sent:
 
@@ -293,6 +306,7 @@ final class ContactGRDBTests: XCTestCase {
       sortBy: .username()
     )), [
       contactB,
+      contactE,
     ])
 
     // Fetch contacts with auth request received:
@@ -302,9 +316,10 @@ final class ContactGRDBTests: XCTestCase {
       sortBy: .username()
     )), [
       contactC,
+      contactF,
     ])
 
-    // Fetch all contacts:
+    // Fetch all contacts, regardless auth request status:
 
     XCTAssertNoDifference(try fetch(Contact.Query(
       authRequest: nil,
@@ -313,6 +328,9 @@ final class ContactGRDBTests: XCTestCase {
       contactA,
       contactB,
       contactC,
+      contactD,
+      contactE,
+      contactF,
     ])
   }
 }
