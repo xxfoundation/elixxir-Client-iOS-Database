@@ -4,8 +4,7 @@ import XCTest
 final class ChatInfoTests: XCTestCase {
   func testContactChat() {
     let contact = Contact(
-      id: "contact-id".data(using: .utf8)!,
-      authorized: false
+      id: "contact-id".data(using: .utf8)!
     )
 
     let lastMessage = Message(
