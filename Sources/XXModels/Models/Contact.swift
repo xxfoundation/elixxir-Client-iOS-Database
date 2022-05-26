@@ -118,7 +118,7 @@ extension Contact {
     ///
     /// If set to `true`, only authorized contacts will be fetched.
     /// If set to `false`, only unauthorized contacts will be fetched.
-    /// If `nil` (default), the filter is not used.
+    /// If `nil`, the filter is not used.
     public var authorized: Bool?
 
     /// Contacts sort order
