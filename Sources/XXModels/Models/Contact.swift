@@ -16,6 +16,7 @@ public struct Contact: Identifiable, Equatable, Codable {
   ///   - phone: Contact phone number (defaults to `nil`)
   ///   - nickname: Contact nickname (defaults to `nil`)
   ///   - authorized: Boolean value indicating if connection with the contact is authorized
+  ///     (defaults to `false`)
   public init(
     id: ID,
     marshaled: Data? = nil,
@@ -23,7 +24,7 @@ public struct Contact: Identifiable, Equatable, Codable {
     email: String? = nil,
     phone: String? = nil,
     nickname: String? = nil,
-    authorized: Bool
+    authorized: Bool = false
   ) {
     self.id = id
     self.marshaled = marshaled
