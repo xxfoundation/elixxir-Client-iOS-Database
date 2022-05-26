@@ -5,7 +5,7 @@ final class GroupInfoTests: XCTestCase {
   func testId() {
     let leader = Contact(
       id: "contact-id".data(using: .utf8)!,
-      connected: false
+      authorized: false
     )
 
     let group = Group(

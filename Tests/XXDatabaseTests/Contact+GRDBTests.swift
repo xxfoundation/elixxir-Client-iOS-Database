@@ -234,30 +234,30 @@ final class ContactGRDBTests: XCTestCase {
     XCTAssertNil(fetchAssertion.receivedCompletion())
   }
 
-  func testFetchingConnected() throws {
+  func testFetchingAuthorized() throws {
     let fetch: Contact.Fetch = db.fetch(Contact.request(_:))
 
     // Mock up contacts:
 
-    let contactA = try db.save(Contact.stub("A", connected: true))
-    let contactB = try db.save(Contact.stub("B", connected: false))
-    let contactC = try db.save(Contact.stub("C", connected: true))
-    let contactD = try db.save(Contact.stub("D", connected: false))
+    let contactA = try db.save(Contact.stub("A", authorized: true))
+    let contactB = try db.save(Contact.stub("B", authorized: false))
+    let contactC = try db.save(Contact.stub("C", authorized: true))
+    let contactD = try db.save(Contact.stub("D", authorized: false))
 
-    // Fetch connected contacts:
+    // Fetch authorized contacts:
 
     XCTAssertNoDifference(try fetch(Contact.Query(
-      connected: true,
+      authorized: true,
       sortBy: .username()
     )), [
       contactA,
       contactC,
     ])
 
-    // Fetch not connected contacts:
+    // Fetch unauthorized contacts:
 
     XCTAssertNoDifference(try fetch(Contact.Query(
-      connected: false,
+      authorized: false,
       sortBy: .username()
     )), [
       contactB,
@@ -267,7 +267,7 @@ final class ContactGRDBTests: XCTestCase {
     // Fetch all contacts:
 
     XCTAssertNoDifference(try fetch(Contact.Query(
-      connected: nil,
+      authorized: nil,
       sortBy: .username()
     )), [
       contactA,
