@@ -103,11 +103,26 @@ extension Contact {
     ///
     /// - Parameters:
     ///   - sortBy: Sort order
-    public init(sortBy: SortOrder) {
+    ///   - connected: Filter contacts with connected status.
+    ///     If set to `true`, only contacts with `connected` status will be fetched.
+    ///     If set to `false`, only contacts without `connected` status will be fetched.
+    ///     If `nil` (default), the filter is not used.
+    public init(
+      sortBy: SortOrder,
+      connected: Bool? = nil
+    ) {
       self.sortBy = sortBy
+      self.connected = connected
     }
 
     /// Contacts sort order
     public var sortBy: SortOrder
+
+    /// Filter contacts with connected status
+    ///
+    /// If set to `true`, only contacts with `connected` status will be fetched.
+    /// If set to `false`, only contacts without `connected` status will be fetched.
+    /// If `nil`, the filter is not used.
+    public var connected: Bool?
   }
 }

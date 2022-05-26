@@ -233,4 +233,47 @@ final class ContactGRDBTests: XCTestCase {
 
     XCTAssertNil(fetchAssertion.receivedCompletion())
   }
+
+  func testFetchingConnected() throws {
+    let fetch: Contact.Fetch = db.fetch(Contact.request(_:))
+
+    // Mock up contacts:
+
+    let contactA = try db.save(Contact.stub("A", connected: true))
+    let contactB = try db.save(Contact.stub("B", connected: false))
+    let contactC = try db.save(Contact.stub("C", connected: true))
+    let contactD = try db.save(Contact.stub("D", connected: false))
+
+    // Fetch connected contacts:
+
+    XCTAssertNoDifference(try fetch(Contact.Query(
+      sortBy: .username(),
+      connected: true
+    )), [
+      contactA,
+      contactC,
+    ])
+
+    // Fetch not connected contacts:
+
+    XCTAssertNoDifference(try fetch(Contact.Query(
+      sortBy: .username(),
+      connected: false
+    )), [
+      contactB,
+      contactD,
+    ])
+
+    // Fetch all contacts:
+
+    XCTAssertNoDifference(try fetch(Contact.Query(
+      sortBy: .username(),
+      connected: nil
+    )), [
+      contactA,
+      contactB,
+      contactC,
+      contactD,
+    ])
+  }
 }

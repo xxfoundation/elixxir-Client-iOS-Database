@@ -9,6 +9,7 @@ extension Contact: FetchableRecord, PersistableRecord {
     case email
     case phone
     case nickname
+    case connected
   }
 
   public static let databaseTableName = "contacts"
@@ -22,6 +23,10 @@ extension Contact: FetchableRecord, PersistableRecord {
 
     case .username(desc: true):
       request = request.order(Column.username.desc)
+    }
+
+    if let connected = query.connected {
+      request = request.filter(Column.connected == connected)
     }
 
     return request
