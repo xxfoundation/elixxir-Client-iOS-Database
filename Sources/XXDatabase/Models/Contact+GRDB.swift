@@ -17,16 +17,16 @@ extension Contact: FetchableRecord, PersistableRecord {
   public static func request(_ query: Query) -> QueryInterfaceRequest<Contact> {
     var request = Contact.all()
 
+    if let connected = query.connected {
+      request = request.filter(Column.connected == connected)
+    }
+
     switch query.sortBy {
     case .username(desc: false):
       request = request.order(Column.username)
 
     case .username(desc: true):
       request = request.order(Column.username.desc)
-    }
-
-    if let connected = query.connected {
-      request = request.filter(Column.connected == connected)
     }
 
     return request

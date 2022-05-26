@@ -247,8 +247,8 @@ final class ContactGRDBTests: XCTestCase {
     // Fetch connected contacts:
 
     XCTAssertNoDifference(try fetch(Contact.Query(
-      sortBy: .username(),
-      connected: true
+      connected: true,
+      sortBy: .username()
     )), [
       contactA,
       contactC,
@@ -257,8 +257,8 @@ final class ContactGRDBTests: XCTestCase {
     // Fetch not connected contacts:
 
     XCTAssertNoDifference(try fetch(Contact.Query(
-      sortBy: .username(),
-      connected: false
+      connected: false,
+      sortBy: .username()
     )), [
       contactB,
       contactD,
@@ -267,8 +267,8 @@ final class ContactGRDBTests: XCTestCase {
     // Fetch all contacts:
 
     XCTAssertNoDifference(try fetch(Contact.Query(
-      sortBy: .username(),
-      connected: nil
+      connected: nil,
+      sortBy: .username()
     )), [
       contactA,
       contactB,

@@ -102,14 +102,14 @@ extension Contact {
     /// Instantiate contacts query
     ///
     /// - Parameters:
-    ///   - sortBy: Sort order
     ///   - connected: Filter contacts with connected status.
     ///     If set to `true`, only contacts with `connected` status will be fetched.
     ///     If set to `false`, only contacts without `connected` status will be fetched.
     ///     If `nil` (default), the filter is not used.
+    ///   - sortBy: Sort order
     public init(
-      sortBy: SortOrder,
-      connected: Bool? = nil
+      connected: Bool? = nil,
+      sortBy: SortOrder
     ) {
       self.sortBy = sortBy
       self.connected = connected
