@@ -233,4 +233,73 @@ final class ContactGRDBTests: XCTestCase {
 
     XCTAssertNil(fetchAssertion.receivedCompletion())
   }
+
+  func testFetchingAuthRequest() throws {
+    let fetch: Contact.Fetch = db.fetch(Contact.request(_:))
+
+    // Mock up contacts:
+
+    let contactA = try db.save(Contact.stub("A", authStatus: .stranger))
+    let contactB = try db.save(Contact.stub("B", authStatus: .requested))
+    let contactC = try db.save(Contact.stub("C", authStatus: .friend))
+    let contactD = try db.save(Contact.stub("D", authStatus: .stranger))
+    let contactE = try db.save(Contact.stub("E", authStatus: .requested))
+    let contactF = try db.save(Contact.stub("F", authStatus: .friend))
+
+    // Fetch contacts with auth status `stranger`:
+
+    XCTAssertNoDifference(try fetch(Contact.Query(
+      authStatus: [.stranger],
+      sortBy: .username()
+    )), [
+      contactA,
+      contactD,
+    ])
+
+    // Fetch contacts with auth status `requested`:
+
+    XCTAssertNoDifference(try fetch(Contact.Query(
+      authStatus: [.requested],
+      sortBy: .username()
+    )), [
+      contactB,
+      contactE,
+    ])
+
+    // Fetch contacts with auth status `friend`:
+
+    XCTAssertNoDifference(try fetch(Contact.Query(
+      authStatus: [.friend],
+      sortBy: .username()
+    )), [
+      contactC,
+      contactF,
+    ])
+
+    // Fetch contacts with auth status `requested` OR `friend`:
+
+    XCTAssertNoDifference(try fetch(Contact.Query(
+      authStatus: [.requested, .friend],
+      sortBy: .username()
+    )), [
+      contactB,
+      contactC,
+      contactE,
+      contactF,
+    ])
+
+    // Fetch all contacts, regardless auth status:
+
+    XCTAssertNoDifference(try fetch(Contact.Query(
+      authStatus: nil,
+      sortBy: .username()
+    )), [
+      contactA,
+      contactB,
+      contactC,
+      contactD,
+      contactE,
+      contactF,
+    ])
+  }
 }

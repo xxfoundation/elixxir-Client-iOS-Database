@@ -35,7 +35,8 @@ final class ChatInfoTests: XCTestCase {
       id: "group-id".data(using: .utf8)!,
       name: "",
       leaderId: "leader-contact-id".data(using: .utf8)!,
-      createdAt: Date()
+      createdAt: Date(),
+      authStatus: .pending
     )
 
     let lastMessage = Message(
@@ -66,7 +67,8 @@ final class ChatInfoTests: XCTestCase {
       id: "group-id".data(using: .utf8)!,
       name: "",
       leaderId: "leader-contact-id".data(using: .utf8)!,
-      createdAt: Date()
+      createdAt: Date(),
+      authStatus: .pending
     )
 
     let chatInfo = ChatInfo.group(group)

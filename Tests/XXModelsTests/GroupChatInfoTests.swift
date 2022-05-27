@@ -11,7 +11,8 @@ final class GroupChatInfoTests: XCTestCase {
       id: "group-id".data(using: .utf8)!,
       name: "group-name",
       leaderId: leader.id,
-      createdAt: Date(timeIntervalSince1970: 1234)
+      createdAt: Date(timeIntervalSince1970: 1234),
+      authStatus: .pending
     )
 
     let message = Message(

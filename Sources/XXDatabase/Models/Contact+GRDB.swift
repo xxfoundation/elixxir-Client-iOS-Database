@@ -9,12 +9,17 @@ extension Contact: FetchableRecord, PersistableRecord {
     case email
     case phone
     case nickname
+    case authStatus
   }
 
   public static let databaseTableName = "contacts"
 
   public static func request(_ query: Query) -> QueryInterfaceRequest<Contact> {
     var request = Contact.all()
+
+    if let authStatus = query.authStatus {
+      request = request.filter(Set(authStatus.map(\.rawValue)).contains(Column.authStatus))
+    }
 
     switch query.sortBy {
     case .username(desc: false):

@@ -6,22 +6,60 @@ public struct Contact: Identifiable, Equatable, Codable {
   /// Unique identifier of a contact
   public typealias ID = Data
 
+  /// Represents contact authorization status
+  public enum AuthStatus: String, Equatable, Codable {
+    /// Not authorized
+    case stranger
+
+    /// Sending auth request to the contact
+    case requesting
+
+    /// Auth request was sent to the contact
+    case requested
+
+    /// Sending auth request to the contact failed
+    case requestFailed
+
+    /// Verifying auth request received from the contact
+    case verificationInProgress
+
+    /// Verifying auth request received from the contact succeeded
+    case verified
+
+    /// Verifying auth request received from the contact failed
+    case verificationFailed
+
+    /// Confirming auth request received from the contact
+    case confirming
+
+    /// Confirming auth request received from the contact failed
+    case confirmationFailed
+
+    /// Authorized
+    case friend
+
+    /// Auth request received from the contact was hidden
+    case hidden
+  }
+
   /// Instantiate contact representation
   ///
   /// - Parameters:
   ///   - id: Unique identifier
-  ///   - marshaled: Marshaled contact data
-  ///   - username: Contact username
-  ///   - email: Contact email address
-  ///   - phone: Contact phone number
-  ///   - nickname: Contact nickname
+  ///   - marshaled: Marshaled contact data (defaults to `nil`)
+  ///   - username: Contact username (defaults to `nil`)
+  ///   - email: Contact email address (defaults to `nil`)
+  ///   - phone: Contact phone number (defaults to `nil`)
+  ///   - nickname: Contact nickname (defaults to `nil`)
+  ///   - authStatus: Contact authorization status (defaults to `.stranger`)
   public init(
     id: ID,
     marshaled: Data? = nil,
     username: String? = nil,
     email: String? = nil,
     phone: String? = nil,
-    nickname: String? = nil
+    nickname: String? = nil,
+    authStatus: AuthStatus = .stranger
   ) {
     self.id = id
     self.marshaled = marshaled
@@ -29,6 +67,7 @@ public struct Contact: Identifiable, Equatable, Codable {
     self.email = email
     self.phone = phone
     self.nickname = nickname
+    self.authStatus = authStatus
   }
 
   /// Unique identifier
@@ -48,6 +87,9 @@ public struct Contact: Identifiable, Equatable, Codable {
 
   /// Contact nickname
   public var nickname: String?
+
+  /// Contact authorization status
+  public var authStatus: AuthStatus
 }
 
 extension Contact {
@@ -95,10 +137,23 @@ extension Contact {
     /// Instantiate contacts query
     ///
     /// - Parameters:
+    ///   - authStatus: Filter contacts by auth status.
+    ///     If set, only contacts with any of the provided auth statuses will be fetched.
+    ///     If `nil` (default), the filter is not used.
     ///   - sortBy: Sort order
-    public init(sortBy: SortOrder) {
+    public init(
+      authStatus: Set<AuthStatus>? = nil,
+      sortBy: SortOrder
+    ) {
+      self.authStatus = authStatus
       self.sortBy = sortBy
     }
+
+    /// Filter contacts by auth status
+    ///
+    /// If set, only contacts with any of the provided auth statuses will be fetched.
+    /// If `nil`, the filter is not used.
+    public var authStatus: Set<AuthStatus>?
 
     /// Contacts sort order
     public var sortBy: SortOrder

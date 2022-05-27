@@ -8,25 +8,35 @@ extension Date {
 }
 
 extension Contact {
-  static func stub(_ id: String) -> Contact {
+  static func stub(
+    _ id: String,
+    authStatus: AuthStatus = .stranger
+  ) -> Contact {
     Contact(
       id: "contact-id-\(id)".data(using: .utf8)!,
       marshaled: "contact-marshaled-\(id)".data(using: .utf8)!,
       username: "contact-username-\(id)",
       email: "contact-\(id)@elixxir.io",
       phone: "contact-phone-\(id)",
-      nickname: "contact-nickname-\(id)"
+      nickname: "contact-nickname-\(id)",
+      authStatus: authStatus
     )
   }
 }
 
 extension Group {
-  static func stub(_ id: String, leaderId: Data, createdAt: Date) -> Group {
+  static func stub(
+    _ id: String,
+    leaderId: Data,
+    createdAt: Date,
+    authStatus: AuthStatus = .pending
+  ) -> Group {
     Group(
       id: "group-id-\(id)".data(using: .utf8)!,
       name: "group-name-\(id)",
       leaderId: leaderId,
-      createdAt: createdAt
+      createdAt: createdAt,
+      authStatus: authStatus
     )
   }
 }

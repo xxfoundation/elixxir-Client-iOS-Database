@@ -75,19 +75,22 @@ final class GroupGRDBTests: XCTestCase {
     let groupA = try db.insert(Group.stub(
       "A",
       leaderId: contactA.id,
-      createdAt: .stub(1)
+      createdAt: .stub(1),
+      authStatus: .participating
     ))
 
     let groupB = try db.insert(Group.stub(
       "B",
       leaderId: contactB.id,
-      createdAt: .stub(2)
+      createdAt: .stub(2),
+      authStatus: .pending
     ))
 
     let groupC = try db.insert(Group.stub(
       "C",
       leaderId: contactB.id,
-      createdAt: .stub(3)
+      createdAt: .stub(3),
+      authStatus: .hidden
     ))
 
     // Mock up messages:
@@ -118,6 +121,15 @@ final class GroupGRDBTests: XCTestCase {
 
     XCTAssertNoDifference(try fetch(Group.Query(withMessages: false, sortBy: .createdAt())), [
       groupB, groupC,
+    ])
+
+    // Fetch groups with auth status `participating` or `pending`:
+
+    XCTAssertNoDifference(try fetch(Group.Query(
+      authStatus: [.participating, .pending],
+      sortBy: .createdAt()
+    )), [
+      groupA, groupB,
     ])
   }
 }

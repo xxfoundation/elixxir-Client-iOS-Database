@@ -7,6 +7,7 @@ extension Group: PersistableRecord, FetchableRecord {
     case name
     case leaderId
     case createdAt
+    case authStatus
   }
 
   enum Association {
@@ -42,6 +43,10 @@ extension Group: PersistableRecord, FetchableRecord {
       request = request
         .joining(optional: Association.messages.aliased(messageAlias))
         .filter(withMessages ? messageAlias.exists : !messageAlias.exists)
+    }
+
+    if let authStatus = query.authStatus {
+      request = request.filter(authStatus.map(\.rawValue).contains(Column.authStatus))
     }
 
     switch query.sortBy {
