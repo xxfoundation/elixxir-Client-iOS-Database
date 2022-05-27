@@ -24,6 +24,7 @@ extension Sequence where Element == Migration {
         t.column("leaderId", .blob).notNull()
           .references("contacts", column: "id", onDelete: .cascade, onUpdate: .cascade)
         t.column("createdAt", .datetime).notNull()
+        t.column("authStatus", .text).notNull()
       }
 
       try db.create(table: "groupMembers") { t in

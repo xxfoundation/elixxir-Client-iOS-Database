@@ -25,12 +25,18 @@ extension Contact {
 }
 
 extension Group {
-  static func stub(_ id: String, leaderId: Data, createdAt: Date) -> Group {
+  static func stub(
+    _ id: String,
+    leaderId: Data,
+    createdAt: Date,
+    authStatus: AuthStatus = .pending
+  ) -> Group {
     Group(
       id: "group-id-\(id)".data(using: .utf8)!,
       name: "group-name-\(id)",
       leaderId: leaderId,
-      createdAt: createdAt
+      createdAt: createdAt,
+      authStatus: authStatus
     )
   }
 }

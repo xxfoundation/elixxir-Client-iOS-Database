@@ -6,6 +6,21 @@ public struct Group: Identifiable, Equatable, Codable {
   /// Unique identifier of a group
   public typealias ID = Data
 
+  /// Represents group authorization status
+  public enum AuthStatus: String, Equatable, Codable {
+    /// Invitation to the group received
+    case pending
+
+    /// Leaving the group
+    case deleting
+
+    /// Participating the group
+    case participating
+
+    /// Group invitation was hidden
+    case hidden
+  }
+
   /// Instantiate group representation
   /// 
   /// - Parameters:
@@ -13,16 +28,19 @@ public struct Group: Identifiable, Equatable, Codable {
   ///   - name: Group name
   ///   - leaderId: Group leader's contact ID
   ///   - createdAt: Group creation date
+  ///   - authStatus: Group authorization status
   public init(
     id: ID,
     name: String,
     leaderId: Contact.ID,
-    createdAt: Date
+    createdAt: Date,
+    authStatus: AuthStatus
   ) {
     self.id = id
     self.name = name
     self.leaderId = leaderId
     self.createdAt = createdAt
+    self.authStatus = authStatus
   }
 
   /// Unique identifier of the group
@@ -36,6 +54,9 @@ public struct Group: Identifiable, Equatable, Codable {
 
   /// Group creation date
   public var createdAt: Date
+
+  /// Group authorization status
+  public var authStatus: AuthStatus
 }
 
 extension Group {
@@ -75,12 +96,17 @@ extension Group {
     ///     If `true` - only include groups that have at least one message.
     ///     If `false` - only include groups that doesn't have messages.
     ///     If `nil` (default) - include groups with AND without messages.
+    ///   - authStatus: Filter groups by auth status.
+    ///     If set, only groups with any of the provided auth statuses will be fetched.
+    ///     If `nil` (default), the filter is not used.
     ///   - sortBy: Sort order
     public init(
       withMessages: Bool? = nil,
+      authStatus: Set<AuthStatus>? = nil,
       sortBy: SortOrder
     ) {
       self.withMessages = withMessages
+      self.authStatus = authStatus
       self.sortBy = sortBy
     }
 
@@ -90,6 +116,12 @@ extension Group {
     /// If `false`, only include groups that doesn't have messages.
     /// If `nil`, the filter is not used
     public var withMessages: Bool?
+
+    /// Filter groups by auth status
+    ///
+    /// If set, only groups with any of the provided auth statuses will be fetched.
+    /// If `nil`, the filter is not used.
+    public var authStatus: Set<AuthStatus>?
 
     /// Groups sort order
     public var sortBy: SortOrder

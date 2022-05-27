@@ -11,7 +11,8 @@ final class GroupInfoTests: XCTestCase {
       id: "group-id".data(using: .utf8)!,
       name: "",
       leaderId: leader.id,
-      createdAt: Date()
+      createdAt: Date(),
+      authStatus: .pending
     )
 
     let groupInfo = GroupInfo(
