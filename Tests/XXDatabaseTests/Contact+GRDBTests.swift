@@ -234,95 +234,52 @@ final class ContactGRDBTests: XCTestCase {
     XCTAssertNil(fetchAssertion.receivedCompletion())
   }
 
-  func testFetchingAuthorized() throws {
-    let fetch: Contact.Fetch = db.fetch(Contact.request(_:))
-
-    // Mock up contacts:
-
-    let contactA = try db.save(Contact.stub("A", authorized: true))
-    let contactB = try db.save(Contact.stub("B", authorized: false))
-    let contactC = try db.save(Contact.stub("C", authorized: true))
-    let contactD = try db.save(Contact.stub("D", authorized: false))
-
-    // Fetch authorized contacts:
-
-    XCTAssertNoDifference(try fetch(Contact.Query(
-      authorized: true,
-      sortBy: .username()
-    )), [
-      contactA,
-      contactC,
-    ])
-
-    // Fetch unauthorized contacts:
-
-    XCTAssertNoDifference(try fetch(Contact.Query(
-      authorized: false,
-      sortBy: .username()
-    )), [
-      contactB,
-      contactD,
-    ])
-
-    // Fetch all contacts:
-
-    XCTAssertNoDifference(try fetch(Contact.Query(
-      authorized: nil,
-      sortBy: .username()
-    )), [
-      contactA,
-      contactB,
-      contactC,
-      contactD,
-    ])
-  }
-
   func testFetchingAuthRequest() throws {
     let fetch: Contact.Fetch = db.fetch(Contact.request(_:))
 
     // Mock up contacts:
 
-    let contactA = try db.save(Contact.stub("A", authRequest: .unknown))
-    let contactB = try db.save(Contact.stub("B", authRequest: .sent))
-    let contactC = try db.save(Contact.stub("C", authRequest: .received))
-    let contactD = try db.save(Contact.stub("D", authRequest: .unknown))
-    let contactE = try db.save(Contact.stub("E", authRequest: .sent))
-    let contactF = try db.save(Contact.stub("F", authRequest: .received))
+    let contactA = try db.save(Contact.stub("A", authStatus: .stranger))
+    let contactB = try db.save(Contact.stub("B", authStatus: .requested))
+    let contactC = try db.save(Contact.stub("C", authStatus: .friend))
+    let contactD = try db.save(Contact.stub("D", authStatus: .stranger))
+    let contactE = try db.save(Contact.stub("E", authStatus: .requested))
+    let contactF = try db.save(Contact.stub("F", authStatus: .friend))
 
-    // Fetch contacts with unknown auth request status:
+    // Fetch contacts with auth status `stranger`:
 
     XCTAssertNoDifference(try fetch(Contact.Query(
-      authRequest: [.unknown],
+      authStatus: [.stranger],
       sortBy: .username()
     )), [
       contactA,
       contactD,
     ])
 
-    // Fetch contacts with auth request sent:
+    // Fetch contacts with auth status `requested`:
 
     XCTAssertNoDifference(try fetch(Contact.Query(
-      authRequest: [.sent],
+      authStatus: [.requested],
       sortBy: .username()
     )), [
       contactB,
       contactE,
     ])
 
-    // Fetch contacts with auth request received:
+    // Fetch contacts with auth status `friend`:
 
     XCTAssertNoDifference(try fetch(Contact.Query(
-      authRequest: [.received],
+      authStatus: [.friend],
       sortBy: .username()
     )), [
       contactC,
       contactF,
     ])
 
-    // Fetch contact with auth request sent OR received:
+    // Fetch contacts with auth status `requested` OR `friend`:
 
     XCTAssertNoDifference(try fetch(Contact.Query(
-      authRequest: [.sent, .received],
+      authStatus: [.requested, .friend],
       sortBy: .username()
     )), [
       contactB,
@@ -331,10 +288,10 @@ final class ContactGRDBTests: XCTestCase {
       contactF,
     ])
 
-    // Fetch all contacts, regardless auth request status:
+    // Fetch all contacts, regardless auth status:
 
     XCTAssertNoDifference(try fetch(Contact.Query(
-      authRequest: nil,
+      authStatus: nil,
       sortBy: .username()
     )), [
       contactA,

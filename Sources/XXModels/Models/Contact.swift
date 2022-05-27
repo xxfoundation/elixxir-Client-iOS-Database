@@ -6,16 +6,40 @@ public struct Contact: Identifiable, Equatable, Codable {
   /// Unique identifier of a contact
   public typealias ID = Data
 
-  /// Represents status of contact's auth request
-  public enum AuthRequest: String, Equatable, Codable {
-    /// Unknown auth request status
-    case unknown
+  /// Represents contact authorization status
+  public enum AuthStatus: String, Equatable, Codable {
+    /// Not authorized
+    case stranger
 
-    /// Auth request was received from the contact
-    case received
+    /// Sending auth request to the contact
+    case requesting
 
     /// Auth request was sent to the contact
-    case sent
+    case requested
+
+    /// Sending auth request to the contact failed
+    case requestFailed
+
+    /// Verifying auth request received from the contact
+    case verificationInProgress
+
+    /// Verifying auth request received from the contact succeeded
+    case verified
+
+    /// Verifying auth request received from the contact failed
+    case verificationFailed
+
+    /// Confirming auth request received from the contact
+    case confirming
+
+    /// Confirming auth request received from the contact failed
+    case confirmationFailed
+
+    /// Authorized
+    case friend
+
+    /// Auth request received from the contact was hidden
+    case hidden
   }
 
   /// Instantiate contact representation
@@ -27,9 +51,7 @@ public struct Contact: Identifiable, Equatable, Codable {
   ///   - email: Contact email address (defaults to `nil`)
   ///   - phone: Contact phone number (defaults to `nil`)
   ///   - nickname: Contact nickname (defaults to `nil`)
-  ///   - authorized: Boolean value indicating if connection with the contact is authorized
-  ///     (defaults to `false`)
-  ///   - authRequest: Status of contact's auth request (defaults to `.unknown`)
+  ///   - authStatus: Contact authorization status (defaults to `.stranger`)
   public init(
     id: ID,
     marshaled: Data? = nil,
@@ -38,7 +60,7 @@ public struct Contact: Identifiable, Equatable, Codable {
     phone: String? = nil,
     nickname: String? = nil,
     authorized: Bool = false,
-    authRequest: AuthRequest = .unknown
+    authStatus: AuthStatus = .stranger
   ) {
     self.id = id
     self.marshaled = marshaled
@@ -46,8 +68,7 @@ public struct Contact: Identifiable, Equatable, Codable {
     self.email = email
     self.phone = phone
     self.nickname = nickname
-    self.authorized = authorized
-    self.authRequest = authRequest
+    self.authStatus = authStatus
   }
 
   /// Unique identifier
@@ -68,11 +89,8 @@ public struct Contact: Identifiable, Equatable, Codable {
   /// Contact nickname
   public var nickname: String?
 
-  /// Boolean value indicating if connection with the contact is authorized
-  public var authorized: Bool
-
-  /// Status of contact's auth request
-  public var authRequest: AuthRequest
+  /// Contact authorization status
+  public var authStatus: AuthStatus
 }
 
 extension Contact {
@@ -120,36 +138,23 @@ extension Contact {
     /// Instantiate contacts query
     ///
     /// - Parameters:
-    ///   - authorized: Filter contacts by authorization status.
-    ///     If set to `true`, only authorized contacts will be fetched.
-    ///     If set to `false`, only unauthorized contacts will be fetched.
-    ///     If `nil` (default), the filter is not used.
-    ///   - authRequest: Filter contacts by auth request status.
-    ///     If set, only contacts with any of the provided auth request statuses will be fetched.
+    ///   - authStatus: Filter contacts by auth status.
+    ///     If set, only contacts with any of the provided auth statuses will be fetched.
     ///     If `nil` (default), the filter is not used.
     ///   - sortBy: Sort order
     public init(
-      authorized: Bool? = nil,
-      authRequest: Set<AuthRequest>? = nil,
+      authStatus: Set<AuthStatus>? = nil,
       sortBy: SortOrder
     ) {
-      self.authorized = authorized
-      self.authRequest = authRequest
+      self.authStatus = authStatus
       self.sortBy = sortBy
     }
 
-    /// Filter contacts by authorization status
+    /// Filter contacts by auth status
     ///
-    /// If set to `true`, only authorized contacts will be fetched.
-    /// If set to `false`, only unauthorized contacts will be fetched.
+    /// If set, only contacts with any of the provided auth statuses will be fetched.
     /// If `nil`, the filter is not used.
-    public var authorized: Bool?
-
-    /// Filter contacts by auth request status
-    ///
-    /// If set, only contacts with any of the provided auth request statuses will be fetched.
-    /// If `nil`, the filter is not used.
-    public var authRequest: Set<AuthRequest>?
+    public var authStatus: Set<AuthStatus>?
 
     /// Contacts sort order
     public var sortBy: SortOrder

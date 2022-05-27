@@ -15,8 +15,7 @@ extension Sequence where Element == Migration {
         t.column("email", .text)
         t.column("phone", .text)
         t.column("nickname", .text)
-        t.column("authorized", .boolean).notNull()
-        t.column("authRequest", .text).notNull()
+        t.column("authStatus", .text).notNull()
       }
 
       try db.create(table: "groups") { t in
