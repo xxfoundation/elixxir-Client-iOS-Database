@@ -84,14 +84,14 @@ extension Group {
       self.sortBy = sortBy
     }
 
-    /// Groups sort order
-    public var sortBy: SortOrder
-
     /// Filter groups by messages
     ///
-    /// If `true` - only include groups that have at least one message.
-    /// If `false` - only include groups that doesn't have messages.
-    /// If `nil` (default) - include groups with AND without messages.
+    /// If `true`, only include groups that have at least one message.
+    /// If `false`, only include groups that doesn't have messages.
+    /// If `nil`, the filter is not used
     public var withMessages: Bool?
+
+    /// Groups sort order
+    public var sortBy: SortOrder
   }
 }
