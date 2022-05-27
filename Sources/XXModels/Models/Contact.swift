@@ -59,7 +59,6 @@ public struct Contact: Identifiable, Equatable, Codable {
     email: String? = nil,
     phone: String? = nil,
     nickname: String? = nil,
-    authorized: Bool = false,
     authStatus: AuthStatus = .stranger
   ) {
     self.id = id
