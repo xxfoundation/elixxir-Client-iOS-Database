@@ -93,9 +93,9 @@ extension Group {
     ///
     /// - Parameters:
     ///   - withMessages: Filter groups by messages.
-    ///     If `true` - only include groups that have at least one message.
-    ///     If `false` - only include groups that doesn't have messages.
-    ///     If `nil` (default) - include groups with AND without messages.
+    ///     If `true`, only groups that have at least one message will be fetched.
+    ///     If `false`, only groups that don't have a message will be fetched.
+    ///     If `nil` (default), the filter is not used.
     ///   - authStatus: Filter groups by auth status.
     ///     If set, only groups with any of the provided auth statuses will be fetched.
     ///     If `nil` (default), the filter is not used.
@@ -112,8 +112,8 @@ extension Group {
 
     /// Filter groups by messages
     ///
-    /// If `true`, only include groups that have at least one message.
-    /// If `false`, only include groups that doesn't have messages.
+    /// If `true`, only groups that have at least one message will be fetched.
+    /// If `false`, only groups that don't have a message will be fetched.
     /// If `nil`, the filter is not used
     public var withMessages: Bool?
 
