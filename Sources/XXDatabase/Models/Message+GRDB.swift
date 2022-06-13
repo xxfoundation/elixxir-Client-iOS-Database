@@ -19,6 +19,10 @@ extension Message: FetchableRecord, MutablePersistableRecord {
   public static func request(_ query: Query) -> QueryInterfaceRequest<Message> {
     var request = Message.all()
 
+    if let id = query.id {
+      request = request.filter(id: id)
+    }
+
     switch query.chat {
     case .group(let groupId):
       request = request.filter(Column.groupId == groupId)

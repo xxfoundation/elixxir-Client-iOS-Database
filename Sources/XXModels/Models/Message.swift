@@ -116,15 +116,21 @@ extension Message {
     /// Instantiate messages query
     ///
     /// - Parameters:
+    ///   - id: If provided, filter by message id (defaults to `nil`)
     ///   - chat: Chat filter (defaults to `nil`)
     ///   - sortBy: Sort order
     public init(
+      id: Message.ID = nil,
       chat: Chat? = nil,
       sortBy: SortOrder
     ) {
+      self.id = id
       self.chat = chat
       self.sortBy = sortBy
     }
+
+    /// If provided, filter by message id
+    public var id: Message.ID
 
     /// Messages chat filter
     public var chat: Chat?

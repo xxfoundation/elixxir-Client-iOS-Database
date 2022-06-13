@@ -177,4 +177,56 @@ final class MessageGRDBTests: XCTestCase {
       ]
     )
   }
+
+  func testFetchingById() throws {
+    let fetch: Message.Fetch = db.fetch(Message.request(_:))
+    let save: Message.Save = db.save()
+
+    // Mock up contacts
+
+    let contactA = Contact.stub("A")
+    let contactB = Contact.stub("B")
+    let contactC = Contact.stub("C")
+
+    try db.insert(contactA)
+    try db.insert(contactB)
+    try db.insert(contactC)
+
+    // Mock up messages:
+
+    let message1 = try save(.stub(
+      from: contactA,
+      to: contactB,
+      at: 1
+    ))
+
+    let message2 = try save(.stub(
+      from: contactB,
+      to: contactA,
+      at: 2
+    ))
+
+    let message3 = try save(.stub(
+      from: contactA,
+      to: contactC,
+      at: 3
+    ))
+
+    // Fetch messages by id:
+
+    XCTAssertNoDifference(
+      try fetch(.init(id: message1.id, sortBy: .date())),
+      [message1]
+    )
+
+    XCTAssertNoDifference(
+      try fetch(.init(id: message2.id, sortBy: .date())),
+      [message2]
+    )
+
+    XCTAssertNoDifference(
+      try fetch(.init(id: message3.id, sortBy: .date())),
+      [message3]
+    )
+  }
 }
