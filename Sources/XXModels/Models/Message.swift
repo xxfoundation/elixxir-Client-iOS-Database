@@ -116,10 +116,10 @@ extension Message {
     /// Instantiate messages query
     ///
     /// - Parameters:
-    ///   - chat: Chat filter
+    ///   - chat: Chat filter (defaults to `nil`)
     ///   - sortBy: Sort order
     public init(
-      chat: Chat,
+      chat: Chat? = nil,
       sortBy: SortOrder
     ) {
       self.chat = chat
@@ -127,7 +127,7 @@ extension Message {
     }
 
     /// Messages chat filter
-    public var chat: Chat
+    public var chat: Chat?
 
     /// Messages sort order
     public var sortBy: SortOrder

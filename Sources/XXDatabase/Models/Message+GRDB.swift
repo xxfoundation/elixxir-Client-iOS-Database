@@ -28,6 +28,9 @@ extension Message: FetchableRecord, MutablePersistableRecord {
         (Column.senderId == id1 && Column.recipientId == id2) ||
         (Column.senderId == id2 && Column.recipientId == id1)
       )
+
+    case .none:
+      break
     }
 
     switch query.sortBy {
