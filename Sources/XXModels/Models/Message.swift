@@ -16,6 +16,7 @@ public struct Message: Identifiable, Equatable, Codable {
   ///   - date: Message date
   ///   - isUnread: Unread status
   ///   - text: Text
+  ///   - replayMessageId: Network id of the message this message replays to
   public init(
     id: ID = nil,
     networkId: Data? = nil,
@@ -24,7 +25,8 @@ public struct Message: Identifiable, Equatable, Codable {
     groupId: Group.ID?,
     date: Date,
     isUnread: Bool,
-    text: String
+    text: String,
+    replayMessageId: Data? = nil
   ) {
     self.id = id
     self.networkId = networkId
@@ -34,6 +36,7 @@ public struct Message: Identifiable, Equatable, Codable {
     self.date = date
     self.isUnread = isUnread
     self.text = text
+    self.replayMessageId = replayMessageId
   }
 
   /// Unique identifier of the message
@@ -65,6 +68,9 @@ public struct Message: Identifiable, Equatable, Codable {
 
   /// Text
   public var text: String
+
+  /// Network id of the message this message replays to
+  public var replayMessageId: Data?
 }
 
 extension Message {

@@ -11,6 +11,7 @@ extension Message: FetchableRecord, MutablePersistableRecord {
     case date
     case isUnread
     case text
+    case replayMessageId
   }
 
   public static let databaseTableName = "messages"
