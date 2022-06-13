@@ -46,9 +46,11 @@ extension Message {
     from sender: Contact,
     to recipient: Contact,
     at timeInterval: TimeInterval,
+    networkId: Data? = nil,
     isUnread: Bool = false
   ) -> Message {
     Message(
+      networkId: networkId,
       senderId: sender.id,
       recipientId: recipient.id,
       groupId: nil,
@@ -62,9 +64,11 @@ extension Message {
     from sender: Contact,
     to group: Group,
     at timeInterval: TimeInterval,
+    networkId: Data? = nil,
     isUnread: Bool = false
   ) -> Message {
     Message(
+      networkId: networkId,
       senderId: sender.id,
       recipientId: nil,
       groupId: group.id,

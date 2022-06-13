@@ -117,20 +117,30 @@ extension Message {
     ///
     /// - Parameters:
     ///   - id: If provided, filter by message id (defaults to `nil`)
+    ///   - networkId: Filter by network id (defaults to `nil`)
     ///   - chat: Chat filter (defaults to `nil`)
     ///   - sortBy: Sort order
     public init(
       id: Message.ID = nil,
+      networkId: Data?? = nil,
       chat: Chat? = nil,
       sortBy: SortOrder
     ) {
       self.id = id
+      self.networkId = networkId
       self.chat = chat
       self.sortBy = sortBy
     }
 
     /// If provided, filter by message id
     public var id: Message.ID
+
+    /// Filter by network id
+    ///
+    /// If `.some(.some(networkId))`, get messages with provided `networkId`.
+    /// If `.some(.none)`, get messages without `networkId`.
+    /// If `.none`, disable the filter.
+    public var networkId: Data??
 
     /// Messages chat filter
     public var chat: Chat?

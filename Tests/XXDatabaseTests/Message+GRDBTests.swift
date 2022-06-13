@@ -229,4 +229,64 @@ final class MessageGRDBTests: XCTestCase {
       [message3]
     )
   }
+
+  func testFetchingByNetworkId() throws {
+    let fetch: Message.Fetch = db.fetch(Message.request(_:))
+    let save: Message.Save = db.save()
+
+    // Mock up contacts
+
+    let contactA = Contact.stub("A")
+    let contactB = Contact.stub("B")
+    let contactC = Contact.stub("C")
+
+    try db.insert(contactA)
+    try db.insert(contactB)
+    try db.insert(contactC)
+
+    // Mock up messages:
+
+    let message1 = try save(.stub(
+      from: contactA,
+      to: contactB,
+      at: 1,
+      networkId: "1".data(using: .utf8)!
+    ))
+
+    let message2 = try save(.stub(
+      from: contactB,
+      to: contactA,
+      at: 2,
+      networkId: "2".data(using: .utf8)!
+    ))
+
+    let message3 = try save(.stub(
+      from: contactA,
+      to: contactC,
+      at: 3,
+      networkId: nil
+    ))
+
+    // Fetch messages by network id:
+
+    XCTAssertNoDifference(
+      try fetch(.init(networkId: "1".data(using: .utf8)!, sortBy: .date())),
+      [message1]
+    )
+
+    XCTAssertNoDifference(
+      try fetch(.init(networkId: "2".data(using: .utf8)!, sortBy: .date())),
+      [message2]
+    )
+
+    XCTAssertNoDifference(
+      try fetch(.init(networkId: .some(nil), sortBy: .date())),
+      [message3]
+    )
+
+    XCTAssertNoDifference(
+      try fetch(.init(networkId: .none, sortBy: .date())),
+      [message1, message2, message3]
+    )
+  }
 }
