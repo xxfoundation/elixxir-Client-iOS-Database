@@ -23,8 +23,11 @@ final class GroupGRDBTests: XCTestCase {
   }
 
   func testSavingAndDeleting() throws {
-    let save: Group.Save = db.saveGroup
-    let delete: Group.Delete = db.deleteGroup
+    func fetchAll() throws -> [Group] {
+      try writer.read { try Group.order(Group.Column.name).fetchAll($0) }
+    }
+
+    // Mock up contacts:
 
     let contactA = Contact.stub("A")
     let contactB = Contact.stub("B")
@@ -32,19 +35,15 @@ final class GroupGRDBTests: XCTestCase {
     try db.saveContact(contactA)
     try db.saveContact(contactB)
 
-    func fetchAll() throws -> [Group] {
-      try writer.read { try Group.order(Group.Column.name).fetchAll($0) }
-    }
-
     // Save new groups A, B, and C:
 
     let groupA = Group.stub("A", leaderId: contactA.id, createdAt: .stub(1))
     let groupB = Group.stub("B", leaderId: contactB.id, createdAt: .stub(2))
     let groupC = Group.stub("C", leaderId: contactA.id, createdAt: .stub(3))
 
-    XCTAssertNoDifference(try save(groupA), groupA)
-    XCTAssertNoDifference(try save(groupB), groupB)
-    XCTAssertNoDifference(try save(groupC), groupC)
+    XCTAssertNoDifference(try db.saveGroup(groupA), groupA)
+    XCTAssertNoDifference(try db.saveGroup(groupB), groupB)
+    XCTAssertNoDifference(try db.saveGroup(groupC), groupC)
 
     XCTAssertNoDifference(
       try fetchAll(),
@@ -53,7 +52,7 @@ final class GroupGRDBTests: XCTestCase {
 
     // Delete group A:
 
-    XCTAssertNoDifference(try delete(groupA), true)
+    XCTAssertNoDifference(try db.deleteGroup(groupA), true)
 
     XCTAssertNoDifference(
       try fetchAll(),

@@ -174,8 +174,6 @@ final class ContactGRDBTests: XCTestCase {
   }
 
   func testFetchingAuthRequest() throws {
-    let fetch: Contact.Fetch = db.fetchContacts
-
     // Mock up contacts:
 
     let contactA = try db.saveContact(.stub("A", authStatus: .stranger))
@@ -187,7 +185,7 @@ final class ContactGRDBTests: XCTestCase {
 
     // Fetch contacts with auth status `stranger`:
 
-    XCTAssertNoDifference(try fetch(Contact.Query(
+    XCTAssertNoDifference(try db.fetchContacts(Contact.Query(
       authStatus: [.stranger],
       sortBy: .username()
     )), [
@@ -197,7 +195,7 @@ final class ContactGRDBTests: XCTestCase {
 
     // Fetch contacts with auth status `requested`:
 
-    XCTAssertNoDifference(try fetch(Contact.Query(
+    XCTAssertNoDifference(try db.fetchContacts(Contact.Query(
       authStatus: [.requested],
       sortBy: .username()
     )), [
@@ -207,7 +205,7 @@ final class ContactGRDBTests: XCTestCase {
 
     // Fetch contacts with auth status `friend`:
 
-    XCTAssertNoDifference(try fetch(Contact.Query(
+    XCTAssertNoDifference(try db.fetchContacts(Contact.Query(
       authStatus: [.friend],
       sortBy: .username()
     )), [
@@ -217,7 +215,7 @@ final class ContactGRDBTests: XCTestCase {
 
     // Fetch contacts with auth status `requested` OR `friend`:
 
-    XCTAssertNoDifference(try fetch(Contact.Query(
+    XCTAssertNoDifference(try db.fetchContacts(Contact.Query(
       authStatus: [.requested, .friend],
       sortBy: .username()
     )), [
@@ -229,7 +227,7 @@ final class ContactGRDBTests: XCTestCase {
 
     // Fetch all contacts, regardless auth status:
 
-    XCTAssertNoDifference(try fetch(Contact.Query(
+    XCTAssertNoDifference(try db.fetchContacts(Contact.Query(
       authStatus: nil,
       sortBy: .username()
     )), [
