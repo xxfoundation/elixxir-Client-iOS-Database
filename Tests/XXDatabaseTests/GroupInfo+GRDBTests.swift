@@ -15,32 +15,24 @@ final class GroupInfoGRDBTests: XCTestCase {
   }
 
   func testFetchingGroupInfo() throws {
-    let fetch: GroupInfo.Fetch = db.fetch(GroupInfo.request(_:))
+    // Mock up contacts and groups:
 
-    let contactA = Contact.stub("A")
-    let contactB = Contact.stub("B")
-    let contactC = Contact.stub("C")
-
-    let groupA = Group.stub("A", leaderId: contactA.id, createdAt: .stub(1))
-    let groupB = Group.stub("B", leaderId: contactB.id, createdAt: .stub(2))
-    let groupC = Group.stub("C", leaderId: contactC.id, createdAt: .stub(3))
-
-    try db.insert(contactA)
-    try db.insert(contactB)
-    try db.insert(contactC)
-    try db.insert(groupA)
-    try db.insert(groupB)
-    try db.insert(groupC)
+    let contactA = try db.saveContact(.stub("A"))
+    let contactB = try db.saveContact(.stub("B"))
+    let contactC = try db.saveContact(.stub("C"))
+    let groupA = try db.saveGroup(.stub("A", leaderId: contactA.id, createdAt: .stub(1)))
+    let groupB = try db.saveGroup(.stub("B", leaderId: contactB.id, createdAt: .stub(2)))
+    let groupC = try db.saveGroup(.stub("C", leaderId: contactC.id, createdAt: .stub(3)))
 
     // Fetch group infos:
 
-    XCTAssertNoDifference(try fetch(GroupInfo.Query(sortBy: .groupName())), [
+    XCTAssertNoDifference(try db.fetchGroupInfos(GroupInfo.Query(sortBy: .groupName())), [
       GroupInfo(group: groupA, leader: contactA, members: []),
       GroupInfo(group: groupB, leader: contactB, members: []),
       GroupInfo(group: groupC, leader: contactC, members: []),
     ])
 
-    XCTAssertNoDifference(try fetch(GroupInfo.Query(sortBy: .groupName(desc: true))), [
+    XCTAssertNoDifference(try db.fetchGroupInfos(GroupInfo.Query(sortBy: .groupName(desc: true))), [
       GroupInfo(group: groupC, leader: contactC, members: []),
       GroupInfo(group: groupB, leader: contactB, members: []),
       GroupInfo(group: groupA, leader: contactA, members: []),
@@ -48,14 +40,14 @@ final class GroupInfoGRDBTests: XCTestCase {
 
     // Add members to groups:
 
-    try db.insert(GroupMember(groupId: groupA.id, contactId: contactB.id))
-    try db.insert(GroupMember(groupId: groupA.id, contactId: contactC.id))
-    try db.insert(GroupMember(groupId: groupB.id, contactId: contactA.id))
-    try db.insert(GroupMember(groupId: groupB.id, contactId: contactB.id))
-    try db.insert(GroupMember(groupId: groupC.id, contactId: contactA.id))
-    try db.insert(GroupMember(groupId: groupC.id, contactId: contactC.id))
+    try db.saveGroupMember(GroupMember(groupId: groupA.id, contactId: contactB.id))
+    try db.saveGroupMember(GroupMember(groupId: groupA.id, contactId: contactC.id))
+    try db.saveGroupMember(GroupMember(groupId: groupB.id, contactId: contactA.id))
+    try db.saveGroupMember(GroupMember(groupId: groupB.id, contactId: contactB.id))
+    try db.saveGroupMember(GroupMember(groupId: groupC.id, contactId: contactA.id))
+    try db.saveGroupMember(GroupMember(groupId: groupC.id, contactId: contactC.id))
 
-    XCTAssertNoDifference(try fetch(GroupInfo.Query(sortBy: .groupName())), [
+    XCTAssertNoDifference(try db.fetchGroupInfos(GroupInfo.Query(sortBy: .groupName())), [
       GroupInfo(group: groupA, leader: contactA, members: [contactB, contactC]),
       GroupInfo(group: groupB, leader: contactB, members: [contactA, contactB]),
       GroupInfo(group: groupC, leader: contactC, members: [contactA, contactC]),
@@ -63,9 +55,9 @@ final class GroupInfoGRDBTests: XCTestCase {
 
     // Delete contact B (member of groups A and B and leader of group B):
 
-    try db.delete(contactB)
+    try db.deleteContact(contactB)
 
-    XCTAssertNoDifference(try fetch(GroupInfo.Query(sortBy: .groupName())), [
+    XCTAssertNoDifference(try db.fetchGroupInfos(GroupInfo.Query(sortBy: .groupName())), [
       GroupInfo(group: groupA, leader: contactA, members: [contactC]),
       GroupInfo(group: groupC, leader: contactC, members: [contactA, contactC]),
     ])
@@ -73,7 +65,7 @@ final class GroupInfoGRDBTests: XCTestCase {
     // Fetch group C:
 
     XCTAssertNoDifference(
-      try fetch(GroupInfo.Query(groupId: groupC.id, sortBy: .groupName())),
+      try db.fetchGroupInfos(GroupInfo.Query(groupId: groupC.id, sortBy: .groupName())),
       [GroupInfo(group: groupC, leader: contactC, members: [contactA, contactC])]
     )
   }

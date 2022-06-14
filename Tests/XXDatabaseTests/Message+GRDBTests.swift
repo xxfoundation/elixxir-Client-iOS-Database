@@ -15,32 +15,27 @@ final class MessageGRDBTests: XCTestCase {
   }
 
   func testFetchingDirectMessages() throws {
-    let fetch: Message.Fetch = db.fetch(Message.request(_:))
-    let save: Message.Save = db.save()
+    // Mock up contacts:
 
-    let contactA = Contact.stub("A")
-    let contactB = Contact.stub("B")
-    let contactC = Contact.stub("C")
-
-    try db.insert(contactA)
-    try db.insert(contactB)
-    try db.insert(contactC)
+    let contactA = try db.saveContact(.stub("A"))
+    let contactB = try db.saveContact(.stub("B"))
+    let contactC = try db.saveContact(.stub("C"))
 
     // Save conversation between contacts A and B:
 
-    let message1 = try save(.stub(
+    let message1 = try db.saveMessage(.stub(
       from: contactA,
       to: contactB,
       at: 1
     ))
 
-    let message2 = try save(.stub(
+    let message2 = try db.saveMessage(.stub(
       from: contactB,
       to: contactA,
       at: 2
     ))
 
-    let message3 = try save(.stub(
+    let message3 = try db.saveMessage(.stub(
       from: contactA,
       to: contactB,
       at: 3
@@ -48,25 +43,25 @@ final class MessageGRDBTests: XCTestCase {
 
     // Save other messages:
 
-    _ = try save(.stub(
+    try db.saveMessage(.stub(
       from: contactA,
       to: contactC,
       at: 1
     ))
 
-    _ = try save(.stub(
+    try db.saveMessage(.stub(
       from: contactC,
       to: contactA,
       at: 1
     ))
 
-    _ = try save(.stub(
+    try db.saveMessage(.stub(
       from: contactB,
       to: contactC,
       at: 1
     ))
 
-    _ = try save(.stub(
+    try db.saveMessage(.stub(
       from: contactC,
       to: contactB,
       at: 1
@@ -75,7 +70,7 @@ final class MessageGRDBTests: XCTestCase {
     // Fetch conversation between contacts A and B:
 
     XCTAssertNoDifference(
-      try fetch(Message.Query(chat: .direct(contactA.id, contactB.id), sortBy: .date())),
+      try db.fetchMessages(Message.Query(chat: .direct(contactA.id, contactB.id), sortBy: .date())),
       [
         message1,
         message2,
@@ -85,38 +80,29 @@ final class MessageGRDBTests: XCTestCase {
   }
 
   func testFetchingGroupMessages() throws {
-    let fetch: Message.Fetch = db.fetch(Message.request(_:))
-    let save: Message.Save = db.save()
+    // Mock up contacts and groups:
 
-    let contactA = Contact.stub("A")
-    let contactB = Contact.stub("B")
-    let contactC = Contact.stub("C")
-
-    try db.insert(contactA)
-    try db.insert(contactB)
-    try db.insert(contactC)
-
-    let groupA = Group.stub("A", leaderId: contactA.id, createdAt: .stub(1))
-    let groupB = Group.stub("B", leaderId: contactB.id, createdAt: .stub(2))
-
-    try db.save(groupA)
-    try db.save(groupB)
+    let contactA = try db.saveContact(.stub("A"))
+    let contactB = try db.saveContact(.stub("B"))
+    let contactC = try db.saveContact(.stub("C"))
+    let groupA = try db.saveGroup(.stub("A", leaderId: contactA.id, createdAt: .stub(1)))
+    let groupB = try db.saveGroup(.stub("B", leaderId: contactB.id, createdAt: .stub(2)))
 
     // Save group A messages:
 
-    let message1 = try save(.stub(
+    let message1 = try db.saveMessage(.stub(
       from: contactA,
       to: groupA,
       at: 1
     ))
 
-    let message2 = try save(.stub(
+    let message2 = try db.saveMessage(.stub(
       from: contactB,
       to: groupA,
       at: 2
     ))
 
-    let message3 = try save(.stub(
+    let message3 = try db.saveMessage(.stub(
       from: contactC,
       to: groupA,
       at: 3
@@ -124,43 +110,43 @@ final class MessageGRDBTests: XCTestCase {
 
     // Save other messages:
 
-    _ = try save(.stub(
+    try db.saveMessage(.stub(
       from: contactA,
       to: contactC,
       at: 1
     ))
 
-    _ = try save(.stub(
+    try db.saveMessage(.stub(
       from: contactC,
       to: contactA,
       at: 1
     ))
 
-    _ = try save(.stub(
+    try db.saveMessage(.stub(
       from: contactB,
       to: contactC,
       at: 1
     ))
 
-    _ = try save(.stub(
+    try db.saveMessage(.stub(
       from: contactC,
       to: contactB,
       at: 1
     ))
 
-    _ = try save(.stub(
+    try db.saveMessage(.stub(
       from: contactA,
       to: groupB,
       at: 1
     ))
 
-    _ = try save(.stub(
+    try db.saveMessage(.stub(
       from: contactB,
       to: groupB,
       at: 1
     ))
 
-    _ = try save(.stub(
+    try db.saveMessage(.stub(
       from: contactC,
       to: groupB,
       at: 1
@@ -169,7 +155,7 @@ final class MessageGRDBTests: XCTestCase {
     // Fetch messages in group A:
 
     XCTAssertNoDifference(
-      try fetch(Message.Query(chat: .group(groupA.id), sortBy: .date(desc: true))),
+      try db.fetchMessages(Message.Query(chat: .group(groupA.id), sortBy: .date(desc: true))),
       [
         message3,
         message2,

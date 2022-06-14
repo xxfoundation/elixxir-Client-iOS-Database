@@ -1,43 +1,44 @@
 import CustomDump
+import GRDB
 import XCTest
 import XXModels
 @testable import XXDatabase
 
 final class GroupMemberGRDBTests: XCTestCase {
-  var db: Database!
+  var db: XXModels.Database!
+  var writer: DatabaseWriter!
 
   override func setUp() async throws {
-    db = try Database.inMemory()
+    writer = DatabaseQueue()
+    db = try Database.grdb(
+      writer: writer,
+      queue: DispatchQueue(label: "XXDatabase"),
+      migrations: .all
+    )
   }
 
   override func tearDown() async throws {
     db = nil
+    writer = nil
   }
 
   func testDatabaseOperations() throws {
-    let save: GroupMember.Save = db.save()
-    let delete: GroupMember.Delete = db.delete()
-
     func fetchAll() throws -> [GroupMember] {
-      try db.fetch(GroupMember.all())
+      try writer.read(GroupMember.fetchAll(_:))
     }
 
-    let contactA = Contact.stub("A")
-    let contactB = Contact.stub("B")
-    let contactC = Contact.stub("C")
-    let groupA = Group.stub("A", leaderId: contactA.id, createdAt: .stub(1))
-    let groupB = Group.stub("B", leaderId: contactB.id, createdAt: .stub(2))
+    // Mock up contacts and groups:
 
-    try db.save(contactA)
-    try db.save(contactB)
-    try db.save(contactC)
-    try db.save(groupA)
-    try db.save(groupB)
+    let contactA = try db.saveContact(.stub("A"))
+    let contactB = try db.saveContact(.stub("B"))
+    let contactC = try db.saveContact(.stub("C"))
+    let groupA = try db.saveGroup(.stub("A", leaderId: contactA.id, createdAt: .stub(1)))
+    let groupB = try db.saveGroup(.stub("B", leaderId: contactB.id, createdAt: .stub(2)))
 
     // Add contacts A and B as members of group A:
 
-    _ = try save(GroupMember(groupId: groupA.id, contactId: contactA.id))
-    _ = try save(GroupMember(groupId: groupA.id, contactId: contactB.id))
+    try db.saveGroupMember(GroupMember(groupId: groupA.id, contactId: contactA.id))
+    try db.saveGroupMember(GroupMember(groupId: groupA.id, contactId: contactB.id))
 
     XCTAssertNoDifference(try fetchAll(), [
       GroupMember(groupId: groupA.id, contactId: contactA.id),
@@ -46,8 +47,8 @@ final class GroupMemberGRDBTests: XCTestCase {
 
     // Add contacts B and C as members of group B:
 
-    _ = try save(GroupMember(groupId: groupB.id, contactId: contactB.id))
-    _ = try save(GroupMember(groupId: groupB.id, contactId: contactC.id))
+    try db.saveGroupMember(GroupMember(groupId: groupB.id, contactId: contactB.id))
+    try db.saveGroupMember(GroupMember(groupId: groupB.id, contactId: contactC.id))
 
     XCTAssertNoDifference(try fetchAll(), [
       GroupMember(groupId: groupA.id, contactId: contactA.id),
@@ -58,7 +59,7 @@ final class GroupMemberGRDBTests: XCTestCase {
 
     // Delete contact C from group B:
 
-    _ = try delete(GroupMember(groupId: groupB.id, contactId: contactC.id))
+    try db.deleteGroupMember(GroupMember(groupId: groupB.id, contactId: contactC.id))
 
     XCTAssertNoDifference(try fetchAll(), [
       GroupMember(groupId: groupA.id, contactId: contactA.id),
@@ -68,7 +69,7 @@ final class GroupMemberGRDBTests: XCTestCase {
 
     // Delete contact B (belonging to groups A and B):
 
-    try db.delete(contactB)
+    try db.deleteContact(contactB)
 
     XCTAssertNoDifference(try fetchAll(), [
       GroupMember(groupId: groupA.id, contactId: contactA.id),
@@ -76,7 +77,7 @@ final class GroupMemberGRDBTests: XCTestCase {
 
     // Delete group B:
 
-    try db.delete(groupB)
+    try db.deleteGroup(groupB)
 
     XCTAssertNoDifference(try fetchAll(), [
       GroupMember(groupId: groupA.id, contactId: contactA.id),
@@ -84,7 +85,7 @@ final class GroupMemberGRDBTests: XCTestCase {
 
     // Delete group A:
 
-    try db.delete(groupA)
+    try db.deleteGroup(groupA)
 
     XCTAssertNoDifference(try fetchAll(), [])
   }

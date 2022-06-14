@@ -1,13 +1,22 @@
 import Combine
+import Foundation
 import GRDB
 import XXModels
 
-extension Database {
-  public func fetch() -> Fetch<ChatInfo, ChatInfo.Query> {
-    Fetch { query in
-      let fetchContactChats: ContactChatInfo.Fetch = fetch(ContactChatInfo.request(_:))
-      let fetchGroupChats: GroupChatInfo.Fetch = fetch(GroupChatInfo.request(_:))
-      let fetchGroups: Group.Fetch = fetch(Group.request(_:))
+extension Fetch where Model == ChatInfo, Query == ChatInfo.Query {
+  static func grdb(
+    writer: DatabaseWriter,
+    queue: DispatchQueue
+  ) -> Fetch<ChatInfo, ChatInfo.Query> {
+    Fetch<ChatInfo, ChatInfo.Query> { query in
+      let fetchContactChats: ContactChatInfo.Fetch =
+        .grdb(writer, queue, ContactChatInfo.request(_:))
+
+      let fetchGroupChats: GroupChatInfo.Fetch =
+        .grdb(writer, queue, GroupChatInfo.request(_:))
+
+      let fetchGroups: Group.Fetch =
+        .grdb(writer, queue, Group.request(_:))
 
       let contactChatsQuery = ContactChatInfo.Query(userId: query.userId)
       let contactChats = try fetchContactChats(contactChatsQuery)
@@ -30,17 +39,22 @@ extension Database {
       return chats
     }
   }
+}
 
-  public func fetchPublisher() -> FetchPublisher<ChatInfo, ChatInfo.Query> {
-    FetchPublisher { query in
-      let fetchContactChats: ContactChatInfo.FetchPublisher
-      = fetchPublisher(ContactChatInfo.request(_:))
+extension FetchPublisher where Model == ChatInfo, Query == ChatInfo.Query {
+  static func grdb(
+    writer: DatabaseWriter,
+    queue: DispatchQueue
+  ) -> FetchPublisher<ChatInfo, ChatInfo.Query> {
+    FetchPublisher<ChatInfo, ChatInfo.Query> { query in
+      let fetchContactChats: ContactChatInfo.FetchPublisher =
+        .grdb(writer, queue, ContactChatInfo.request(_:))
 
-      let fetchGroupChats: GroupChatInfo.FetchPublisher
-      = fetchPublisher(GroupChatInfo.request(_:))
+      let fetchGroupChats: GroupChatInfo.FetchPublisher =
+        .grdb(writer, queue, GroupChatInfo.request(_:))
 
-      let fetchGroups: Group.FetchPublisher
-      = fetchPublisher(Group.request(_:))
+      let fetchGroups: Group.FetchPublisher =
+        .grdb(writer, queue, Group.request(_:))
 
       let contactChatsQuery = ContactChatInfo.Query(userId: query.userId)
       let groupChatsQuery = GroupChatInfo.Query()

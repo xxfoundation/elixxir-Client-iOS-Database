@@ -20,3 +20,11 @@ public struct Fetch<Model, Query> {
     try run(query)
   }
 }
+
+#if DEBUG
+extension Fetch {
+  public static func failing<Model, Query>() -> Fetch<Model, Query> {
+    Fetch<Model, Query> { _ in fatalError() }
+  }
+}
+#endif
