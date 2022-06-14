@@ -3,6 +3,10 @@ import GRDB
 import XXModels
 
 extension XXModels.Database {
+  /// Create in-memory database implementation powered by GRDB
+  ///
+  /// - Parameter migrations: GRDB migrations
+  /// - Returns: Database implementation
   public static func inMemory(
     migrations: [Migration] = .all
   ) throws -> XXModels.Database {
