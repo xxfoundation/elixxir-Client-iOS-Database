@@ -15,16 +15,16 @@ final class MessageGRDBTests: XCTestCase {
   }
 
   func testFetchingDirectMessages() throws {
-    let fetch: Message.Fetch = db.fetch(Message.request(_:))
-    let save: Message.Save = db.save()
+    let fetch: Message.Fetch = db.fetchMessages
+    let save: Message.Save = db.saveMessage
 
     let contactA = Contact.stub("A")
     let contactB = Contact.stub("B")
     let contactC = Contact.stub("C")
 
-    try db.insert(contactA)
-    try db.insert(contactB)
-    try db.insert(contactC)
+    try db.insertContact(contactA)
+    try db.insertContact(contactB)
+    try db.insertContact(contactC)
 
     // Save conversation between contacts A and B:
 
@@ -85,22 +85,22 @@ final class MessageGRDBTests: XCTestCase {
   }
 
   func testFetchingGroupMessages() throws {
-    let fetch: Message.Fetch = db.fetch(Message.request(_:))
-    let save: Message.Save = db.save()
+    let fetch: Message.Fetch = db.fetchMessages
+    let save: Message.Save = db.saveMessage
 
     let contactA = Contact.stub("A")
     let contactB = Contact.stub("B")
     let contactC = Contact.stub("C")
 
-    try db.insert(contactA)
-    try db.insert(contactB)
-    try db.insert(contactC)
+    try db.insertContact(contactA)
+    try db.insertContact(contactB)
+    try db.insertContact(contactC)
 
     let groupA = Group.stub("A", leaderId: contactA.id, createdAt: .stub(1))
     let groupB = Group.stub("B", leaderId: contactB.id, createdAt: .stub(2))
 
-    try db.save(groupA)
-    try db.save(groupB)
+    try db.saveGroup(groupA)
+    try db.saveGroup(groupB)
 
     // Save group A messages:
 

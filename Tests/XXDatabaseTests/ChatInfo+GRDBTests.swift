@@ -15,39 +15,39 @@ final class ChatInfoGRDBTests: XCTestCase {
   }
 
   func testFetching() throws {
-    let fetch: ChatInfo.Fetch = db.fetch()
-    let fetchPublisher: ChatInfo.FetchPublisher = db.fetchPublisher()
+    let fetch: ChatInfo.Fetch = db.fetchChatInfos
+    let fetchPublisher: ChatInfo.FetchPublisher = db.fetchChatInfosPublisher
 
     // Mock up contacts:
 
-    let contactA = try db.insert(Contact.stub("A"))
-    let contactB = try db.insert(Contact.stub("B"))
-    let contactC = try db.insert(Contact.stub("C"))
-    let contactD = try db.insert(Contact.stub("D"))
+    let contactA = try db.insertContact(.stub("A"))
+    let contactB = try db.insertContact(.stub("B"))
+    let contactC = try db.insertContact(.stub("C"))
+    let contactD = try db.insertContact(.stub("D"))
 
     // Mock up groups:
 
-    let groupA = try db.insert(Group.stub(
+    let groupA = try db.saveGroup(.stub(
       "A",
       leaderId: contactA.id,
       createdAt: .stub(1)
     ))
 
-    try db.insert(GroupMember(groupId: groupA.id, contactId: contactA.id))
-    try db.insert(GroupMember(groupId: groupA.id, contactId: contactB.id))
-    try db.insert(GroupMember(groupId: groupA.id, contactId: contactC.id))
+    try db.saveGroupMember(GroupMember(groupId: groupA.id, contactId: contactA.id))
+    try db.saveGroupMember(GroupMember(groupId: groupA.id, contactId: contactB.id))
+    try db.saveGroupMember(GroupMember(groupId: groupA.id, contactId: contactC.id))
 
-    let groupB = try db.insert(Group.stub(
+    let groupB = try db.saveGroup(.stub(
       "B",
       leaderId: contactB.id,
       createdAt: .stub(2)
     ))
 
-    try db.insert(GroupMember(groupId: groupB.id, contactId: contactB.id))
-    try db.insert(GroupMember(groupId: groupB.id, contactId: contactC.id))
-    try db.insert(GroupMember(groupId: groupB.id, contactId: contactD.id))
+    try db.saveGroupMember(GroupMember(groupId: groupB.id, contactId: contactB.id))
+    try db.saveGroupMember(GroupMember(groupId: groupB.id, contactId: contactC.id))
+    try db.saveGroupMember(GroupMember(groupId: groupB.id, contactId: contactD.id))
 
-    let groupC_createdAt5 = try db.insert(Group.stub(
+    let groupC_createdAt5 = try db.saveGroup(.stub(
       "C",
       leaderId: contactC.id,
       createdAt: .stub(5)
@@ -55,28 +55,28 @@ final class ChatInfoGRDBTests: XCTestCase {
 
     // Mock up messages in group A:
 
-    try db.insert(Message.stub(
+    try db.saveMessage(.stub(
       from: contactA,
       to: groupA,
       at: 1,
       isUnread: true
     ))
 
-    try db.insert(Message.stub(
+    try db.saveMessage(.stub(
       from: contactB,
       to: groupA,
       at: 2,
       isUnread: false
     ))
 
-    try db.insert(Message.stub(
+    try db.saveMessage(.stub(
       from: contactC,
       to: groupA,
       at: 3,
       isUnread: true
     ))
 
-    let lastMessage_inGroupA_at4 = try db.insert(Message.stub(
+    let lastMessage_inGroupA_at4 = try db.saveMessage(.stub(
       from: contactB,
       to: groupA,
       at: 4,
@@ -85,14 +85,14 @@ final class ChatInfoGRDBTests: XCTestCase {
 
     // Mock up messages between contact A and B:
 
-    try db.insert(Message.stub(
+    try db.saveMessage(.stub(
       from: contactA,
       to: contactB,
       at: 5,
       isUnread: true
     ))
 
-    let lastMessage_betweenAandB_at6 = try db.insert(Message.stub(
+    let lastMessage_betweenAandB_at6 = try db.saveMessage(.stub(
       from: contactB,
       to: contactA,
       at: 6,
@@ -101,21 +101,21 @@ final class ChatInfoGRDBTests: XCTestCase {
 
     // Mock up messages in group B:
 
-    try db.insert(Message.stub(
+    try db.saveMessage(.stub(
       from: contactD,
       to: groupB,
       at: 5,
       isUnread: false
     ))
 
-    try db.insert(Message.stub(
+    try db.saveMessage(.stub(
       from: contactC,
       to: groupB,
       at: 6,
       isUnread: false
     ))
 
-    let lastMessage_inGroupB_at7 = try db.insert(Message.stub(
+    let lastMessage_inGroupB_at7 = try db.saveMessage(.stub(
       from: contactB,
       to: groupB,
       at: 7,
@@ -124,14 +124,14 @@ final class ChatInfoGRDBTests: XCTestCase {
 
     // Mock up messages between contact B and C:
 
-    try db.insert(Message.stub(
+    try db.saveMessage(.stub(
       from: contactB,
       to: contactC,
       at: 8,
       isUnread: false
     ))
 
-    try db.insert(Message.stub(
+    try db.saveMessage(.stub(
       from: contactC,
       to: contactB,
       at: 9,
@@ -140,14 +140,14 @@ final class ChatInfoGRDBTests: XCTestCase {
 
     // Mock up messages between contact A and C:
 
-    try db.insert(Message.stub(
+    try db.saveMessage(.stub(
       from: contactA,
       to: contactC,
       at: 10,
       isUnread: true
     ))
 
-    let lastMessage_betweenAandC_at11 = try db.insert(Message.stub(
+    let lastMessage_betweenAandC_at11 = try db.saveMessage(.stub(
       from: contactC,
       to: contactA,
       at: 11,

@@ -1,31 +1,39 @@
 import CustomDump
+import GRDB
 import XCTest
 import XXModels
 @testable import XXDatabase
 
 final class GroupGRDBTests: XCTestCase {
-  var db: Database!
+  var db: XXModels.Database!
+  var writer: DatabaseWriter!
 
   override func setUp() async throws {
-    db = try Database.inMemory()
+    writer = DatabaseQueue()
+    db = try Database.grdb(
+      writer: writer,
+      queue: DispatchQueue(label: "XXDatabase"),
+      migrations: .all
+    )
   }
 
   override func tearDown() async throws {
     db = nil
+    writer = nil
   }
 
   func testSavingAndDeleting() throws {
-    let save: Group.Save = db.save()
-    let delete: Group.Delete = db.delete()
+    let save: Group.Save = db.saveGroup
+    let delete: Group.Delete = db.deleteGroup
 
     let contactA = Contact.stub("A")
     let contactB = Contact.stub("B")
 
-    try db.save(contactA)
-    try db.save(contactB)
+    try db.saveContact(contactA)
+    try db.saveContact(contactB)
 
     func fetchAll() throws -> [Group] {
-      try db.fetch(Group.order(Group.Column.name))
+      try writer.read { try Group.order(Group.Column.name).fetchAll($0) }
     }
 
     // Save new groups A, B, and C:
@@ -54,7 +62,7 @@ final class GroupGRDBTests: XCTestCase {
 
     // Delete contact A - the leader of group A and C:
 
-    try db.delete(contactA)
+    try db.deleteContact(contactA)
 
     XCTAssertNoDifference(
       try fetchAll(),
@@ -63,30 +71,30 @@ final class GroupGRDBTests: XCTestCase {
   }
 
   func testFetching() throws {
-    let fetch: Group.Fetch = db.fetch(Group.request(_:))
+    let fetch: Group.Fetch = db.fetchGroups
 
     // Mock up contacts:
 
-    let contactA = try db.insert(Contact.stub("A"))
-    let contactB = try db.insert(Contact.stub("B"))
+    let contactA = try db.insertContact(.stub("A"))
+    let contactB = try db.insertContact(.stub("B"))
 
     // Mock up groups:
 
-    let groupA = try db.insert(Group.stub(
+    let groupA = try db.saveGroup(.stub(
       "A",
       leaderId: contactA.id,
       createdAt: .stub(1),
       authStatus: .participating
     ))
 
-    let groupB = try db.insert(Group.stub(
+    let groupB = try db.saveGroup(.stub(
       "B",
       leaderId: contactB.id,
       createdAt: .stub(2),
       authStatus: .pending
     ))
 
-    let groupC = try db.insert(Group.stub(
+    let groupC = try db.saveGroup(.stub(
       "C",
       leaderId: contactB.id,
       createdAt: .stub(3),
@@ -95,7 +103,7 @@ final class GroupGRDBTests: XCTestCase {
 
     // Mock up messages:
 
-    try db.insert(Message.stub(
+    try db.saveMessage(.stub(
       from: contactA,
       to: groupA,
       at: 1

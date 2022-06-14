@@ -15,7 +15,7 @@ final class GroupInfoGRDBTests: XCTestCase {
   }
 
   func testFetchingGroupInfo() throws {
-    let fetch: GroupInfo.Fetch = db.fetch(GroupInfo.request(_:))
+    let fetch: GroupInfo.Fetch = db.fetchGroupInfos
 
     let contactA = Contact.stub("A")
     let contactB = Contact.stub("B")
@@ -25,12 +25,12 @@ final class GroupInfoGRDBTests: XCTestCase {
     let groupB = Group.stub("B", leaderId: contactB.id, createdAt: .stub(2))
     let groupC = Group.stub("C", leaderId: contactC.id, createdAt: .stub(3))
 
-    try db.insert(contactA)
-    try db.insert(contactB)
-    try db.insert(contactC)
-    try db.insert(groupA)
-    try db.insert(groupB)
-    try db.insert(groupC)
+    try db.insertContact(contactA)
+    try db.insertContact(contactB)
+    try db.insertContact(contactC)
+    try db.saveGroup(groupA)
+    try db.saveGroup(groupB)
+    try db.saveGroup(groupC)
 
     // Fetch group infos:
 
@@ -48,12 +48,12 @@ final class GroupInfoGRDBTests: XCTestCase {
 
     // Add members to groups:
 
-    try db.insert(GroupMember(groupId: groupA.id, contactId: contactB.id))
-    try db.insert(GroupMember(groupId: groupA.id, contactId: contactC.id))
-    try db.insert(GroupMember(groupId: groupB.id, contactId: contactA.id))
-    try db.insert(GroupMember(groupId: groupB.id, contactId: contactB.id))
-    try db.insert(GroupMember(groupId: groupC.id, contactId: contactA.id))
-    try db.insert(GroupMember(groupId: groupC.id, contactId: contactC.id))
+    try db.saveGroupMember(GroupMember(groupId: groupA.id, contactId: contactB.id))
+    try db.saveGroupMember(GroupMember(groupId: groupA.id, contactId: contactC.id))
+    try db.saveGroupMember(GroupMember(groupId: groupB.id, contactId: contactA.id))
+    try db.saveGroupMember(GroupMember(groupId: groupB.id, contactId: contactB.id))
+    try db.saveGroupMember(GroupMember(groupId: groupC.id, contactId: contactA.id))
+    try db.saveGroupMember(GroupMember(groupId: groupC.id, contactId: contactC.id))
 
     XCTAssertNoDifference(try fetch(GroupInfo.Query(sortBy: .groupName())), [
       GroupInfo(group: groupA, leader: contactA, members: [contactB, contactC]),
@@ -63,7 +63,7 @@ final class GroupInfoGRDBTests: XCTestCase {
 
     // Delete contact B (member of groups A and B and leader of group B):
 
-    try db.delete(contactB)
+    try db.deleteContact(contactB)
 
     XCTAssertNoDifference(try fetch(GroupInfo.Query(sortBy: .groupName())), [
       GroupInfo(group: groupA, leader: contactA, members: [contactC]),

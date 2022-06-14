@@ -16,11 +16,11 @@ final class ContactGRDBTests: XCTestCase {
   }
 
   func testDatabaseOperations() throws {
-    let fetch: Contact.Fetch = db.fetch(Contact.request(_:))
-    let insert: Contact.Insert = db.insert()
-    let update: Contact.Update = db.update()
-    let save: Contact.Save = db.save()
-    let delete: Contact.Delete = db.delete()
+    let fetch: Contact.Fetch = db.fetchContacts
+    let insert: Contact.Insert = db.insertContact
+    let update: Contact.Update = db.updateContact
+    let save: Contact.Save = db.saveContact
+    let delete: Contact.Delete = db.deleteContact
 
     // Insert contact A:
 
@@ -95,7 +95,7 @@ final class ContactGRDBTests: XCTestCase {
   }
 
   func testFetchPublisher() throws {
-    let fetch: Contact.FetchPublisher = db.fetchPublisher(Contact.request(_:))
+    let fetch: Contact.FetchPublisher = db.fetchContactsPublisher
     let fetchAssertion = PublisherAssertion<[Contact], Error>()
 
     // Subscribe to fetch publisher:
@@ -109,7 +109,7 @@ final class ContactGRDBTests: XCTestCase {
 
     // Insert contact A:
 
-    let contactA = try db.insert(Contact.stub("A"))
+    let contactA = try db.insertContact(.stub("A"))
     fetchAssertion.expectValue()
     fetchAssertion.waitForValues()
 
@@ -118,7 +118,7 @@ final class ContactGRDBTests: XCTestCase {
 
     // Insert contact B:
 
-    let contactB = try db.insert(Contact.stub("B"))
+    let contactB = try db.insertContact(.stub("B"))
     fetchAssertion.expectValue()
     fetchAssertion.waitForValues()
 
@@ -127,7 +127,7 @@ final class ContactGRDBTests: XCTestCase {
 
     // Insert contact C:
 
-    let contactC = try db.insert(Contact.stub("C"))
+    let contactC = try db.insertContact(.stub("C"))
     fetchAssertion.expectValue()
     fetchAssertion.waitForValues()
 
@@ -139,7 +139,7 @@ final class ContactGRDBTests: XCTestCase {
     var updatedContactB = contactB
     updatedContactB.username!.append("-updated")
     fetchAssertion.expectValue()
-    try db.update(updatedContactB)
+    try db.updateContact(updatedContactB)
     fetchAssertion.waitForValues()
 
     XCTAssertNoDifference(fetchAssertion.receivedValues(), [[contactA, updatedContactB, contactC]])
@@ -148,7 +148,7 @@ final class ContactGRDBTests: XCTestCase {
     // Delete contact C:
 
     fetchAssertion.expectValue()
-    try db.delete(contactC)
+    try db.deleteContact(contactC)
     fetchAssertion.waitForValues()
 
     XCTAssertNoDifference(fetchAssertion.receivedValues(), [[contactA, updatedContactB]])
@@ -159,7 +159,7 @@ final class ContactGRDBTests: XCTestCase {
     var updatedContactA = contactA
     updatedContactA.username!.append("-updated")
     fetchAssertion.expectValue()
-    try db.save(updatedContactA)
+    try db.saveContact(updatedContactA)
     fetchAssertion.waitForValues()
 
     XCTAssertNoDifference(fetchAssertion.receivedValues(), [[updatedContactA, updatedContactB]])
@@ -169,7 +169,7 @@ final class ContactGRDBTests: XCTestCase {
 
     let contactD = Contact.stub("D")
     fetchAssertion.expectValue()
-    try db.save(contactD)
+    try db.saveContact(contactD)
     fetchAssertion.waitForValues()
 
     XCTAssertNoDifference(fetchAssertion.receivedValues(), [[updatedContactA, updatedContactB, contactD]])
@@ -181,16 +181,16 @@ final class ContactGRDBTests: XCTestCase {
   }
 
   func testFetchingAuthRequest() throws {
-    let fetch: Contact.Fetch = db.fetch(Contact.request(_:))
+    let fetch: Contact.Fetch = db.fetchContacts
 
     // Mock up contacts:
 
-    let contactA = try db.save(Contact.stub("A", authStatus: .stranger))
-    let contactB = try db.save(Contact.stub("B", authStatus: .requested))
-    let contactC = try db.save(Contact.stub("C", authStatus: .friend))
-    let contactD = try db.save(Contact.stub("D", authStatus: .stranger))
-    let contactE = try db.save(Contact.stub("E", authStatus: .requested))
-    let contactF = try db.save(Contact.stub("F", authStatus: .friend))
+    let contactA = try db.saveContact(.stub("A", authStatus: .stranger))
+    let contactB = try db.saveContact(.stub("B", authStatus: .requested))
+    let contactC = try db.saveContact(.stub("C", authStatus: .friend))
+    let contactD = try db.saveContact(.stub("D", authStatus: .stranger))
+    let contactE = try db.saveContact(.stub("E", authStatus: .requested))
+    let contactF = try db.saveContact(.stub("F", authStatus: .friend))
 
     // Fetch contacts with auth status `stranger`:
 
