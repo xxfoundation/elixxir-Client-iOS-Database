@@ -24,8 +24,8 @@ extension XXModels.Database {
     }
     try migrator.migrate(writer)
     return XXModels.Database(
-      fetchChatInfos: .grdb(writer: writer, queue: queue),
-      fetchChatInfosPublisher: .grdb(writer: writer, queue: queue),
+      fetchChatInfos: .grdb(writer, queue),
+      fetchChatInfosPublisher: .grdb(writer, queue),
       fetchContacts: .grdb(writer, queue, Contact.request(_:)),
       fetchContactsPublisher: .grdb(writer, queue, Contact.request(_:)),
       saveContact: .grdb(writer, queue),
