@@ -28,8 +28,6 @@ extension XXModels.Database {
       fetchChatInfosPublisher: .grdb(writer: writer, queue: queue),
       fetchContacts: .grdb(writer, queue, Contact.request(_:)),
       fetchContactsPublisher: .grdb(writer, queue, Contact.request(_:)),
-      insertContact: .grdb(writer, queue),
-      updateContact: .grdb(writer, queue),
       saveContact: .grdb(writer, queue),
       deleteContact: .grdb(writer, queue),
       fetchContactChatInfos: .grdb(writer, queue, ContactChatInfo.request(_:)),

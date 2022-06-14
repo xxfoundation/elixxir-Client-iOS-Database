@@ -16,55 +16,49 @@ final class ContactGRDBTests: XCTestCase {
   }
 
   func testDatabaseOperations() throws {
-    let fetch: Contact.Fetch = db.fetchContacts
-    let insert: Contact.Insert = db.insertContact
-    let update: Contact.Update = db.updateContact
-    let save: Contact.Save = db.saveContact
-    let delete: Contact.Delete = db.deleteContact
-
-    // Insert contact A:
+    // Save new contact A:
 
     let contactA = Contact.stub("A")
-    XCTAssertNoDifference(try insert(contactA), contactA)
+    XCTAssertNoDifference(try db.saveContact(contactA), contactA)
 
-    // Insert contact B:
+    // Save new contact B:
 
     let contactB = Contact.stub("B")
-    XCTAssertNoDifference(try insert(contactB), contactB)
+    XCTAssertNoDifference(try db.saveContact(contactB), contactB)
 
-    // Insert contact C:
+    // Save new contact C:
 
     let contactC = Contact.stub("C")
-    XCTAssertNoDifference(try insert(contactC), contactC)
+    XCTAssertNoDifference(try db.saveContact(contactC), contactC)
 
     // Fetch contacts:
 
     XCTAssertNoDifference(
-      try fetch(Contact.Query(sortBy: .username())),
+      try db.fetchContacts(Contact.Query(sortBy: .username())),
       [contactA, contactB, contactC]
     )
 
-    // Update contact B:
+    // Save updated contact B:
 
     var updatedContactB = contactB
     updatedContactB.username!.append("-updated")
-    XCTAssertNoDifference(try update(updatedContactB), updatedContactB)
+    XCTAssertNoDifference(try db.saveContact(updatedContactB), updatedContactB)
 
     // Fetch contacts:
 
     XCTAssertNoDifference(
-      try fetch(Contact.Query(sortBy: .username(desc: true))),
+      try db.fetchContacts(Contact.Query(sortBy: .username(desc: true))),
       [contactC, updatedContactB, contactA]
     )
 
     // Delete contact C:
 
-    XCTAssertNoDifference(try delete(contactC), true)
+    XCTAssertNoDifference(try db.deleteContact(contactC), true)
 
     // Fetch contacts:
 
     XCTAssertNoDifference(
-      try fetch(Contact.Query(sortBy: .username())),
+      try db.fetchContacts(Contact.Query(sortBy: .username())),
       [contactA, updatedContactB]
     )
 
@@ -72,74 +66,73 @@ final class ContactGRDBTests: XCTestCase {
 
     var updatedContactA = contactA
     updatedContactA.username!.append("-updated")
-    XCTAssertNoDifference(try update(updatedContactA), updatedContactA)
+    XCTAssertNoDifference(try db.saveContact(updatedContactA), updatedContactA)
 
     // Fetch contacts:
 
     XCTAssertNoDifference(
-      try fetch(Contact.Query(sortBy: .username())),
+      try db.fetchContacts(Contact.Query(sortBy: .username())),
       [updatedContactA, updatedContactB]
     )
 
     // Save new contact D:
 
     let contactD = Contact.stub("D")
-    XCTAssertNoDifference(try save(contactD), contactD)
+    XCTAssertNoDifference(try db.saveContact(contactD), contactD)
 
     // Fetch contacts:
 
     XCTAssertNoDifference(
-      try fetch(Contact.Query(sortBy: .username())),
+      try db.fetchContacts(Contact.Query(sortBy: .username())),
       [updatedContactA, updatedContactB, contactD]
     )
   }
 
   func testFetchPublisher() throws {
-    let fetch: Contact.FetchPublisher = db.fetchContactsPublisher
     let fetchAssertion = PublisherAssertion<[Contact], Error>()
 
     // Subscribe to fetch publisher:
 
     fetchAssertion.expectValue()
-    fetchAssertion.subscribe(to: fetch(Contact.Query(sortBy: .username())))
+    fetchAssertion.subscribe(to: db.fetchContactsPublisher(Contact.Query(sortBy: .username())))
     fetchAssertion.waitForValues()
 
     XCTAssertNoDifference(fetchAssertion.receivedValues(), [[]])
     XCTAssertNil(fetchAssertion.receivedCompletion())
 
-    // Insert contact A:
+    // Save new contact A:
 
-    let contactA = try db.insertContact(.stub("A"))
+    let contactA = try db.saveContact(.stub("A"))
     fetchAssertion.expectValue()
     fetchAssertion.waitForValues()
 
     XCTAssertNoDifference(fetchAssertion.receivedValues(), [[contactA]])
     XCTAssertNil(fetchAssertion.receivedCompletion())
 
-    // Insert contact B:
+    // Save new contact B:
 
-    let contactB = try db.insertContact(.stub("B"))
+    let contactB = try db.saveContact(.stub("B"))
     fetchAssertion.expectValue()
     fetchAssertion.waitForValues()
 
     XCTAssertNoDifference(fetchAssertion.receivedValues(), [[contactA, contactB]])
     XCTAssertNil(fetchAssertion.receivedCompletion())
 
-    // Insert contact C:
+    // Save new contact C:
 
-    let contactC = try db.insertContact(.stub("C"))
+    let contactC = try db.saveContact(.stub("C"))
     fetchAssertion.expectValue()
     fetchAssertion.waitForValues()
 
     XCTAssertNoDifference(fetchAssertion.receivedValues(), [[contactA, contactB, contactC]])
     XCTAssertNil(fetchAssertion.receivedCompletion())
 
-    // Update contact B:
+    // Save updated contact B:
 
     var updatedContactB = contactB
     updatedContactB.username!.append("-updated")
     fetchAssertion.expectValue()
-    try db.updateContact(updatedContactB)
+    try db.saveContact(updatedContactB)
     fetchAssertion.waitForValues()
 
     XCTAssertNoDifference(fetchAssertion.receivedValues(), [[contactA, updatedContactB, contactC]])

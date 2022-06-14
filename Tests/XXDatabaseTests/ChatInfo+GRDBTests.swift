@@ -15,15 +15,12 @@ final class ChatInfoGRDBTests: XCTestCase {
   }
 
   func testFetching() throws {
-    let fetch: ChatInfo.Fetch = db.fetchChatInfos
-    let fetchPublisher: ChatInfo.FetchPublisher = db.fetchChatInfosPublisher
-
     // Mock up contacts:
 
-    let contactA = try db.insertContact(.stub("A"))
-    let contactB = try db.insertContact(.stub("B"))
-    let contactC = try db.insertContact(.stub("C"))
-    let contactD = try db.insertContact(.stub("D"))
+    let contactA = try db.saveContact(.stub("A"))
+    let contactB = try db.saveContact(.stub("B"))
+    let contactC = try db.saveContact(.stub("C"))
+    let contactD = try db.saveContact(.stub("D"))
 
     // Mock up groups:
 
@@ -181,7 +178,7 @@ final class ChatInfoGRDBTests: XCTestCase {
     ]
 
     XCTAssertNoDifference(
-      try fetch(ChatInfo.Query(userId: contactA.id)),
+      try db.fetchChatInfos(ChatInfo.Query(userId: contactA.id)),
       expectedFetchResults
     )
 
@@ -189,7 +186,7 @@ final class ChatInfoGRDBTests: XCTestCase {
 
     let fetchAssertion = PublisherAssertion<[ChatInfo], Error>()
     fetchAssertion.expectValue()
-    fetchAssertion.subscribe(to: fetchPublisher(ChatInfo.Query(userId: contactA.id)))
+    fetchAssertion.subscribe(to: db.fetchChatInfosPublisher(ChatInfo.Query(userId: contactA.id)))
     fetchAssertion.waitForValues()
 
     XCTAssertNoDifference(fetchAssertion.receivedValues(), [expectedFetchResults])

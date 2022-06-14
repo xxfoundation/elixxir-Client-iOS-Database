@@ -99,12 +99,6 @@ extension Contact {
   /// Fetch contacts operation publisher
   public typealias FetchPublisher = XXModels.FetchPublisher<Contact, Query>
 
-  /// Insert new contact operation
-  public typealias Insert = XXModels.Insert<Contact>
-
-  /// Update existing contact operation
-  public typealias Update = XXModels.Update<Contact>
-
   /// Save (insert new or update existing) contact operation
   public typealias Save = XXModels.Save<Contact>
 

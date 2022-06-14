@@ -15,14 +15,12 @@ final class GroupChatInfoGRDBTests: XCTestCase {
   }
 
   func testFetching() throws {
-    let fetch: GroupChatInfo.Fetch = db.fetchGroupChatInfos
-
     // Mock up contacts:
 
-    let contactA = try db.insertContact(.stub("A"))
-    let contactB = try db.insertContact(.stub("B"))
-    let contactC = try db.insertContact(.stub("C"))
-    let contactD = try db.insertContact(.stub("D"))
+    let contactA = try db.saveContact(.stub("A"))
+    let contactB = try db.saveContact(.stub("B"))
+    let contactC = try db.saveContact(.stub("C"))
+    let contactD = try db.saveContact(.stub("D"))
 
     // Mock up groups:
 
@@ -107,17 +105,20 @@ final class GroupChatInfoGRDBTests: XCTestCase {
 
     // Fetch group chat infos:
 
-    XCTAssertNoDifference(try fetch(GroupChatInfo.Query()), [
-      GroupChatInfo(
-        group: groupB,
-        lastMessage: lastMessage_inGroupB_at7,
-        unreadCount: 0
-      ),
-      GroupChatInfo(
-        group: groupA,
-        lastMessage: lastMessage_inGroupA_at4,
-        unreadCount: 2
-      ),
-    ])
+    XCTAssertNoDifference(
+      try db.fetchGroupChatInfos(GroupChatInfo.Query()),
+      [
+        GroupChatInfo(
+          group: groupB,
+          lastMessage: lastMessage_inGroupB_at7,
+          unreadCount: 0
+        ),
+        GroupChatInfo(
+          group: groupA,
+          lastMessage: lastMessage_inGroupA_at4,
+          unreadCount: 2
+        ),
+      ]
+    )
   }
 }

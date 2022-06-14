@@ -15,15 +15,13 @@ final class ContactChatInfoGRDBTests: XCTestCase {
   }
 
   func testFetching() throws {
-    let fetch: ContactChatInfo.Fetch = db.fetchContactChatInfos
-
     // Mock up contacts:
 
-    let contactA = try db.insertContact(.stub("A"))
-    let contactB = try db.insertContact(.stub("B"))
-    let contactC = try db.insertContact(.stub("C"))
-    let contactD = try db.insertContact(.stub("D"))
-    let contactE = try db.insertContact(.stub("E"))
+    let contactA = try db.saveContact(.stub("A"))
+    let contactB = try db.saveContact(.stub("B"))
+    let contactC = try db.saveContact(.stub("C"))
+    let contactD = try db.saveContact(.stub("D"))
+    let contactE = try db.saveContact(.stub("E"))
 
     // Mock up conversation between contact A and B:
 
@@ -98,47 +96,56 @@ final class ContactChatInfoGRDBTests: XCTestCase {
 
     // Fetch contact chat infos for user A:
 
-    XCTAssertNoDifference(try fetch(ContactChatInfo.Query(userId: contactA.id)), [
-      ContactChatInfo(
-        contact: contactC,
-        lastMessage: lastMessage_betweenAandC_at5,
-        unreadCount: 1
-      ),
-      ContactChatInfo(
-        contact: contactB,
-        lastMessage: lastMessage_betweenAandB_at3,
-        unreadCount: 2
-      ),
-    ])
+    XCTAssertNoDifference(
+      try db.fetchContactChatInfos(ContactChatInfo.Query(userId: contactA.id)),
+      [
+        ContactChatInfo(
+          contact: contactC,
+          lastMessage: lastMessage_betweenAandC_at5,
+          unreadCount: 1
+        ),
+        ContactChatInfo(
+          contact: contactB,
+          lastMessage: lastMessage_betweenAandB_at3,
+          unreadCount: 2
+        ),
+      ]
+    )
 
     // Fetch contact chat infos for user B:
 
-    XCTAssertNoDifference(try fetch(ContactChatInfo.Query(userId: contactB.id)), [
-      ContactChatInfo(
-        contact: contactC,
-        lastMessage: lastMessage_betweenBandC_at7,
-        unreadCount: 0
-      ),
-      ContactChatInfo(
-        contact: contactA,
-        lastMessage: lastMessage_betweenAandB_at3,
-        unreadCount: 2
-      ),
-    ])
+    XCTAssertNoDifference(
+      try db.fetchContactChatInfos(ContactChatInfo.Query(userId: contactB.id)),
+      [
+        ContactChatInfo(
+          contact: contactC,
+          lastMessage: lastMessage_betweenBandC_at7,
+          unreadCount: 0
+        ),
+        ContactChatInfo(
+          contact: contactA,
+          lastMessage: lastMessage_betweenAandB_at3,
+          unreadCount: 2
+        ),
+      ]
+    )
 
     // Fetch contact chat infos for user C:
 
-    XCTAssertNoDifference(try fetch(ContactChatInfo.Query(userId: contactC.id)), [
-      ContactChatInfo(
-        contact: contactB,
-        lastMessage: lastMessage_betweenBandC_at7,
-        unreadCount: 0
-      ),
-      ContactChatInfo(
-        contact: contactA,
-        lastMessage: lastMessage_betweenAandC_at5,
-        unreadCount: 1
-      ),
-    ])
+    XCTAssertNoDifference(
+      try db.fetchContactChatInfos(ContactChatInfo.Query(userId: contactC.id)),
+      [
+        ContactChatInfo(
+          contact: contactB,
+          lastMessage: lastMessage_betweenBandC_at7,
+          unreadCount: 0
+        ),
+        ContactChatInfo(
+          contact: contactA,
+          lastMessage: lastMessage_betweenAandC_at5,
+          unreadCount: 1
+        ),
+      ]
+    )
   }
 }
