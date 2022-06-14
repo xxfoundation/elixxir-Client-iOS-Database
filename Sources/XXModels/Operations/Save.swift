@@ -24,8 +24,10 @@ public struct Save<Model> {
   }
 }
 
+#if DEBUG
 extension Save {
   public static func failing<Model>() -> Save<Model> {
     Save<Model> { _ in fatalError() }
   }
 }
+#endif

@@ -21,8 +21,10 @@ public struct Delete<Model> {
   }
 }
 
+#if DEBUG
 extension Delete {
   public static func failing<Model>() -> Delete<Model> {
     Delete<Model> { _ in fatalError() }
   }
 }
+#endif

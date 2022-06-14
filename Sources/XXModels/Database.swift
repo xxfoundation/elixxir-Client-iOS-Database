@@ -131,6 +131,7 @@ public struct Database {
   public var deleteMessage: Message.Delete
 }
 
+#if DEBUG
 extension Database {
   static public let failing = Database(
     fetchChatInfos: .failing(),
@@ -157,3 +158,4 @@ extension Database {
     deleteMessage: .failing()
   )
 }
+#endif
