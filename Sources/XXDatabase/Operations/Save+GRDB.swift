@@ -1,23 +1,19 @@
+import Foundation
 import GRDB
 import XXModels
 
-extension Database {
-  @discardableResult
-  public func save<Record>(
-    _ record: Record
-  ) throws -> Record
+extension Save {
+  static func grdb<Record>(
+    _ writer: DatabaseWriter,
+    _ queue: DispatchQueue
+  ) -> Save<Record>
   where Record: MutablePersistableRecord {
-    try queue.sync {
-      try writer.write { db in
-        try record.saved(db)
+    Save<Record> { record in
+      try queue.sync {
+        try writer.write { db in
+          try record.saved(db)
+        }
       }
-    }
-  }
-
-  public func save<Record>() -> Save<Record>
-  where Record: MutablePersistableRecord {
-    Save { record in
-      try save(record)
     }
   }
 }

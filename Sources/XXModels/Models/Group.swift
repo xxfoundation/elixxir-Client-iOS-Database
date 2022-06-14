@@ -69,14 +69,8 @@ extension Group {
   /// Save (insert new or update existing) group operation
   public typealias Save = XXModels.Save<Group>
 
-  /// Save (insert new or update existing) group operation publisher
-  public typealias SavePublisher = XXModels.SavePublisher<Group>
-
   /// Delete group operation
   public typealias Delete = XXModels.Delete<Group>
-
-  /// Delete group operation publisher
-  public typealias DeletePublisher = XXModels.DeletePublisher<Group>
 
   /// Query used for fetching groups
   public struct Query: Equatable {

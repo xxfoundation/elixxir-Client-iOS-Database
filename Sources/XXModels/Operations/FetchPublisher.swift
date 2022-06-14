@@ -21,3 +21,11 @@ public struct FetchPublisher<Model, Query> {
     run(query)
   }
 }
+
+#if DEBUG
+extension FetchPublisher {
+  public static func failing<Model, Query>() -> FetchPublisher<Model, Query> {
+    FetchPublisher<Model, Query> { _ in fatalError() }
+  }
+}
+#endif
