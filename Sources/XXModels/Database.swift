@@ -1,3 +1,4 @@
+/// Database operations interface
 public struct Database {
   public init(
     fetchChatInfos: ChatInfo.Fetch,
@@ -49,48 +50,84 @@ public struct Database {
 
   // MARK: - ChatInfo
 
+  /// Fetch chat infos
   public var fetchChatInfos: ChatInfo.Fetch
+
+  /// Fetch chat infos publisher
   public var fetchChatInfosPublisher: ChatInfo.FetchPublisher
 
   // MARK: - Contact
 
+  /// Fetch contacts
   public var fetchContacts: Contact.Fetch
+
+  /// Fetch contacts publisher
   public var fetchContactsPublisher: Contact.FetchPublisher
+
+  /// Save (insert new or update existing) contact
   public var saveContact: Contact.Save
+
+  /// Delete contact
   public var deleteContact: Contact.Delete
 
   // MARK: - ContactChatInfo
 
+  /// Fetch contact chat infos
   public var fetchContactChatInfos: ContactChatInfo.Fetch
+
+  /// Fetch contact chat infos publisher
   public var fetchContactChatInfosPublisher: ContactChatInfo.FetchPublisher
 
   // MARK: - Group
 
+  /// Fetch groups
   public var fetchGroups: Group.Fetch
+
+  /// Fetch groups publisher
   public var fetchGroupsPublisher: Group.FetchPublisher
+
+  /// Save (insert new or update existing) group
   public var saveGroup: Group.Save
+
+  /// Delete group
   public var deleteGroup: Group.Delete
 
   // MARK: - GroupChatInfo
 
+  /// Fetch group chat infos
   public var fetchGroupChatInfos: GroupChatInfo.Fetch
+
+  /// Fetch group chat infos publisher
   public var fetchGroupChatInfosPublisher: GroupChatInfo.FetchPublisher
 
   // MARK: - GroupInfo
 
+  /// Fetch group infos
   public var fetchGroupInfos: GroupInfo.Fetch
+
+  /// Fetch group infos publisher
   public var fetchGroupInfosPublisher: GroupInfo.FetchPublisher
 
   // MARK: - GroupMember
 
+  /// Save group-member relation
   public var saveGroupMember: GroupMember.Save
+
+  /// Delete group-member relation
   public var deleteGroupMember: GroupMember.Delete
 
   // MARK: - Message
 
+  /// Fetch messages
   public var fetchMessages: Message.Fetch
+
+  /// Fetch messages publisher
   public var fetchMessagesPublisher: Message.FetchPublisher
+
+  /// Save message
   public var saveMessage: Message.Save
+
+  /// Delete message
   public var deleteMessage: Message.Delete
 }
 
