@@ -21,3 +21,9 @@ public struct Insert<Model> {
     try run(model)
   }
 }
+
+extension Insert {
+  public static func failing<Model>() -> Insert<Model> {
+    Insert<Model> { _ in fatalError() }
+  }
+}

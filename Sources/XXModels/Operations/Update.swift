@@ -21,3 +21,9 @@ public struct Update<Model> {
     try run(model)
   }
 }
+
+extension Update {
+  public static func failing<Model>() -> Update<Model> {
+    Update<Model> { _ in fatalError() }
+  }
+}

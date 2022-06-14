@@ -23,3 +23,9 @@ public struct Save<Model> {
     try run(model)
   }
 }
+
+extension Save {
+  public static func failing<Model>() -> Save<Model> {
+    Save<Model> { _ in fatalError() }
+  }
+}

@@ -20,3 +20,9 @@ public struct Delete<Model> {
     try run(model)
   }
 }
+
+extension Delete {
+  public static func failing<Model>() -> Delete<Model> {
+    Delete<Model> { _ in fatalError() }
+  }
+}
