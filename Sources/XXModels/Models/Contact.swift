@@ -102,26 +102,14 @@ extension Contact {
   /// Insert new contact operation
   public typealias Insert = XXModels.Insert<Contact>
 
-  /// Insert new contact operation publisher
-  public typealias InsertPublisher = XXModels.InsertPublisher<Contact>
-
   /// Update existing contact operation
   public typealias Update = XXModels.Update<Contact>
-
-  /// Update existing contact operation publisher
-  public typealias UpdatePublisher = XXModels.UpdatePublisher<Contact>
 
   /// Save (insert new or update existing) contact operation
   public typealias Save = XXModels.Save<Contact>
 
-  /// Save (insert new or update existing) contact operation publisher
-  public typealias SavePublisher = XXModels.SavePublisher<Contact>
-
   /// Delete contact operation
   public typealias Delete = XXModels.Delete<Contact>
-
-  /// Delete contact operation publisher
-  public typealias DeletePublisher = XXModels.DeletePublisher<Contact>
 
   /// Query used for fetching contacts
   public struct Query: Equatable {
