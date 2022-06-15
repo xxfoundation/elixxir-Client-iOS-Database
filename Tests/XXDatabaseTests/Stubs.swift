@@ -48,6 +48,7 @@ extension Message {
     to recipient: Contact,
     at timeInterval: TimeInterval,
     networkId: Data? = nil,
+    status: Status = .received,
     isUnread: Bool = false
   ) -> Message {
     Message(
@@ -56,6 +57,7 @@ extension Message {
       recipientId: recipient.id,
       groupId: nil,
       date: .stub(timeInterval),
+      status: status,
       isUnread: isUnread,
       text: "\(sender.username ?? "?") → \(recipient.username ?? "?") @ \(timeInterval)"
     )
@@ -66,6 +68,7 @@ extension Message {
     to group: Group,
     at timeInterval: TimeInterval,
     networkId: Data? = nil,
+    status: Status = .received,
     isUnread: Bool = false
   ) -> Message {
     Message(
@@ -74,6 +77,7 @@ extension Message {
       recipientId: nil,
       groupId: group.id,
       date: .stub(timeInterval),
+      status: status,
       isUnread: isUnread,
       text: "\(sender.username ?? "?") → G:\(group.name) @ \(timeInterval)"
     )

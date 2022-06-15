@@ -6,6 +6,30 @@ public struct Message: Identifiable, Equatable, Codable {
   /// Unique identifier of a message
   public typealias ID = Int64?
 
+  /// Represents status of the message
+  public enum Status: String, Equatable, Codable {
+    /// Outgoing message is sending
+    case sending
+
+    /// Outgoing message sending timed out
+    case sendingTimedOut
+
+    /// Outgoing message sending failed
+    case sendingFailed
+
+    /// Outgoing message successfully sent
+    case sent
+
+    /// Incoming message receiving in progress
+    case receiving
+
+    /// Incoming message receiving failed
+    case receivingFailed
+
+    /// Incoming message successfully received
+    case received
+  }
+
   /// Instantiate message representation
   /// - Parameters:
   ///   - id: Unique identifier of the message
@@ -14,6 +38,7 @@ public struct Message: Identifiable, Equatable, Codable {
   ///   - recipientId: Recipient's contact ID
   ///   - groupId: Message group ID
   ///   - date: Message date
+  ///   - status: Message status
   ///   - isUnread: Unread status
   ///   - text: Text
   ///   - replyMessageId: Network id of the message this message replies to
@@ -24,6 +49,7 @@ public struct Message: Identifiable, Equatable, Codable {
     recipientId: Contact.ID?,
     groupId: Group.ID?,
     date: Date,
+    status: Status,
     isUnread: Bool,
     text: String,
     replyMessageId: Data? = nil
@@ -34,6 +60,7 @@ public struct Message: Identifiable, Equatable, Codable {
     self.recipientId = recipientId
     self.groupId = groupId
     self.date = date
+    self.status = status
     self.isUnread = isUnread
     self.text = text
     self.replyMessageId = replyMessageId
@@ -62,6 +89,9 @@ public struct Message: Identifiable, Equatable, Codable {
 
   /// Message date
   public var date: Date
+
+  /// Message status
+  public var status: Status
 
   /// Unread status
   public var isUnread: Bool

@@ -14,6 +14,7 @@ final class ChatInfoTests: XCTestCase {
       recipientId: nil,
       groupId: nil,
       date: Date(),
+      status: .received,
       isUnread: false,
       text: ""
     )
@@ -47,6 +48,7 @@ final class ChatInfoTests: XCTestCase {
       recipientId: nil,
       groupId: nil,
       date: Date(),
+      status: .received,
       isUnread: false,
       text: ""
     )

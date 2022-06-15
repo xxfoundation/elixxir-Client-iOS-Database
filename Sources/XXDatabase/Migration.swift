@@ -48,6 +48,7 @@ extension Sequence where Element == Migration {
         t.column("groupId", .blob)
           .references("groups", column: "id", onDelete: .cascade, onUpdate: .cascade)
         t.column("date", .datetime).notNull()
+        t.column("status", .text).notNull()
         t.column("isUnread", .boolean).notNull()
         t.column("text", .text).notNull()
         t.column("replyMessageId", .blob)

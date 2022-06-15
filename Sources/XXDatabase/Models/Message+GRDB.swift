@@ -9,6 +9,7 @@ extension Message: FetchableRecord, MutablePersistableRecord {
     case recipientId
     case groupId
     case date
+    case status
     case isUnread
     case text
     case replyMessageId

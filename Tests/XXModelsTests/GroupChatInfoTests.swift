@@ -21,6 +21,7 @@ final class GroupChatInfoTests: XCTestCase {
       recipientId: nil,
       groupId: nil,
       date: Date(timeIntervalSince1970: 1234),
+      status: .received,
       isUnread: true,
       text: "text"
     )
