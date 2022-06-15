@@ -15,6 +15,7 @@ extension Sequence where Element == Migration {
         t.column("email", .text)
         t.column("phone", .text)
         t.column("nickname", .text)
+        t.column("photo", .blob)
         t.column("authStatus", .text).notNull()
         t.column("isRecent", .boolean).notNull()
       }

@@ -9,6 +9,7 @@ extension Contact: FetchableRecord, PersistableRecord {
     case email
     case phone
     case nickname
+    case photo
     case authStatus
     case isRecent
   }

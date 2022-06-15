@@ -51,6 +51,7 @@ public struct Contact: Identifiable, Equatable, Codable {
   ///   - email: Contact email address (defaults to `nil`)
   ///   - phone: Contact phone number (defaults to `nil`)
   ///   - nickname: Contact nickname (defaults to `nil`)
+  ///   - photo: Photo data (defaults to `nil`)
   ///   - authStatus: Contact authorization status (defaults to `.stranger`)
   ///   - isRecent: Flag determining recent contact status (defaults to `false`)
   public init(
@@ -60,6 +61,7 @@ public struct Contact: Identifiable, Equatable, Codable {
     email: String? = nil,
     phone: String? = nil,
     nickname: String? = nil,
+    photo: Data? = nil,
     authStatus: AuthStatus = .stranger,
     isRecent: Bool = false
   ) {
@@ -69,6 +71,7 @@ public struct Contact: Identifiable, Equatable, Codable {
     self.email = email
     self.phone = phone
     self.nickname = nickname
+    self.photo = photo
     self.authStatus = authStatus
     self.isRecent = isRecent
   }
@@ -90,6 +93,9 @@ public struct Contact: Identifiable, Equatable, Codable {
 
   /// Contact nickname
   public var nickname: String?
+
+  /// Photo data
+  public var photo: Data?
 
   /// Contact authorization status
   public var authStatus: AuthStatus
