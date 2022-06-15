@@ -93,11 +93,11 @@ extension Group {
     ///   - authStatus: Filter groups by auth status.
     ///     If set, only groups with any of the provided auth statuses will be fetched.
     ///     If `nil` (default), the filter is not used.
-    ///   - sortBy: Sort order
+    ///   - sortBy: Sort order (defaults to `.createdAt(desc: true)`).
     public init(
       withMessages: Bool? = nil,
       authStatus: Set<AuthStatus>? = nil,
-      sortBy: SortOrder
+      sortBy: SortOrder = .createdAt(desc: true)
     ) {
       self.withMessages = withMessages
       self.authStatus = authStatus
