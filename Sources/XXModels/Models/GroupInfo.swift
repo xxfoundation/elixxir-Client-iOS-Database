@@ -59,10 +59,10 @@ extension GroupInfo {
     ///
     /// - Parameters:
     ///   - groupId: Group ID or `nil` for fetching all groups.
-    ///   - sortBy: Sort order
+    ///   - sortBy: Sort order (defaults to `.groupName()`).
     public init(
       groupId: Group.ID? = nil,
-      sortBy: SortOrder
+      sortBy: SortOrder = .groupName()
     ) {
       self.groupId = groupId
       self.sortBy = sortBy
