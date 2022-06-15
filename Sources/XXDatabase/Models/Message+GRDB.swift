@@ -49,6 +49,10 @@ extension Message: FetchableRecord, MutablePersistableRecord {
       break
     }
 
+    if let status = query.status {
+      request = request.filter(Set(status.map(\.rawValue)).contains(Column.status))
+    }
+
     if let isUnread = query.isUnread {
       request = request.filter(Column.isUnread == isUnread)
     }

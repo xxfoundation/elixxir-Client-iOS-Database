@@ -155,6 +155,9 @@ extension Message {
     ///     If `.some(.some(networkId))`, get messages with provided `networkId`.
     ///     If `.some(.none)`, get messages without `networkId`.
     ///     If `.none` (default), disable the filter.
+    ///   - status: Filter messages by status.
+    ///     If set, only messages with any of the provided statuses will be included.
+    ///     If `nil` (default), the filter is not used.
     ///   - isUnread: Filter by unread status.
     ///     If `true`, get only unread messages.
     ///     If `false`, get only read messages.
@@ -164,12 +167,14 @@ extension Message {
       id: Message.ID = nil,
       networkId: Data?? = nil,
       chat: Chat? = nil,
+      status: Set<Status>? = nil,
       isUnread: Bool? = nil,
       sortBy: SortOrder = .date()
     ) {
       self.id = id
       self.networkId = networkId
       self.chat = chat
+      self.status = status
       self.isUnread = isUnread
       self.sortBy = sortBy
     }
@@ -186,6 +191,12 @@ extension Message {
 
     /// Messages chat filter
     public var chat: Chat?
+
+    /// Filter messages by status
+    ///
+    /// If set, only messages with any of the provided statuses will be included.
+    /// If `nil`, the filter is not used.
+    public var status: Set<Status>?
 
     /// Filter by unread status
     ///

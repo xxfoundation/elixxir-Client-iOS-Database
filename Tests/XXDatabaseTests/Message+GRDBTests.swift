@@ -262,8 +262,103 @@ final class MessageGRDBTests: XCTestCase {
     )
   }
 
+  func testFetchingByStatus() throws {
+    // Mock up contacts:
+
+    let contactA = try db.saveContact(.stub("A"))
+    let contactB = try db.saveContact(.stub("B"))
+
+    // Mock up messages:
+
+    let message1 = try db.saveMessage(.stub(
+      from: contactA,
+      to: contactB,
+      at: 1,
+      status: .sent
+    ))
+
+    let message2 = try db.saveMessage(.stub(
+      from: contactB,
+      to: contactA,
+      at: 2,
+      status: .received
+    ))
+
+    let message3 = try db.saveMessage(.stub(
+      from: contactA,
+      to: contactB,
+      at: 3,
+      status: .sent
+    ))
+
+    let message4 = try db.saveMessage(.stub(
+      from: contactB,
+      to: contactA,
+      at: 4,
+      status: .received
+    ))
+
+    let message5 = try db.saveMessage(.stub(
+      from: contactA,
+      to: contactB,
+      at: 5,
+      status: .sending
+    ))
+
+    let message6 = try db.saveMessage(.stub(
+      from: contactB,
+      to: contactA,
+      at: 6,
+      status: .receiving
+    ))
+
+    // Fetch `sent` messages:
+
+    XCTAssertNoDifference(
+      try db.fetchMessages(.init(status: [.sent])),
+      [
+        message1,
+        message3,
+      ]
+    )
+
+    // Fetch `received` messages:
+
+    XCTAssertNoDifference(
+      try db.fetchMessages(.init(status: [.received])),
+      [
+        message2,
+        message4,
+      ]
+    )
+
+    // Fetch messages with `sending` OR `receiving` status:
+
+    XCTAssertNoDifference(
+      try db.fetchMessages(.init(status: [.sending, .receiving])),
+      [
+        message5,
+        message6,
+      ]
+    )
+
+    // Fetch all messages regardless the status:
+
+    XCTAssertNoDifference(
+      try db.fetchMessages(.init(status: nil)),
+      [
+        message1,
+        message2,
+        message3,
+        message4,
+        message5,
+        message6,
+      ]
+    )
+  }
+
   func testFetchingByUnreadStatus() throws {
-    // Mock up contacts
+    // Mock up contacts:
 
     let contactA = try db.saveContact(.stub("A"))
     let contactB = try db.saveContact(.stub("B"))
