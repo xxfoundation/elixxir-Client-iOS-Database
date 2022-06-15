@@ -49,7 +49,8 @@ extension XXModels.Database {
       fetchMessages: .grdb(writer, queue, Message.request(_:)),
       fetchMessagesPublisher: .grdb(writer, queue, Message.request(_:)),
       saveMessage: .grdb(writer, queue),
-      deleteMessage: .grdb(writer, queue)
+      deleteMessage: .grdb(writer, queue),
+      drop: .grdb(writer, queue)
     )
   }
 }
