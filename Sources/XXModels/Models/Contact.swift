@@ -122,10 +122,10 @@ extension Contact {
     ///   - authStatus: Filter contacts by auth status.
     ///     If set, only contacts with any of the provided auth statuses will be fetched.
     ///     If `nil` (default), the filter is not used.
-    ///   - sortBy: Sort order
+    ///   - sortBy: Sort order (defaults to `.username()`).
     public init(
       authStatus: Set<AuthStatus>? = nil,
-      sortBy: SortOrder
+      sortBy: SortOrder = .username()
     ) {
       self.authStatus = authStatus
       self.sortBy = sortBy
