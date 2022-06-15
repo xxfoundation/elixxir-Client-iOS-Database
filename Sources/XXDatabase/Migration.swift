@@ -47,7 +47,7 @@ extension Sequence where Element == Migration {
         t.column("date", .datetime).notNull()
         t.column("isUnread", .boolean).notNull()
         t.column("text", .text).notNull()
-        t.column("replayMessageId", .blob)
+        t.column("replyMessageId", .blob)
       }
     }
   ]}
