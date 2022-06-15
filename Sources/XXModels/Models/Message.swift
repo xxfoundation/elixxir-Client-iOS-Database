@@ -86,6 +86,9 @@ extension Message {
   /// Delete message operation
   public typealias Delete = XXModels.Delete<Message>
 
+  /// Delete messages operation
+  public typealias DeleteMany = XXModels.DeleteMany<Message, Query>
+
   /// Query used for fetching messages
   public struct Query: Equatable {
     /// Chat filter

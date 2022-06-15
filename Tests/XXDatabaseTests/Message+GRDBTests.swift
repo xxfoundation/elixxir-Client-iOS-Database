@@ -301,4 +301,73 @@ final class MessageGRDBTests: XCTestCase {
       [message1, message2]
     )
   }
+
+  func testDeletingMany() throws {
+    // Mock up contacts
+
+    let contactA = try db.saveContact(.stub("A"))
+    let contactB = try db.saveContact(.stub("B"))
+    let contactC = try db.saveContact(.stub("C"))
+
+    // Mock up messages:
+
+    try db.saveMessage(.stub(
+      from: contactA,
+      to: contactB,
+      at: 1
+    ))
+
+    try db.saveMessage(.stub(
+      from: contactB,
+      to: contactA,
+      at: 2
+    ))
+
+    try db.saveMessage(.stub(
+      from: contactA,
+      to: contactB,
+      at: 3
+    ))
+
+    let message4_ac = try db.saveMessage(.stub(
+      from: contactA,
+      to: contactC,
+      at: 4
+    ))
+
+    let message5_ca = try db.saveMessage(.stub(
+      from: contactC,
+      to: contactA,
+      at: 5
+    ))
+
+    let message6_bc = try db.saveMessage(.stub(
+      from: contactB,
+      to: contactC,
+      at: 6
+    ))
+
+    let message7_cb = try db.saveMessage(.stub(
+      from: contactC,
+      to: contactB,
+      at: 7
+    ))
+
+    // Delete messages between contact A and B:
+
+    XCTAssertEqual(
+      try db.deleteMessages(.init(chat: .direct(contactA.id, contactB.id))),
+      3
+    )
+
+    XCTAssertNoDifference(
+      try db.fetchMessages(.init(sortBy: .date())),
+      [
+        message4_ac,
+        message5_ca,
+        message6_bc,
+        message7_cb,
+      ]
+    )
+  }
 }
