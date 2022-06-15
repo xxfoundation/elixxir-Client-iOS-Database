@@ -8,6 +8,7 @@ extension Group: PersistableRecord, FetchableRecord {
     case leaderId
     case createdAt
     case authStatus
+    case serialized
   }
 
   enum Association {

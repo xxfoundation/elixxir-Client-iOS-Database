@@ -29,18 +29,21 @@ public struct Group: Identifiable, Equatable, Codable {
   ///   - leaderId: Group leader's contact ID
   ///   - createdAt: Group creation date
   ///   - authStatus: Group authorization status
+  ///   - serialized: Serialized data
   public init(
     id: ID,
     name: String,
     leaderId: Contact.ID,
     createdAt: Date,
-    authStatus: AuthStatus
+    authStatus: AuthStatus,
+    serialized: Data
   ) {
     self.id = id
     self.name = name
     self.leaderId = leaderId
     self.createdAt = createdAt
     self.authStatus = authStatus
+    self.serialized = serialized
   }
 
   /// Unique identifier of the group
@@ -57,6 +60,9 @@ public struct Group: Identifiable, Equatable, Codable {
 
   /// Group authorization status
   public var authStatus: AuthStatus
+
+  /// Serialized data
+  public var serialized: Data
 }
 
 extension Group {

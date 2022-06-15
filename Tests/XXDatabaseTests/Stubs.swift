@@ -36,7 +36,8 @@ extension Group {
       name: "group-name-\(id)",
       leaderId: leaderId,
       createdAt: createdAt,
-      authStatus: authStatus
+      authStatus: authStatus,
+      serialized: "group-serialized-\(id)".data(using: .utf8)!
     )
   }
 }
