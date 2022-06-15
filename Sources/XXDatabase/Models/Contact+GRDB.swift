@@ -10,6 +10,7 @@ extension Contact: FetchableRecord, PersistableRecord {
     case phone
     case nickname
     case authStatus
+    case isRecent
   }
 
   public static let databaseTableName = "contacts"

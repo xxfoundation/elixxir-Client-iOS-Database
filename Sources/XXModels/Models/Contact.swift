@@ -52,6 +52,7 @@ public struct Contact: Identifiable, Equatable, Codable {
   ///   - phone: Contact phone number (defaults to `nil`)
   ///   - nickname: Contact nickname (defaults to `nil`)
   ///   - authStatus: Contact authorization status (defaults to `.stranger`)
+  ///   - isRecent: Flag determining recent contact status (defaults to `false`)
   public init(
     id: ID,
     marshaled: Data? = nil,
@@ -59,7 +60,8 @@ public struct Contact: Identifiable, Equatable, Codable {
     email: String? = nil,
     phone: String? = nil,
     nickname: String? = nil,
-    authStatus: AuthStatus = .stranger
+    authStatus: AuthStatus = .stranger,
+    isRecent: Bool = false
   ) {
     self.id = id
     self.marshaled = marshaled
@@ -68,6 +70,7 @@ public struct Contact: Identifiable, Equatable, Codable {
     self.phone = phone
     self.nickname = nickname
     self.authStatus = authStatus
+    self.isRecent = isRecent
   }
 
   /// Unique identifier
@@ -90,6 +93,9 @@ public struct Contact: Identifiable, Equatable, Codable {
 
   /// Contact authorization status
   public var authStatus: AuthStatus
+
+  /// Flag determining recent contact status
+  public var isRecent: Bool
 }
 
 extension Contact {
