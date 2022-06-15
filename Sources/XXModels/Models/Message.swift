@@ -119,12 +119,12 @@ extension Message {
     ///   - id: If provided, filter by message id (defaults to `nil`)
     ///   - networkId: Filter by network id (defaults to `nil`)
     ///   - chat: Chat filter (defaults to `nil`)
-    ///   - sortBy: Sort order
+    ///   - sortBy: Sort order (defaults to `.date()`)
     public init(
       id: Message.ID = nil,
       networkId: Data?? = nil,
       chat: Chat? = nil,
-      sortBy: SortOrder
+      sortBy: SortOrder = .date()
     ) {
       self.id = id
       self.networkId = networkId
