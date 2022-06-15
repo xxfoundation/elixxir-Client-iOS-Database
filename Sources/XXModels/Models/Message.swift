@@ -120,15 +120,21 @@ extension Message {
     ///   - networkId: Filter by network id (defaults to `nil`)
     ///   - chat: Chat filter (defaults to `nil`)
     ///   - sortBy: Sort order (defaults to `.date()`)
+    ///   - isUnread: Filter by unread status.
+    ///     If `true`, get only unread messages.
+    ///     If `false`, get only read messages.
+    ///     If `nil` (default), disable the filter.
     public init(
       id: Message.ID = nil,
       networkId: Data?? = nil,
       chat: Chat? = nil,
+      isUnread: Bool? = nil,
       sortBy: SortOrder = .date()
     ) {
       self.id = id
       self.networkId = networkId
       self.chat = chat
+      self.isUnread = isUnread
       self.sortBy = sortBy
     }
 
@@ -144,6 +150,13 @@ extension Message {
 
     /// Messages chat filter
     public var chat: Chat?
+
+    /// Filter by unread status
+    ///
+    /// If `true`, get only unread messages.
+    /// If `false`, get only read messages.
+    /// If `nil`, disable the filter.
+    public var isUnread: Bool?
 
     /// Messages sort order
     public var sortBy: SortOrder

@@ -48,6 +48,10 @@ extension Message: FetchableRecord, MutablePersistableRecord {
       break
     }
 
+    if let isUnread = query.isUnread {
+      request = request.filter(Column.isUnread == isUnread)
+    }
+
     switch query.sortBy {
     case .date(desc: false):
       request = request.order(Column.date)

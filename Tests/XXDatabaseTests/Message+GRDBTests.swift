@@ -261,4 +261,44 @@ final class MessageGRDBTests: XCTestCase {
       [message1, message2, message3]
     )
   }
+
+  func testFetchingByUnreadStatus() throws {
+    // Mock up contacts
+
+    let contactA = try db.saveContact(.stub("A"))
+    let contactB = try db.saveContact(.stub("B"))
+
+    // Mock up messages:
+
+    let message1 = try db.saveMessage(.stub(
+      from: contactA,
+      to: contactB,
+      at: 1,
+      isUnread: true
+    ))
+
+    let message2 = try db.saveMessage(.stub(
+      from: contactB,
+      to: contactA,
+      at: 2,
+      isUnread: false
+    ))
+
+    // Fetch messages by unread status:
+
+    XCTAssertNoDifference(
+      try db.fetchMessages(.init(isUnread: true, sortBy: .date())),
+      [message1]
+    )
+
+    XCTAssertNoDifference(
+      try db.fetchMessages(.init(isUnread: false, sortBy: .date())),
+      [message2]
+    )
+
+    XCTAssertNoDifference(
+      try db.fetchMessages(.init(isUnread: nil, sortBy: .date())),
+      [message1, message2]
+    )
+  }
 }
