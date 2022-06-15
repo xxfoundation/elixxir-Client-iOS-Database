@@ -116,14 +116,17 @@ extension Message {
     /// Instantiate messages query
     ///
     /// - Parameters:
-    ///   - id: If provided, filter by message id (defaults to `nil`)
-    ///   - networkId: Filter by network id (defaults to `nil`)
-    ///   - chat: Chat filter (defaults to `nil`)
-    ///   - sortBy: Sort order (defaults to `.date()`)
+    ///   - id: If provided, filter by message id (defaults to `nil`).
+    ///   - networkId: Filter by network id (defaults to `nil`).
+    ///   - chat: Chat filter.
+    ///     If `.some(.some(networkId))`, get messages with provided `networkId`.
+    ///     If `.some(.none)`, get messages without `networkId`.
+    ///     If `.none` (default), disable the filter.
     ///   - isUnread: Filter by unread status.
     ///     If `true`, get only unread messages.
     ///     If `false`, get only read messages.
     ///     If `nil` (default), disable the filter.
+    ///   - sortBy: Sort order (defaults to `.date()`).
     public init(
       id: Message.ID = nil,
       networkId: Data?? = nil,
