@@ -54,6 +54,7 @@ public struct Contact: Identifiable, Equatable, Codable {
   ///   - photo: Photo data (defaults to `nil`)
   ///   - authStatus: Contact authorization status (defaults to `.stranger`)
   ///   - isRecent: Flag determining recent contact status (defaults to `false`)
+  ///   - createdAt: Creation date (defaults to current date)
   public init(
     id: ID,
     marshaled: Data? = nil,
@@ -63,7 +64,8 @@ public struct Contact: Identifiable, Equatable, Codable {
     nickname: String? = nil,
     photo: Data? = nil,
     authStatus: AuthStatus = .stranger,
-    isRecent: Bool = false
+    isRecent: Bool = false,
+    createdAt: Date = Date()
   ) {
     self.id = id
     self.marshaled = marshaled
@@ -74,6 +76,7 @@ public struct Contact: Identifiable, Equatable, Codable {
     self.photo = photo
     self.authStatus = authStatus
     self.isRecent = isRecent
+    self.createdAt = createdAt
   }
 
   /// Unique identifier
@@ -102,6 +105,9 @@ public struct Contact: Identifiable, Equatable, Codable {
 
   /// Flag determining recent contact status
   public var isRecent: Bool
+
+  /// Creation date
+  public var createdAt: Date
 }
 
 extension Contact {

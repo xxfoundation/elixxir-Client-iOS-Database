@@ -18,6 +18,7 @@ extension Sequence where Element == Migration {
         t.column("photo", .blob)
         t.column("authStatus", .text).notNull()
         t.column("isRecent", .boolean).notNull()
+        t.column("createdAt", .datetime).notNull()
       }
 
       try db.create(table: "groups") { t in

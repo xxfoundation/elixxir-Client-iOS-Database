@@ -19,7 +19,8 @@ extension Contact {
       email: "contact-\(id)@elixxir.io",
       phone: "contact-phone-\(id)",
       nickname: "contact-nickname-\(id)",
-      authStatus: authStatus
+      authStatus: authStatus,
+      createdAt: .stub(0)
     )
   }
 }
