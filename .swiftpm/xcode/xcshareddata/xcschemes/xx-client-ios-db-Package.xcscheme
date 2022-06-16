@@ -28,6 +28,20 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "XXLegacyDatabaseMigrator"
+               BuildableName = "XXLegacyDatabaseMigrator"
+               BlueprintName = "XXLegacyDatabaseMigrator"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "XXModels"
                BuildableName = "XXModels"
                BlueprintName = "XXModels"
@@ -45,6 +59,20 @@
                BlueprintIdentifier = "XXDatabaseTests"
                BuildableName = "XXDatabaseTests"
                BlueprintName = "XXDatabaseTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "XXLegacyDatabaseMigratorTests"
+               BuildableName = "XXLegacyDatabaseMigratorTests"
+               BlueprintName = "XXLegacyDatabaseMigratorTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
@@ -78,6 +106,16 @@
                BlueprintIdentifier = "XXDatabaseTests"
                BuildableName = "XXDatabaseTests"
                BlueprintName = "XXDatabaseTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "XXLegacyDatabaseMigratorTests"
+               BuildableName = "XXLegacyDatabaseMigratorTests"
+               BlueprintName = "XXLegacyDatabaseMigratorTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>

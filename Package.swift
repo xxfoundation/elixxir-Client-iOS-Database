@@ -25,6 +25,10 @@ let package = Package(
       targets: ["XXModels"]
     ),
     .library(
+      name: "XXLegacyDatabaseMigrator",
+      targets: ["XXLegacyDatabaseMigrator"]
+    ),
+    .library(
       name: "XXDatabase",
       targets: ["XXDatabase"]
     ),
@@ -49,6 +53,35 @@ let package = Package(
       dependencies: [
         .target(
           name: "XXModels"
+        ),
+      ],
+      swiftSettings: swiftSettings
+    ),
+    .target(
+      name: "XXLegacyDatabaseMigrator",
+      dependencies: [
+        .target(
+          name: "XXDatabase"
+        ),
+        .target(
+          name: "XXModels"
+        ),
+        .product(
+          name: "GRDB",
+          package: "GRDB.swift"
+        ),
+      ],
+      swiftSettings: swiftSettings
+    ),
+    .testTarget(
+      name: "XXLegacyDatabaseMigratorTests",
+      dependencies: [
+        .target(
+          name: "XXLegacyDatabaseMigrator"
+        ),
+        .product(
+          name: "CustomDump",
+          package: "swift-custom-dump"
         ),
       ],
       swiftSettings: swiftSettings
