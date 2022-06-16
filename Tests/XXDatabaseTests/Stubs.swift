@@ -51,7 +51,8 @@ extension Message {
     at timeInterval: TimeInterval,
     networkId: Data? = nil,
     status: Status = .received,
-    isUnread: Bool = false
+    isUnread: Bool = false,
+    fileTransfer: FileTransfer? = nil
   ) -> Message {
     Message(
       networkId: networkId,
@@ -61,7 +62,8 @@ extension Message {
       date: .stub(timeInterval),
       status: status,
       isUnread: isUnread,
-      text: "\(sender.username ?? "?") → \(recipient.username ?? "?") @ \(timeInterval)"
+      text: "\(sender.username ?? "?") → \(recipient.username ?? "?") @ \(timeInterval)",
+      fileTransferId: fileTransfer?.id
     )
   }
 
@@ -71,7 +73,8 @@ extension Message {
     at timeInterval: TimeInterval,
     networkId: Data? = nil,
     status: Status = .received,
-    isUnread: Bool = false
+    isUnread: Bool = false,
+    fileTransfer: FileTransfer? = nil
   ) -> Message {
     Message(
       networkId: networkId,
@@ -81,7 +84,8 @@ extension Message {
       date: .stub(timeInterval),
       status: status,
       isUnread: isUnread,
-      text: "\(sender.username ?? "?") → G:\(group.name) @ \(timeInterval)"
+      text: "\(sender.username ?? "?") → G:\(group.name) @ \(timeInterval)",
+      fileTransferId: fileTransfer?.id
     )
   }
 }

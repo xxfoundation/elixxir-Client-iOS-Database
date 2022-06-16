@@ -392,6 +392,88 @@ final class MessageGRDBTests: XCTestCase {
     )
   }
 
+  func testFetchingByFileTransferId() throws {
+    // Mock up contacts:
+
+    let contact1 = try db.saveContact(.stub("C1"))
+    let contact2 = try db.saveContact(.stub("C2"))
+
+    // Mock up groups:
+
+    let group1 = try db.saveGroup(.stub("G1", leaderId: contact1.id, createdAt: .stub(1)))
+    let group2 = try db.saveGroup(.stub("G2", leaderId: contact2.id, createdAt: .stub(2)))
+
+    // Mock up transfers:
+
+    let transfer1 = try db.saveFileTransfer(.stub(
+      "T1",
+      contact: contact1,
+      isIncoming: true,
+      at: 1
+    ))
+
+    let transfer2 = try db.saveFileTransfer(.stub(
+      "T2",
+      contact: contact2,
+      isIncoming: false,
+      at: 2
+    ))
+
+    // Mock up messages:
+
+    let message1 = try db.saveMessage(.stub(
+      from: contact1,
+      to: contact2,
+      at: 1
+    ))
+
+    let message2 = try db.saveMessage(.stub(
+      from: contact2,
+      to: contact1,
+      at: 2,
+      fileTransfer: transfer1
+    ))
+
+    let message3 = try db.saveMessage(.stub(
+      from: contact1,
+      to: group1,
+      at: 3
+    ))
+
+    let message4 = try db.saveMessage(.stub(
+      from: contact2,
+      to: group2,
+      at: 4,
+      fileTransfer: transfer2
+    ))
+
+    // Fetch messages with provided file transfer id:
+
+    XCTAssertNoDifference(
+      try db.fetchMessages(.init(fileTransferId: transfer1.id)),
+      [message2]
+    )
+
+    XCTAssertNoDifference(
+      try db.fetchMessages(.init(fileTransferId: transfer2.id)),
+      [message4]
+    )
+
+    // Fetch messages without file transfer id:
+
+    XCTAssertNoDifference(
+      try db.fetchMessages(.init(fileTransferId: .some(nil))),
+      [message1, message3]
+    )
+
+    // Fetch messages regardless file transfer id:
+
+    XCTAssertNoDifference(
+      try db.fetchMessages(.init(fileTransferId: nil)),
+      [message1, message2, message3, message4]
+    )
+  }
+
   func testDeletingMany() throws {
     // Mock up contacts
 

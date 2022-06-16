@@ -173,6 +173,10 @@ extension Message {
     ///     If `true`, get only unread messages.
     ///     If `false`, get only read messages.
     ///     If `nil` (default), disable the filter.
+    ///   - fileTransferId: Filter by file transfer id.
+    ///     If `.some(.some(fileTransferId))`, get messages with provided `fileTransferId`.
+    ///     If `.some(.none)`, get messages without `fileTransferId`.
+    ///     If `.none` (default), disable the filter.
     ///   - sortBy: Sort order (defaults to `.date()`).
     public init(
       id: Set<Message.ID>? = nil,
@@ -180,6 +184,7 @@ extension Message {
       chat: Chat? = nil,
       status: Set<Status>? = nil,
       isUnread: Bool? = nil,
+      fileTransferId: FileTransfer.ID?? = nil,
       sortBy: SortOrder = .date()
     ) {
       self.id = id
@@ -187,6 +192,7 @@ extension Message {
       self.chat = chat
       self.status = status
       self.isUnread = isUnread
+      self.fileTransferId = fileTransferId
       self.sortBy = sortBy
     }
 
@@ -215,6 +221,13 @@ extension Message {
     /// If `false`, get only read messages.
     /// If `nil`, disable the filter.
     public var isUnread: Bool?
+
+    /// Filter by file transfer id
+    ///
+    /// If `.some(.some(fileTransferId))`, get messages with provided `fileTransferId`.
+    /// If `.some(.none)`, get messages without `fileTransferId`.
+    /// If `.none`, disable the filter.
+    public var fileTransferId: FileTransfer.ID??
 
     /// Messages sort order
     public var sortBy: SortOrder

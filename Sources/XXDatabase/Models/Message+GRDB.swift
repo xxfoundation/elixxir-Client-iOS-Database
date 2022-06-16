@@ -63,6 +63,17 @@ extension Message: FetchableRecord, MutablePersistableRecord {
       request = request.filter(Column.isUnread == isUnread)
     }
 
+    switch query.fileTransferId {
+    case .some(.some(let fileTransferId)):
+      request = request.filter(Column.fileTransferId == fileTransferId)
+
+    case .some(.none):
+      request = request.filter(Column.fileTransferId == nil)
+
+    case .none:
+      break
+    }
+
     switch query.sortBy {
     case .date(desc: false):
       request = request.order(Column.date)
