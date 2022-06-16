@@ -33,7 +33,7 @@ public struct Message: Identifiable, Equatable, Codable {
   /// Instantiate message representation
   /// - Parameters:
   ///   - id: Unique identifier of the message
-  ///   - networkId: Unique xx network identifier of the message
+  ///   - networkId: Network identifier of the message (defaults to `nil`)
   ///   - senderId: Sender's contact ID
   ///   - recipientId: Recipient's contact ID
   ///   - groupId: Message group ID
@@ -41,7 +41,7 @@ public struct Message: Identifiable, Equatable, Codable {
   ///   - status: Message status
   ///   - isUnread: Unread status
   ///   - text: Text
-  ///   - replyMessageId: Network id of the message this message replies to
+  ///   - replyMessageId: Network id of the message this message replies to (defaults to `nil`)
   public init(
     id: ID = nil,
     networkId: Data? = nil,
