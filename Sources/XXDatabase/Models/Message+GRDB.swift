@@ -22,7 +22,11 @@ extension Message: FetchableRecord, MutablePersistableRecord {
     var request = Message.all()
 
     if let id = query.id {
-      request = request.filter(id: id)
+      if id.count == 1, let id = id.first as? Int64 {
+        request = request.filter(id: id)
+      } else {
+        request = request.filter(ids: id.compactMap { $0 })
+      }
     }
 
     switch query.networkId {

@@ -194,18 +194,13 @@ final class MessageGRDBTests: XCTestCase {
     // Fetch messages by id:
 
     XCTAssertNoDifference(
-      try db.fetchMessages(.init(id: message1.id, sortBy: .date())),
-      [message1]
-    )
-
-    XCTAssertNoDifference(
-      try db.fetchMessages(.init(id: message2.id, sortBy: .date())),
+      try db.fetchMessages(.init(id: [message2.id], sortBy: .date())),
       [message2]
     )
 
     XCTAssertNoDifference(
-      try db.fetchMessages(.init(id: message3.id, sortBy: .date())),
-      [message3]
+      try db.fetchMessages(.init(id: [message3.id, message1.id], sortBy: .date())),
+      [message1, message3]
     )
   }
 

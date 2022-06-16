@@ -155,7 +155,7 @@ extension Message {
     /// Instantiate messages query
     ///
     /// - Parameters:
-    ///   - id: If provided, filter by message id (defaults to `nil`).
+    ///   - id: Filter by message id (defaults to `nil`).
     ///   - networkId: Filter by network id (defaults to `nil`).
     ///   - chat: Chat filter.
     ///     If `.some(.some(networkId))`, get messages with provided `networkId`.
@@ -170,7 +170,7 @@ extension Message {
     ///     If `nil` (default), disable the filter.
     ///   - sortBy: Sort order (defaults to `.date()`).
     public init(
-      id: Message.ID = nil,
+      id: Set<Message.ID>? = nil,
       networkId: Data?? = nil,
       chat: Chat? = nil,
       status: Set<Status>? = nil,
@@ -185,8 +185,8 @@ extension Message {
       self.sortBy = sortBy
     }
 
-    /// If provided, filter by message id
-    public var id: Message.ID
+    /// Filter by message id
+    public var id: Set<Message.ID>?
 
     /// Filter by network id
     ///
