@@ -1,4 +1,3 @@
-import Combine
 import Foundation
 
 /// Represents aggregated info about a group

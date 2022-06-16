@@ -1,4 +1,3 @@
-import Combine
 import Foundation
 
 /// Represents chat within a group or with a contact
