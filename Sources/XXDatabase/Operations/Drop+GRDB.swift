@@ -11,6 +11,7 @@ extension Drop {
       try queue.sync {
         try writer.write { db in
           try Message.deleteAll(db)
+          try FileTransfer.deleteAll(db)
           try GroupMember.deleteAll(db)
           try Group.deleteAll(db)
           try Contact.deleteAll(db)
