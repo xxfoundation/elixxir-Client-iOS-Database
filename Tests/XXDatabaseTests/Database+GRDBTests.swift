@@ -48,8 +48,18 @@ final class DatabaseGRDBTests: XCTestCase {
     let contactB = try db.saveContact(.stub("B"))
     let contactC = try db.saveContact(.stub("C"))
 
+    let fileTransferA = try db.saveFileTransfer(
+      .stub("A", contact: contactA, isIncoming: true, at: 1)
+    )
+    let fileTransferB = try db.saveFileTransfer(
+      .stub("B", contact: contactB, isIncoming: false, at: 2)
+    )
+    let fileTransferC = try db.saveFileTransfer(
+      .stub("C", contact: contactB, isIncoming: true, at: 3)
+    )
+
     try db.saveMessage(.stub(from: contactA, to: contactB, at: 1))
-    try db.saveMessage(.stub(from: contactB, to: contactA, at: 2))
+    try db.saveMessage(.stub(from: contactB, to: contactA, at: 2, fileTransfer: fileTransferA))
     try db.saveMessage(.stub(from: contactA, to: contactB, at: 3))
 
     try db.saveMessage(.stub(from: contactA, to: contactC, at: 4))
@@ -57,7 +67,7 @@ final class DatabaseGRDBTests: XCTestCase {
     try db.saveMessage(.stub(from: contactA, to: contactC, at: 6))
 
     try db.saveMessage(.stub(from: contactB, to: contactC, at: 7))
-    try db.saveMessage(.stub(from: contactC, to: contactB, at: 8))
+    try db.saveMessage(.stub(from: contactC, to: contactB, at: 8, fileTransfer: fileTransferB))
     try db.saveMessage(.stub(from: contactB, to: contactC, at: 9))
 
     let groupA = try db.saveGroup(.stub("A", leaderId: contactA.id, createdAt: .stub(10)))
@@ -65,7 +75,7 @@ final class DatabaseGRDBTests: XCTestCase {
     try db.saveGroupMember(.init(groupId: groupA.id, contactId: contactB.id))
 
     try db.saveMessage(.stub(from: contactA, to: groupA, at: 11))
-    try db.saveMessage(.stub(from: contactB, to: groupA, at: 12))
+    try db.saveMessage(.stub(from: contactB, to: groupA, at: 12, fileTransfer: fileTransferC))
     try db.saveMessage(.stub(from: contactA, to: groupA, at: 13))
 
     let groupB = try db.saveGroup(.stub("B", leaderId: contactB.id, createdAt: .stub(14)))
