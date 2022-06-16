@@ -47,7 +47,9 @@ let package = Package(
     .testTarget(
       name: "XXModelsTests",
       dependencies: [
-        .target(name: "XXModels"),
+        .target(
+          name: "XXModels"
+        ),
       ],
       swiftSettings: swiftSettings
     ),
