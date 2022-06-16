@@ -143,17 +143,23 @@ extension Contact {
     /// Instantiate contacts query
     ///
     /// - Parameters:
+    ///   - id: Filter by id (defaults to `nil`).
     ///   - authStatus: Filter contacts by auth status.
     ///     If set, only contacts with any of the provided auth statuses will be fetched.
     ///     If `nil` (default), the filter is not used.
     ///   - sortBy: Sort order (defaults to `.username()`).
     public init(
+      id: Set<Contact.ID>? = nil,
       authStatus: Set<AuthStatus>? = nil,
       sortBy: SortOrder = .username()
     ) {
+      self.id = id
       self.authStatus = authStatus
       self.sortBy = sortBy
     }
+
+    /// Filter by id
+    public var id: Set<Contact.ID>?
 
     /// Filter contacts by auth status
     ///

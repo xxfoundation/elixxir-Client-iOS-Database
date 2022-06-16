@@ -20,6 +20,14 @@ extension Contact: FetchableRecord, PersistableRecord {
   public static func request(_ query: Query) -> QueryInterfaceRequest<Contact> {
     var request = Contact.all()
 
+    if let id = query.id {
+      if id.count == 1, let id = id.first {
+        request = request.filter(id: id)
+      } else {
+        request = request.filter(id.contains(Column.id))
+      }
+    }
+
     if let authStatus = query.authStatus {
       request = request.filter(Set(authStatus.map(\.rawValue)).contains(Column.authStatus))
     }

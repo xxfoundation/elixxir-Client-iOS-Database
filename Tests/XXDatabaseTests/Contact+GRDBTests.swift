@@ -53,6 +53,16 @@ final class ContactGRDBTests: XCTestCase {
       [contactB, contactA, contactC]
     )
 
+    XCTAssertNoDifference(
+      try db.fetchContacts(Contact.Query(id: [contactB.id])),
+      [contactB]
+    )
+
+    XCTAssertNoDifference(
+      try db.fetchContacts(Contact.Query(id: [contactC.id, contactA.id])),
+      [contactA, contactC]
+    )
+
     // Save updated contact B:
 
     var updatedContactB = contactB
