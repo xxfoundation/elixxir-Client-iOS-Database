@@ -13,6 +13,7 @@ extension Message: FetchableRecord, MutablePersistableRecord {
     case isUnread
     case text
     case replyMessageId
+    case roundURL
   }
 
   public static let databaseTableName = "messages"

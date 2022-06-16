@@ -53,6 +53,7 @@ extension Sequence where Element == Migration {
         t.column("isUnread", .boolean).notNull()
         t.column("text", .text).notNull()
         t.column("replyMessageId", .blob)
+        t.column("roundURL", .text)
       }
     }
   ]}

@@ -42,6 +42,7 @@ public struct Message: Identifiable, Equatable, Codable {
   ///   - isUnread: Unread status
   ///   - text: Text
   ///   - replyMessageId: Network id of the message this message replies to (defaults to `nil`)
+  ///   - roundURL: Network round URL (defaults to `nil`)
   public init(
     id: ID = nil,
     networkId: Data? = nil,
@@ -52,7 +53,8 @@ public struct Message: Identifiable, Equatable, Codable {
     status: Status,
     isUnread: Bool,
     text: String,
-    replyMessageId: Data? = nil
+    replyMessageId: Data? = nil,
+    roundURL: String? = nil
   ) {
     self.id = id
     self.networkId = networkId
@@ -64,6 +66,7 @@ public struct Message: Identifiable, Equatable, Codable {
     self.isUnread = isUnread
     self.text = text
     self.replyMessageId = replyMessageId
+    self.roundURL = roundURL
   }
 
   /// Unique identifier of the message
@@ -101,6 +104,9 @@ public struct Message: Identifiable, Equatable, Codable {
 
   /// Network id of the message this message replies to
   public var replyMessageId: Data?
+
+  /// Network round URL
+  public var roundURL: String?
 }
 
 extension Message {
