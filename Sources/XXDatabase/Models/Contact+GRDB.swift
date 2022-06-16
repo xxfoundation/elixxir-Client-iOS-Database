@@ -24,7 +24,7 @@ extension Contact: FetchableRecord, PersistableRecord {
       if id.count == 1, let id = id.first {
         request = request.filter(id: id)
       } else {
-        request = request.filter(id.contains(Column.id))
+        request = request.filter(ids: id)
       }
     }
 
