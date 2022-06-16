@@ -108,33 +108,38 @@ final class GroupGRDBTests: XCTestCase {
 
     // Fetch all groups:
 
-    XCTAssertNoDifference(try db.fetchGroups(Group.Query(sortBy: .createdAt())), [
-      groupA, groupB, groupC,
-    ])
+    XCTAssertNoDifference(
+      try db.fetchGroups(Group.Query(sortBy: .createdAt())),
+      [groupA, groupB, groupC]
+    )
 
-    XCTAssertNoDifference(try db.fetchGroups(Group.Query(sortBy: .createdAt(desc: true))), [
-      groupC, groupB, groupA,
-    ])
+    XCTAssertNoDifference(
+      try db.fetchGroups(Group.Query(sortBy: .createdAt(desc: true))),
+      [groupC, groupB, groupA]
+    )
 
     // Fetch groups with messages:
 
-    XCTAssertNoDifference(try db.fetchGroups(Group.Query(withMessages: true, sortBy: .createdAt())), [
-      groupA,
-    ])
+    XCTAssertNoDifference(
+      try db.fetchGroups(Group.Query(withMessages: true, sortBy: .createdAt())),
+      [groupA]
+    )
 
     // Fetch groups without messages:
 
-    XCTAssertNoDifference(try db.fetchGroups(Group.Query(withMessages: false, sortBy: .createdAt())), [
-      groupB, groupC,
-    ])
+    XCTAssertNoDifference(
+      try db.fetchGroups(Group.Query(withMessages: false, sortBy: .createdAt())),
+      [groupB, groupC]
+    )
 
     // Fetch groups with auth status `participating` or `pending`:
 
-    XCTAssertNoDifference(try db.fetchGroups(Group.Query(
-      authStatus: [.participating, .pending],
-      sortBy: .createdAt()
-    )), [
-      groupA, groupB,
-    ])
+    XCTAssertNoDifference(
+      try db.fetchGroups(Group.Query(
+        authStatus: [.participating, .pending],
+        sortBy: .createdAt()
+      )),
+      [groupA, groupB]
+    )
   }
 }
