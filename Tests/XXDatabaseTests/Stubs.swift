@@ -10,7 +10,8 @@ extension Date {
 extension Contact {
   static func stub(
     _ id: String,
-    authStatus: AuthStatus = .stranger
+    authStatus: AuthStatus = .stranger,
+    createdAt: Date = .stub(0)
   ) -> Contact {
     Contact(
       id: "contact-id-\(id)".data(using: .utf8)!,
@@ -19,7 +20,8 @@ extension Contact {
       email: "contact-\(id)@elixxir.io",
       phone: "contact-phone-\(id)",
       nickname: "contact-nickname-\(id)",
-      authStatus: authStatus
+      authStatus: authStatus,
+      createdAt: createdAt
     )
   }
 }
@@ -36,7 +38,8 @@ extension Group {
       name: "group-name-\(id)",
       leaderId: leaderId,
       createdAt: createdAt,
-      authStatus: authStatus
+      authStatus: authStatus,
+      serialized: "group-serialized-\(id)".data(using: .utf8)!
     )
   }
 }
@@ -46,13 +49,17 @@ extension Message {
     from sender: Contact,
     to recipient: Contact,
     at timeInterval: TimeInterval,
+    networkId: Data? = nil,
+    status: Status = .received,
     isUnread: Bool = false
   ) -> Message {
     Message(
+      networkId: networkId,
       senderId: sender.id,
       recipientId: recipient.id,
       groupId: nil,
       date: .stub(timeInterval),
+      status: status,
       isUnread: isUnread,
       text: "\(sender.username ?? "?") → \(recipient.username ?? "?") @ \(timeInterval)"
     )
@@ -62,13 +69,17 @@ extension Message {
     from sender: Contact,
     to group: Group,
     at timeInterval: TimeInterval,
+    networkId: Data? = nil,
+    status: Status = .received,
     isUnread: Bool = false
   ) -> Message {
     Message(
+      networkId: networkId,
       senderId: sender.id,
       recipientId: nil,
       groupId: group.id,
       date: .stub(timeInterval),
+      status: status,
       isUnread: isUnread,
       text: "\(sender.username ?? "?") → G:\(group.name) @ \(timeInterval)"
     )

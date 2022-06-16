@@ -9,14 +9,36 @@ extension Message: FetchableRecord, MutablePersistableRecord {
     case recipientId
     case groupId
     case date
+    case status
     case isUnread
     case text
+    case replyMessageId
+    case roundURL
   }
 
   public static let databaseTableName = "messages"
 
   public static func request(_ query: Query) -> QueryInterfaceRequest<Message> {
     var request = Message.all()
+
+    if let id = query.id {
+      if id.count == 1, let id = id.first as? Int64 {
+        request = request.filter(id: id)
+      } else {
+        request = request.filter(ids: id.compactMap { $0 })
+      }
+    }
+
+    switch query.networkId {
+    case .some(.some(let networkId)):
+      request = request.filter(Column.networkId == networkId)
+
+    case .some(.none):
+      request = request.filter(Column.networkId == nil)
+
+    case .none:
+      break
+    }
 
     switch query.chat {
     case .group(let groupId):
@@ -27,6 +49,17 @@ extension Message: FetchableRecord, MutablePersistableRecord {
         (Column.senderId == id1 && Column.recipientId == id2) ||
         (Column.senderId == id2 && Column.recipientId == id1)
       )
+
+    case .none:
+      break
+    }
+
+    if let status = query.status {
+      request = request.filter(Set(status.map(\.rawValue)).contains(Column.status))
+    }
+
+    if let isUnread = query.isUnread {
+      request = request.filter(Column.isUnread == isUnread)
     }
 
     switch query.sortBy {

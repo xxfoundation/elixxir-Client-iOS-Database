@@ -5,8 +5,8 @@ import XXModels
 
 extension Fetch where Model == ChatInfo, Query == ChatInfo.Query {
   static func grdb(
-    writer: DatabaseWriter,
-    queue: DispatchQueue
+    _ writer: DatabaseWriter,
+    _ queue: DispatchQueue
   ) -> Fetch<ChatInfo, ChatInfo.Query> {
     Fetch<ChatInfo, ChatInfo.Query> { query in
       let fetchContactChats: ContactChatInfo.Fetch =
@@ -43,8 +43,8 @@ extension Fetch where Model == ChatInfo, Query == ChatInfo.Query {
 
 extension FetchPublisher where Model == ChatInfo, Query == ChatInfo.Query {
   static func grdb(
-    writer: DatabaseWriter,
-    queue: DispatchQueue
+    _ writer: DatabaseWriter,
+    _ queue: DispatchQueue
   ) -> FetchPublisher<ChatInfo, ChatInfo.Query> {
     FetchPublisher<ChatInfo, ChatInfo.Query> { query in
       let fetchContactChats: ContactChatInfo.FetchPublisher =

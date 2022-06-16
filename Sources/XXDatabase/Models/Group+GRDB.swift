@@ -8,6 +8,7 @@ extension Group: PersistableRecord, FetchableRecord {
     case leaderId
     case createdAt
     case authStatus
+    case serialized
   }
 
   enum Association {
@@ -37,6 +38,14 @@ extension Group: PersistableRecord, FetchableRecord {
 
   public static func request(_ query: Query) -> QueryInterfaceRequest<Group> {
     var request = Group.all()
+
+    if let id = query.id {
+      if id.count == 1, let id = id.first {
+        request = request.filter(id: id)
+      } else {
+        request  = request.filter(ids: id)
+      }
+    }
 
     if let withMessages = query.withMessages {
       let messageAlias = TableAlias()

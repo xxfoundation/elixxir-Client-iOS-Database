@@ -3,6 +3,10 @@ import GRDB
 import XXModels
 
 extension XXModels.Database {
+  /// Create in-memory database implementation powered by GRDB
+  ///
+  /// - Parameter migrations: GRDB migrations
+  /// - Returns: Database implementation
   public static func inMemory(
     migrations: [Migration] = .all
   ) throws -> XXModels.Database {
@@ -24,8 +28,8 @@ extension XXModels.Database {
     }
     try migrator.migrate(writer)
     return XXModels.Database(
-      fetchChatInfos: .grdb(writer: writer, queue: queue),
-      fetchChatInfosPublisher: .grdb(writer: writer, queue: queue),
+      fetchChatInfos: .grdb(writer, queue),
+      fetchChatInfosPublisher: .grdb(writer, queue),
       fetchContacts: .grdb(writer, queue, Contact.request(_:)),
       fetchContactsPublisher: .grdb(writer, queue, Contact.request(_:)),
       saveContact: .grdb(writer, queue),
@@ -45,7 +49,9 @@ extension XXModels.Database {
       fetchMessages: .grdb(writer, queue, Message.request(_:)),
       fetchMessagesPublisher: .grdb(writer, queue, Message.request(_:)),
       saveMessage: .grdb(writer, queue),
-      deleteMessage: .grdb(writer, queue)
+      deleteMessage: .grdb(writer, queue),
+      deleteMessages: .grdb(writer, queue, Message.request(_:)),
+      drop: .grdb(writer, queue)
     )
   }
 }

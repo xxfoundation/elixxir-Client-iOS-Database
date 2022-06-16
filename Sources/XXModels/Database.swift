@@ -22,7 +22,9 @@ public struct Database {
     fetchMessages: Message.Fetch,
     fetchMessagesPublisher: Message.FetchPublisher,
     saveMessage: Message.Save,
-    deleteMessage: Message.Delete
+    deleteMessage: Message.Delete,
+    deleteMessages: Message.DeleteMany,
+    drop: Drop
   ) {
     self.fetchChatInfos = fetchChatInfos
     self.fetchChatInfosPublisher = fetchChatInfosPublisher
@@ -46,6 +48,8 @@ public struct Database {
     self.fetchMessagesPublisher = fetchMessagesPublisher
     self.saveMessage = saveMessage
     self.deleteMessage = deleteMessage
+    self.deleteMessages = deleteMessages
+    self.drop = drop
   }
 
   // MARK: - ChatInfo
@@ -129,6 +133,14 @@ public struct Database {
 
   /// Delete message
   public var deleteMessage: Message.Delete
+
+  /// Delete messages
+  public var deleteMessages: Message.DeleteMany
+
+  // MARK: - Other
+
+  /// Drop database
+  public var drop: Drop
 }
 
 #if DEBUG
@@ -155,7 +167,9 @@ extension Database {
     fetchMessages: .failing(),
     fetchMessagesPublisher: .failing(),
     saveMessage: .failing(),
-    deleteMessage: .failing()
+    deleteMessage: .failing(),
+    deleteMessages: .failing(),
+    drop: .failing
   )
 }
 #endif

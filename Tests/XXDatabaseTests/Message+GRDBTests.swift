@@ -163,4 +163,301 @@ final class MessageGRDBTests: XCTestCase {
       ]
     )
   }
+
+  func testFetchingById() throws {
+    // Mock up contacts
+
+    let contactA = try db.saveContact(.stub("A"))
+    let contactB = try db.saveContact(.stub("B"))
+    let contactC = try db.saveContact(.stub("C"))
+
+    // Mock up messages:
+
+    let message1 = try db.saveMessage(.stub(
+      from: contactA,
+      to: contactB,
+      at: 1
+    ))
+
+    let message2 = try db.saveMessage(.stub(
+      from: contactB,
+      to: contactA,
+      at: 2
+    ))
+
+    let message3 = try db.saveMessage(.stub(
+      from: contactA,
+      to: contactC,
+      at: 3
+    ))
+
+    // Fetch messages by id:
+
+    XCTAssertNoDifference(
+      try db.fetchMessages(.init(id: [message2.id], sortBy: .date())),
+      [message2]
+    )
+
+    XCTAssertNoDifference(
+      try db.fetchMessages(.init(id: [message3.id, message1.id], sortBy: .date())),
+      [message1, message3]
+    )
+  }
+
+  func testFetchingByNetworkId() throws {
+    // Mock up contacts
+
+    let contactA = try db.saveContact(.stub("A"))
+    let contactB = try db.saveContact(.stub("B"))
+    let contactC = try db.saveContact(.stub("C"))
+
+    // Mock up messages:
+
+    let message1 = try db.saveMessage(.stub(
+      from: contactA,
+      to: contactB,
+      at: 1,
+      networkId: "1".data(using: .utf8)!
+    ))
+
+    let message2 = try db.saveMessage(.stub(
+      from: contactB,
+      to: contactA,
+      at: 2,
+      networkId: "2".data(using: .utf8)!
+    ))
+
+    let message3 = try db.saveMessage(.stub(
+      from: contactA,
+      to: contactC,
+      at: 3,
+      networkId: nil
+    ))
+
+    // Fetch messages by network id:
+
+    XCTAssertNoDifference(
+      try db.fetchMessages(.init(networkId: "1".data(using: .utf8)!, sortBy: .date())),
+      [message1]
+    )
+
+    XCTAssertNoDifference(
+      try db.fetchMessages(.init(networkId: "2".data(using: .utf8)!, sortBy: .date())),
+      [message2]
+    )
+
+    XCTAssertNoDifference(
+      try db.fetchMessages(.init(networkId: .some(nil), sortBy: .date())),
+      [message3]
+    )
+
+    XCTAssertNoDifference(
+      try db.fetchMessages(.init(networkId: .none, sortBy: .date())),
+      [message1, message2, message3]
+    )
+  }
+
+  func testFetchingByStatus() throws {
+    // Mock up contacts:
+
+    let contactA = try db.saveContact(.stub("A"))
+    let contactB = try db.saveContact(.stub("B"))
+
+    // Mock up messages:
+
+    let message1 = try db.saveMessage(.stub(
+      from: contactA,
+      to: contactB,
+      at: 1,
+      status: .sent
+    ))
+
+    let message2 = try db.saveMessage(.stub(
+      from: contactB,
+      to: contactA,
+      at: 2,
+      status: .received
+    ))
+
+    let message3 = try db.saveMessage(.stub(
+      from: contactA,
+      to: contactB,
+      at: 3,
+      status: .sent
+    ))
+
+    let message4 = try db.saveMessage(.stub(
+      from: contactB,
+      to: contactA,
+      at: 4,
+      status: .received
+    ))
+
+    let message5 = try db.saveMessage(.stub(
+      from: contactA,
+      to: contactB,
+      at: 5,
+      status: .sending
+    ))
+
+    let message6 = try db.saveMessage(.stub(
+      from: contactB,
+      to: contactA,
+      at: 6,
+      status: .receiving
+    ))
+
+    // Fetch `sent` messages:
+
+    XCTAssertNoDifference(
+      try db.fetchMessages(.init(status: [.sent])),
+      [
+        message1,
+        message3,
+      ]
+    )
+
+    // Fetch `received` messages:
+
+    XCTAssertNoDifference(
+      try db.fetchMessages(.init(status: [.received])),
+      [
+        message2,
+        message4,
+      ]
+    )
+
+    // Fetch messages with `sending` OR `receiving` status:
+
+    XCTAssertNoDifference(
+      try db.fetchMessages(.init(status: [.sending, .receiving])),
+      [
+        message5,
+        message6,
+      ]
+    )
+
+    // Fetch all messages regardless the status:
+
+    XCTAssertNoDifference(
+      try db.fetchMessages(.init(status: nil)),
+      [
+        message1,
+        message2,
+        message3,
+        message4,
+        message5,
+        message6,
+      ]
+    )
+  }
+
+  func testFetchingByUnreadStatus() throws {
+    // Mock up contacts:
+
+    let contactA = try db.saveContact(.stub("A"))
+    let contactB = try db.saveContact(.stub("B"))
+
+    // Mock up messages:
+
+    let message1 = try db.saveMessage(.stub(
+      from: contactA,
+      to: contactB,
+      at: 1,
+      isUnread: true
+    ))
+
+    let message2 = try db.saveMessage(.stub(
+      from: contactB,
+      to: contactA,
+      at: 2,
+      isUnread: false
+    ))
+
+    // Fetch messages by unread status:
+
+    XCTAssertNoDifference(
+      try db.fetchMessages(.init(isUnread: true, sortBy: .date())),
+      [message1]
+    )
+
+    XCTAssertNoDifference(
+      try db.fetchMessages(.init(isUnread: false, sortBy: .date())),
+      [message2]
+    )
+
+    XCTAssertNoDifference(
+      try db.fetchMessages(.init(isUnread: nil, sortBy: .date())),
+      [message1, message2]
+    )
+  }
+
+  func testDeletingMany() throws {
+    // Mock up contacts
+
+    let contactA = try db.saveContact(.stub("A"))
+    let contactB = try db.saveContact(.stub("B"))
+    let contactC = try db.saveContact(.stub("C"))
+
+    // Mock up messages:
+
+    try db.saveMessage(.stub(
+      from: contactA,
+      to: contactB,
+      at: 1
+    ))
+
+    try db.saveMessage(.stub(
+      from: contactB,
+      to: contactA,
+      at: 2
+    ))
+
+    try db.saveMessage(.stub(
+      from: contactA,
+      to: contactB,
+      at: 3
+    ))
+
+    let message4_ac = try db.saveMessage(.stub(
+      from: contactA,
+      to: contactC,
+      at: 4
+    ))
+
+    let message5_ca = try db.saveMessage(.stub(
+      from: contactC,
+      to: contactA,
+      at: 5
+    ))
+
+    let message6_bc = try db.saveMessage(.stub(
+      from: contactB,
+      to: contactC,
+      at: 6
+    ))
+
+    let message7_cb = try db.saveMessage(.stub(
+      from: contactC,
+      to: contactB,
+      at: 7
+    ))
+
+    // Delete messages between contact A and B:
+
+    XCTAssertEqual(
+      try db.deleteMessages(.init(chat: .direct(contactA.id, contactB.id))),
+      3
+    )
+
+    XCTAssertNoDifference(
+      try db.fetchMessages(.init(sortBy: .date())),
+      [
+        message4_ac,
+        message5_ca,
+        message6_bc,
+        message7_cb,
+      ]
+    )
+  }
 }

@@ -15,7 +15,10 @@ extension Sequence where Element == Migration {
         t.column("email", .text)
         t.column("phone", .text)
         t.column("nickname", .text)
+        t.column("photo", .blob)
         t.column("authStatus", .text).notNull()
+        t.column("isRecent", .boolean).notNull()
+        t.column("createdAt", .datetime).notNull()
       }
 
       try db.create(table: "groups") { t in
@@ -25,6 +28,7 @@ extension Sequence where Element == Migration {
           .references("contacts", column: "id", onDelete: .cascade, onUpdate: .cascade)
         t.column("createdAt", .datetime).notNull()
         t.column("authStatus", .text).notNull()
+        t.column("serialized", .blob).notNull()
       }
 
       try db.create(table: "groupMembers") { t in
@@ -45,8 +49,11 @@ extension Sequence where Element == Migration {
         t.column("groupId", .blob)
           .references("groups", column: "id", onDelete: .cascade, onUpdate: .cascade)
         t.column("date", .datetime).notNull()
+        t.column("status", .text).notNull()
         t.column("isUnread", .boolean).notNull()
         t.column("text", .text).notNull()
+        t.column("replyMessageId", .blob)
+        t.column("roundURL", .text)
       }
     }
   ]}

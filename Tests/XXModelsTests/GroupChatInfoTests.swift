@@ -12,7 +12,8 @@ final class GroupChatInfoTests: XCTestCase {
       name: "group-name",
       leaderId: leader.id,
       createdAt: Date(timeIntervalSince1970: 1234),
-      authStatus: .pending
+      authStatus: .pending,
+      serialized: "group-serialized".data(using: .utf8)!
     )
 
     let message = Message(
@@ -20,6 +21,7 @@ final class GroupChatInfoTests: XCTestCase {
       recipientId: nil,
       groupId: nil,
       date: Date(timeIntervalSince1970: 1234),
+      status: .received,
       isUnread: true,
       text: "text"
     )

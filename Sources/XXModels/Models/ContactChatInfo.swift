@@ -1,5 +1,3 @@
-import Combine
-
 /// Represents chat with a contact
 public struct ContactChatInfo: Identifiable, Equatable, Codable {
   /// Unique identifier of contact chat

@@ -14,6 +14,7 @@ final class ChatInfoTests: XCTestCase {
       recipientId: nil,
       groupId: nil,
       date: Date(),
+      status: .received,
       isUnread: false,
       text: ""
     )
@@ -36,7 +37,8 @@ final class ChatInfoTests: XCTestCase {
       name: "",
       leaderId: "leader-contact-id".data(using: .utf8)!,
       createdAt: Date(),
-      authStatus: .pending
+      authStatus: .pending,
+      serialized: "group-serialized".data(using: .utf8)!
     )
 
     let lastMessage = Message(
@@ -46,6 +48,7 @@ final class ChatInfoTests: XCTestCase {
       recipientId: nil,
       groupId: nil,
       date: Date(),
+      status: .received,
       isUnread: false,
       text: ""
     )
@@ -68,7 +71,8 @@ final class ChatInfoTests: XCTestCase {
       name: "",
       leaderId: "leader-contact-id".data(using: .utf8)!,
       createdAt: Date(),
-      authStatus: .pending
+      authStatus: .pending,
+      serialized: "group-serialized".data(using: .utf8)!
     )
 
     let chatInfo = ChatInfo.group(group)
