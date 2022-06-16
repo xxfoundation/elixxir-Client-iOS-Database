@@ -92,6 +92,7 @@ extension Group {
     /// Instantiate query
     ///
     /// - Parameters:
+    ///   - id: Filter by id (defaults to `nil`).
     ///   - withMessages: Filter groups by messages.
     ///     If `true`, only groups that have at least one message will be fetched.
     ///     If `false`, only groups that don't have a message will be fetched.
@@ -101,14 +102,19 @@ extension Group {
     ///     If `nil` (default), the filter is not used.
     ///   - sortBy: Sort order (defaults to `.createdAt(desc: true)`).
     public init(
+      id: Set<Group.ID>? = nil,
       withMessages: Bool? = nil,
       authStatus: Set<AuthStatus>? = nil,
       sortBy: SortOrder = .createdAt(desc: true)
     ) {
+      self.id = id
       self.withMessages = withMessages
       self.authStatus = authStatus
       self.sortBy = sortBy
     }
+
+    /// Filter by id
+    public var id: Set<Group.ID>?
 
     /// Filter groups by messages
     ///
