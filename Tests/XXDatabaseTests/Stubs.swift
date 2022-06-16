@@ -10,7 +10,8 @@ extension Date {
 extension Contact {
   static func stub(
     _ id: String,
-    authStatus: AuthStatus = .stranger
+    authStatus: AuthStatus = .stranger,
+    createdAt: Date = .stub(0)
   ) -> Contact {
     Contact(
       id: "contact-id-\(id)".data(using: .utf8)!,
@@ -20,7 +21,7 @@ extension Contact {
       phone: "contact-phone-\(id)",
       nickname: "contact-nickname-\(id)",
       authStatus: authStatus,
-      createdAt: .stub(0)
+      createdAt: createdAt
     )
   }
 }

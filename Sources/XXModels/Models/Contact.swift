@@ -127,11 +127,17 @@ extension Contact {
   public struct Query: Equatable {
     /// Contacts sort order
     public enum SortOrder: Equatable {
-      /// Sort by username
+      /// Sort by `username`
       ///
       /// - Parameters:
       ///   - desc: Sort in descending order (defaults to `false`)
       case username(desc: Bool = false)
+
+      /// Sort by `createdAt`
+      ///
+      /// - Parameters:
+      ///   - desc: Sort in descending order (defaults to `false`)
+      case createdAt(desc: Bool = false)
     }
 
     /// Instantiate contacts query

@@ -30,6 +30,12 @@ extension Contact: FetchableRecord, PersistableRecord {
 
     case .username(desc: true):
       request = request.order(Column.username.desc)
+
+    case .createdAt(desc: false):
+      request = request.order(Column.createdAt)
+
+    case .createdAt(desc: true):
+      request = request.order(Column.createdAt.desc)
     }
 
     return request

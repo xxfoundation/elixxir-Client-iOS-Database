@@ -18,24 +18,39 @@ final class ContactGRDBTests: XCTestCase {
   func testDatabaseOperations() throws {
     // Save new contact A:
 
-    let contactA = Contact.stub("A")
+    let contactA = Contact.stub("A", createdAt: .stub(2))
     XCTAssertNoDifference(try db.saveContact(contactA), contactA)
 
     // Save new contact B:
 
-    let contactB = Contact.stub("B")
+    let contactB = Contact.stub("B", createdAt: .stub(3))
     XCTAssertNoDifference(try db.saveContact(contactB), contactB)
 
     // Save new contact C:
 
-    let contactC = Contact.stub("C")
+    let contactC = Contact.stub("C", createdAt: .stub(1))
     XCTAssertNoDifference(try db.saveContact(contactC), contactC)
 
     // Fetch contacts:
 
     XCTAssertNoDifference(
-      try db.fetchContacts(Contact.Query(sortBy: .username())),
+      try db.fetchContacts(Contact.Query()),
       [contactA, contactB, contactC]
+    )
+
+    XCTAssertNoDifference(
+      try db.fetchContacts(Contact.Query(sortBy: .username(desc: true))),
+      [contactC, contactB, contactA]
+    )
+
+    XCTAssertNoDifference(
+      try db.fetchContacts(Contact.Query(sortBy: .createdAt())),
+      [contactC, contactA, contactB]
+    )
+
+    XCTAssertNoDifference(
+      try db.fetchContacts(Contact.Query(sortBy: .createdAt(desc: true))),
+      [contactB, contactA, contactC]
     )
 
     // Save updated contact B:
@@ -47,8 +62,8 @@ final class ContactGRDBTests: XCTestCase {
     // Fetch contacts:
 
     XCTAssertNoDifference(
-      try db.fetchContacts(Contact.Query(sortBy: .username(desc: true))),
-      [contactC, updatedContactB, contactA]
+      try db.fetchContacts(Contact.Query()),
+      [contactA, updatedContactB, contactC]
     )
 
     // Delete contact C:
@@ -58,7 +73,7 @@ final class ContactGRDBTests: XCTestCase {
     // Fetch contacts:
 
     XCTAssertNoDifference(
-      try db.fetchContacts(Contact.Query(sortBy: .username())),
+      try db.fetchContacts(Contact.Query()),
       [contactA, updatedContactB]
     )
 
@@ -71,7 +86,7 @@ final class ContactGRDBTests: XCTestCase {
     // Fetch contacts:
 
     XCTAssertNoDifference(
-      try db.fetchContacts(Contact.Query(sortBy: .username())),
+      try db.fetchContacts(Contact.Query()),
       [updatedContactA, updatedContactB]
     )
 
@@ -83,7 +98,7 @@ final class ContactGRDBTests: XCTestCase {
     // Fetch contacts:
 
     XCTAssertNoDifference(
-      try db.fetchContacts(Contact.Query(sortBy: .username())),
+      try db.fetchContacts(Contact.Query()),
       [updatedContactA, updatedContactB, contactD]
     )
   }
