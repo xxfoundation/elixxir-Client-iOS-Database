@@ -14,6 +14,7 @@ extension Message: FetchableRecord, MutablePersistableRecord {
     case text
     case replyMessageId
     case roundURL
+    case fileTransferId
   }
 
   public static let databaseTableName = "messages"

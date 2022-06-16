@@ -42,6 +42,7 @@ public struct Message: Identifiable, Equatable, Codable {
   ///   - text: Text
   ///   - replyMessageId: Network id of the message this message replies to (defaults to `nil`)
   ///   - roundURL: Network round URL (defaults to `nil`)
+  ///   - fileTransferId: File transfer id (defaults to `nil`)
   public init(
     id: ID = nil,
     networkId: Data? = nil,
@@ -53,7 +54,8 @@ public struct Message: Identifiable, Equatable, Codable {
     isUnread: Bool,
     text: String,
     replyMessageId: Data? = nil,
-    roundURL: String? = nil
+    roundURL: String? = nil,
+    fileTransferId: FileTransfer.ID? = nil
   ) {
     self.id = id
     self.networkId = networkId
@@ -66,6 +68,7 @@ public struct Message: Identifiable, Equatable, Codable {
     self.text = text
     self.replyMessageId = replyMessageId
     self.roundURL = roundURL
+    self.fileTransferId = fileTransferId
   }
 
   /// Unique identifier of the message
@@ -106,6 +109,9 @@ public struct Message: Identifiable, Equatable, Codable {
 
   /// Network round URL
   public var roundURL: String?
+
+  /// File transfer id
+  public var fileTransferId: FileTransfer.ID?
 }
 
 extension Message {

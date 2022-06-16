@@ -66,6 +66,8 @@ extension Sequence where Element == Migration {
         t.column("text", .text).notNull()
         t.column("replyMessageId", .blob)
         t.column("roundURL", .text)
+        t.column("fileTransferId", .blob)
+          .references("fileTransfers", column: "id", onDelete: .cascade, onUpdate: .cascade)
       }
     }
   ]}
