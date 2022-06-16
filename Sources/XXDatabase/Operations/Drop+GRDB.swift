@@ -15,6 +15,7 @@ extension Drop {
           try Group.deleteAll(db)
           try Contact.deleteAll(db)
           try db.drop(table: Message.databaseTableName)
+          try db.drop(table: FileTransfer.databaseTableName)
           try db.drop(table: GroupMember.databaseTableName)
           try db.drop(table: Group.databaseTableName)
           try db.drop(table: Contact.databaseTableName)

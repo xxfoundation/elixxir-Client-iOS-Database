@@ -85,3 +85,21 @@ extension Message {
     )
   }
 }
+
+extension FileTransfer {
+  static func stub(
+    _ id: String,
+    contact: Contact,
+    isIncoming: Bool,
+    at timeInterval: TimeInterval
+  ) -> FileTransfer {
+    FileTransfer(
+      id: "file-transfer-\(id)".data(using: .utf8)!,
+      contactId: contact.id,
+      name: "file-name-\(id)",
+      type: "file-type-\(id)",
+      isIncoming: isIncoming,
+      createdAt: .stub(timeInterval)
+    )
+  }
+}

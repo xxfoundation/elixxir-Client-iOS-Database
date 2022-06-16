@@ -24,6 +24,10 @@ public struct Database {
     saveMessage: Message.Save,
     deleteMessage: Message.Delete,
     deleteMessages: Message.DeleteMany,
+    fetchFileTransfers: FileTransfer.Fetch,
+    fetchFileTransfersPublisher: FileTransfer.FetchPublisher,
+    saveFileTransfer: FileTransfer.Save,
+    deleteFileTransfer: FileTransfer.Delete,
     drop: Drop
   ) {
     self.fetchChatInfos = fetchChatInfos
@@ -49,6 +53,10 @@ public struct Database {
     self.saveMessage = saveMessage
     self.deleteMessage = deleteMessage
     self.deleteMessages = deleteMessages
+    self.fetchFileTransfers = fetchFileTransfers
+    self.fetchFileTransfersPublisher = fetchFileTransfersPublisher
+    self.saveFileTransfer = saveFileTransfer
+    self.deleteFileTransfer = deleteFileTransfer
     self.drop = drop
   }
 
@@ -137,6 +145,20 @@ public struct Database {
   /// Delete messages
   public var deleteMessages: Message.DeleteMany
 
+  // MARK: - FileTransfers
+
+  /// Fetch file transfers
+  public var fetchFileTransfers: FileTransfer.Fetch
+
+  /// Fetch file transfers publisher
+  public var fetchFileTransfersPublisher: FileTransfer.FetchPublisher
+
+  /// Save file transfer
+  public var saveFileTransfer: FileTransfer.Save
+
+  /// Delete file transfer
+  public var deleteFileTransfer: FileTransfer.Delete
+
   // MARK: - Other
 
   /// Drop database
@@ -169,6 +191,10 @@ extension Database {
     saveMessage: .failing(),
     deleteMessage: .failing(),
     deleteMessages: .failing(),
+    fetchFileTransfers: .failing(),
+    fetchFileTransfersPublisher: .failing(),
+    saveFileTransfer: .failing(),
+    deleteFileTransfer: .failing(),
     drop: .failing
   )
 }

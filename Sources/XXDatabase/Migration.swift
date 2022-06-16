@@ -39,6 +39,18 @@ extension Sequence where Element == Migration {
         t.primaryKey(["groupId", "contactId"])
       }
 
+      try db.create(table: "fileTransfers") { t in
+        t.column("id", .blob).notNull().primaryKey()
+        t.column("contactId", .blob).notNull()
+          .references("contacts", column: "id", onDelete: .cascade, onUpdate: .cascade)
+        t.column("name", .text).notNull()
+        t.column("type", .text).notNull()
+        t.column("data", .blob)
+        t.column("progress", .double).notNull()
+        t.column("isIncoming", .boolean).notNull()
+        t.column("createdAt", .datetime).notNull()
+      }
+
       try db.create(table: "messages") { t in
         t.column("id", .integer).notNull().primaryKey(autoincrement: true)
         t.column("networkId", .blob)
