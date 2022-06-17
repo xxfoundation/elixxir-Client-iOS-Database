@@ -7,7 +7,7 @@ public struct Migrator {
   public var run: (LegacyDatabase, XXModels.Database) throws -> Void
 
   public func callAsFunction(
-    from legacyDb: LegacyDatabase,
+    _ legacyDb: LegacyDatabase,
     to newDb: XXModels.Database
   ) throws {
     try run(legacyDb, newDb)

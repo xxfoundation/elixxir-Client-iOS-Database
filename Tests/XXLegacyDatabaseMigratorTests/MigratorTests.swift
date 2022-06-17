@@ -51,7 +51,7 @@ final class MigratorTests: XCTestCase {
       }
     )
 
-    try migrate(from: legacyDb, to: .failing)
+    try migrate(legacyDb, to: .failing)
 
     // Assert migration:
 
