@@ -69,6 +69,23 @@ extension XXLegacyDatabaseMigrator.Group {
   }
 }
 
+extension XXModels.Group {
+  static func stub(
+    _ stubId: Int,
+    leaderId: XXModels.Contact.ID? = nil,
+    authStatus: AuthStatus = .participating
+  ) -> XXModels.Group {
+    XXModels.Group(
+      id: "group-id-\(stubId)".data(using: .utf8)!,
+      name: "name-\(stubId)",
+      leaderId: leaderId ?? "group-leader-\(stubId)".data(using: .utf8)!,
+      createdAt: .stub(TimeInterval(stubId)),
+      authStatus: authStatus,
+      serialized: "serialize-\(stubId)".data(using: .utf8)!
+    )
+  }
+}
+
 extension XXLegacyDatabaseMigrator.GroupMember {
   static func stub(
     _ stubId: Int,
