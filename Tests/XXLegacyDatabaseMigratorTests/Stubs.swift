@@ -50,3 +50,96 @@ extension XXModels.Contact {
     )
   }
 }
+
+extension XXLegacyDatabaseMigrator.Group {
+  static func stub(
+    _ stubId: Int,
+    leader: Data? = nil,
+    status: Status = .participating
+  ) -> XXLegacyDatabaseMigrator.Group {
+    XXLegacyDatabaseMigrator.Group(
+      id: nil,
+      name: "name-\(stubId)",
+      leader: leader ?? "group-leader-\(stubId)".data(using: .utf8)!,
+      groupId: "group-id-\(stubId)".data(using: .utf8)!,
+      status: status,
+      serialize: "serialize-\(stubId)".data(using: .utf8)!,
+      createdAt: .stub(TimeInterval(stubId))
+    )
+  }
+}
+
+extension XXLegacyDatabaseMigrator.GroupMember {
+  static func stub(
+    _ stubId: Int,
+    groupId: Data? = nil,
+    status: Status = .usernameSet
+  ) -> XXLegacyDatabaseMigrator.GroupMember {
+    XXLegacyDatabaseMigrator.GroupMember(
+      id: nil,
+      userId: "user-id-\(stubId)".data(using: .utf8)!,
+      groupId: groupId ?? "group-id-\(stubId)".data(using: .utf8)!,
+      status: status,
+      username: "username-\(stubId)",
+      photo: "photo-\(stubId)".data(using: .utf8)!
+    )
+  }
+}
+
+extension XXLegacyDatabaseMigrator.Message {
+  static func stub(
+    _ stubId: Int,
+    unread: Bool = false,
+    sender: Data? = nil,
+    status: Status = .received,
+    receiver: Data? = nil,
+    reply: Reply? = nil,
+    attachment: Attachment? = nil
+  ) -> XXLegacyDatabaseMigrator.Message {
+    XXLegacyDatabaseMigrator.Message(
+      id: nil,
+      unread: unread,
+      sender: sender ?? "sender-\(stubId)".data(using: .utf8)!,
+      roundURL: "round-url-\(stubId)",
+      report: "report-\(stubId)".data(using: .utf8)!,
+      status: status,
+      receiver: receiver ?? "receiver-\(stubId)".data(using: .utf8)!,
+      timestamp: stubId,
+      uniqueId: "unique-id-\(stubId)".data(using: .utf8)!,
+      payload: Payload(
+        text: "text-\(stubId)",
+        reply: reply,
+        attachment: attachment
+      )
+    )
+  }
+}
+
+extension XXLegacyDatabaseMigrator.GroupMessage {
+  static func stub(
+    _ stubId: Int,
+    groupId: Data? = nil,
+    sender: Data? = nil,
+    reply: Reply? = nil,
+    attachment: Attachment? = nil,
+    status: Status = .received,
+    unread: Bool = false
+  ) -> XXLegacyDatabaseMigrator.GroupMessage {
+    XXLegacyDatabaseMigrator.GroupMessage(
+      id: nil,
+      uniqueId: "group-message-unique-id-\(stubId)".data(using: .utf8)!,
+      groupId: groupId ?? "group-id-\(stubId)".data(using: .utf8)!,
+      sender: sender ?? "sender-\(stubId)".data(using: .utf8)!,
+      roundId: Int64(stubId),
+      payload: Payload(
+        text: "text-\(stubId)",
+        reply: reply,
+        attachment: attachment
+      ),
+      status: status,
+      roundURL: "round-url-\(stubId)",
+      unread: unread,
+      timestamp: stubId
+    )
+  }
+}

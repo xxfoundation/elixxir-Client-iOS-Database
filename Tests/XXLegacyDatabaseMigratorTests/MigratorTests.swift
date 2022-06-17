@@ -15,10 +15,21 @@ final class MigratorTests: XCTestCase {
       _ = try XXLegacyDatabaseMigrator.Contact.stub(2).saved(db)
       _ = try XXLegacyDatabaseMigrator.Contact.stub(3).saved(db)
 
-      // TODO: mock up legacy groups
-      // TODO: mock up legacy group members
-      // TODO: mock up legacy messages
-      // TODO: mock up legacy group messages
+      _ = try XXLegacyDatabaseMigrator.Group.stub(1).saved(db)
+      _ = try XXLegacyDatabaseMigrator.Group.stub(2).saved(db)
+      _ = try XXLegacyDatabaseMigrator.Group.stub(3).saved(db)
+
+      _ = try XXLegacyDatabaseMigrator.GroupMember.stub(1).saved(db)
+      _ = try XXLegacyDatabaseMigrator.GroupMember.stub(2).saved(db)
+      _ = try XXLegacyDatabaseMigrator.GroupMember.stub(3).saved(db)
+
+      _ = try XXLegacyDatabaseMigrator.Message.stub(1).saved(db)
+      _ = try XXLegacyDatabaseMigrator.Message.stub(2).saved(db)
+      _ = try XXLegacyDatabaseMigrator.Message.stub(3).saved(db)
+
+      _ = try XXLegacyDatabaseMigrator.GroupMessage.stub(1).saved(db)
+      _ = try XXLegacyDatabaseMigrator.GroupMessage.stub(2).saved(db)
+      _ = try XXLegacyDatabaseMigrator.GroupMessage.stub(3).saved(db)
     }
 
     // Perform migration:
