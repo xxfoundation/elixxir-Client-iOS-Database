@@ -18,13 +18,13 @@ struct Contact: Equatable, Codable {
 
   var id: Int64?
   var photo: Data?
-  let userId: Data
+  var userId: Data
   var email: String?
   var phone: String?
   var status: Status
   var marshaled: Data
   var createdAt: Date
-  let username: String
+  var username: String
   var nickname: String?
   var isRecent: Bool
 }
