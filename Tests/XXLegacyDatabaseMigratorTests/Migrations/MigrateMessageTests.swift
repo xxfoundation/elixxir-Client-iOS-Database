@@ -22,4 +22,18 @@ final class MigrateMessageTests: XCTestCase {
   func testMigrating() throws {
     // TODO:
   }
+
+  func testMigratingReplyToUnknownMessage() throws {
+    let legacyMessage = XXLegacyDatabaseMigrator.Message.stub(1, reply: .init(
+      messageId: "unknown-message-id".data(using: .utf8)!,
+      senderId: "unknown-contact-id".data(using: .utf8)!
+    ))
+
+    XCTAssertThrowsError(try migrate(legacyMessage, to: newDb)) { error in
+      XCTAssertEqual(
+        error as? MigrateMessage.ReplyMessageNotFound,
+        MigrateMessage.ReplyMessageNotFound()
+      )
+    }
+  }
 }

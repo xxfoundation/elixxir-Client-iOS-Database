@@ -20,7 +20,14 @@ public struct MigrateMessage {
 }
 
 extension MigrateMessage {
+  public struct ReplyMessageNotFound: Error, Equatable {}
+
   public static let live = MigrateMessage { message, newDb in
+    if let replyMessageId = message.payload.reply?.messageId {
+      guard let repliedMessage = try newDb.fetchMessages(.init(networkId: replyMessageId)).first
+      else { throw ReplyMessageNotFound() }
+    }
+
     // TODO: migrate message
   }
 }
