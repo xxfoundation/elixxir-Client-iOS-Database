@@ -20,8 +20,7 @@ extension Migrator {
     migrateContact: MigrateContact = .live,
     migrateGroup: MigrateGroup = .live,
     migrateGroupMember: MigrateGroupMember = .live,
-    migrateMessage: MigrateMessage = .live,
-    migrateGroupMessage: MigrateGroupMessage = .live
+    migrateMessage: MigrateMessage = .live
   ) -> Migrator {
     Migrator { legacyDb, newDb in
       try legacyDb.writer.read { db in
@@ -47,7 +46,7 @@ extension Migrator {
 
         let groupMessages = try GroupMessage.order(GroupMessage.Column.timestamp).fetchCursor(db)
         while let groupMessage = try groupMessages.next() {
-          try migrateGroupMessage(groupMessage, to: newDb)
+          try migrateMessage(groupMessage, to: newDb)
         }
       }
     }

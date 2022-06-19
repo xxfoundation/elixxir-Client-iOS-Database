@@ -38,8 +38,7 @@ final class MigratorTests: XCTestCase {
       case contact(XXLegacyDatabaseMigrator.Contact)
       case group(XXLegacyDatabaseMigrator.Group)
       case groupMember(XXLegacyDatabaseMigrator.GroupMember)
-      case message(XXLegacyDatabaseMigrator.Message)
-      case groupMessage(XXLegacyDatabaseMigrator.GroupMessage)
+      case message(XXLegacyDatabaseMigrator.AnyMessage)
     }
 
     var didMigrate = [Migrated]()
@@ -56,9 +55,6 @@ final class MigratorTests: XCTestCase {
       },
       migrateMessage: .init { message, _ in
         didMigrate.append(.message(message))
-      },
-      migrateGroupMessage: .init { groupMessage, _ in
-        didMigrate.append(.groupMessage(groupMessage))
       }
     )
 
@@ -86,12 +82,14 @@ final class MigratorTests: XCTestCase {
         try XXLegacyDatabaseMigrator.Message
           .order(XXLegacyDatabaseMigrator.Message.Column.timestamp)
           .fetchAll(db)
+          .map(XXLegacyDatabaseMigrator.AnyMessage.direct)
           .map(Migrated.message),
 
         try XXLegacyDatabaseMigrator.GroupMessage
           .order(XXLegacyDatabaseMigrator.GroupMessage.Column.timestamp)
           .fetchAll(db)
-          .map(Migrated.groupMessage),
+          .map(XXLegacyDatabaseMigrator.AnyMessage.group)
+          .map(Migrated.message),
 
       ].flatMap { $0 }
     })

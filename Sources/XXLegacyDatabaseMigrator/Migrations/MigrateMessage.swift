@@ -2,13 +2,20 @@ import GRDB
 import XXModels
 
 public struct MigrateMessage {
-  var run: (Message, XXModels.Database) throws -> Void
+  var run: (AnyMessage, XXModels.Database) throws -> Void
 
   func callAsFunction(
     _ message: Message,
     to newDb: XXModels.Database
   ) throws {
-    try run(message, newDb)
+    try run(.direct(message), newDb)
+  }
+
+  func callAsFunction(
+    _ message: GroupMessage,
+    to newDb: XXModels.Database
+  ) throws {
+    try run(.group(message), newDb)
   }
 }
 
