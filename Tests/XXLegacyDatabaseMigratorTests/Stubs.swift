@@ -105,29 +105,30 @@ extension XXLegacyDatabaseMigrator.GroupMember {
 }
 
 extension XXLegacyDatabaseMigrator.Message {
-  static func stub(
-    _ stubId: Int,
-    unread: Bool = false,
-    sender: Data? = nil,
-    status: Status = .received,
-    receiver: Data? = nil,
-    reply: Reply? = nil,
-    attachment: Attachment? = nil
-  ) -> XXLegacyDatabaseMigrator.Message {
+  static func stub(_ stubId: Int) -> XXLegacyDatabaseMigrator.Message {
     XXLegacyDatabaseMigrator.Message(
       id: nil,
-      unread: unread,
-      sender: sender ?? "sender-\(stubId)".data(using: .utf8)!,
+      unread: false,
+      sender: "sender-\(stubId)".data(using: .utf8)!,
       roundURL: "round-url-\(stubId)",
       report: "report-\(stubId)".data(using: .utf8)!,
-      status: status,
-      receiver: receiver ?? "receiver-\(stubId)".data(using: .utf8)!,
+      status: .received,
+      receiver: "receiver-\(stubId)".data(using: .utf8)!,
       timestamp: stubId,
       uniqueId: "unique-id-\(stubId)".data(using: .utf8)!,
       payload: Payload(
         text: "text-\(stubId)",
-        reply: reply,
-        attachment: attachment
+        reply: .init(
+          messageId: "reply-message-id-\(stubId)".data(using: .utf8)!,
+          senderId: "reply-sender-id-\(stubId)".data(using: .utf8)!
+        ),
+        attachment: .init(
+          data: "attachment-data-\(stubId)".data(using: .utf8)!,
+          name: "attachment-name-\(stubId)",
+          transferId: "attachment-tid-\(stubId)".data(using: .utf8)!,
+          _extension: .image,
+          progress: 0.5
+        )
       )
     )
   }
