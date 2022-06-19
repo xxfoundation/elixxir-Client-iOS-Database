@@ -132,33 +132,132 @@ extension XXLegacyDatabaseMigrator.Message {
       )
     )
   }
+
+  static func stub(
+    _ stubId: Int,
+    from sender: Data,
+    to receiver: Data,
+    status: Status,
+    unread: Bool = false
+  ) -> XXLegacyDatabaseMigrator.Message {
+    XXLegacyDatabaseMigrator.Message(
+      id: nil,
+      unread: unread,
+      sender: sender,
+      roundURL: "round-url-\(stubId)",
+      report: "report-\(stubId)".data(using: .utf8)!,
+      status: status,
+      receiver: receiver,
+      timestamp: stubId * Int(NSEC_PER_SEC),
+      uniqueId: "network-id-\(stubId)".data(using: .utf8)!,
+      payload: Payload(
+        text: "text-\(stubId)",
+        reply: nil,
+        attachment: nil
+      )
+    )
+  }
+}
+
+extension XXModels.Message {
+  static func stub(
+    _ stubId: Int,
+    from senderId: XXModels.Contact.ID,
+    to recipientId: XXModels.Contact.ID,
+    status: Status,
+    isUnread: Bool = false
+  ) -> XXModels.Message {
+    XXModels.Message(
+      id: nil,
+      networkId: "network-id-\(stubId)".data(using: .utf8)!,
+      senderId: senderId,
+      recipientId: recipientId,
+      groupId: nil,
+      date: .stub(TimeInterval(stubId)),
+      status: status,
+      isUnread: isUnread,
+      text: "text-\(stubId)",
+      replyMessageId: nil,
+      roundURL: "round-url-\(stubId)",
+      fileTransferId: nil
+    )
+  }
+
+  static func stub(
+    _ stubId: Int,
+    from senderId: XXModels.Contact.ID,
+    toGroup groupId: XXModels.Group.ID,
+    status: Status,
+    isUnread: Bool = false
+  ) -> XXModels.Message {
+    XXModels.Message(
+      id: nil,
+      networkId: "network-id-\(stubId)-group".data(using: .utf8)!,
+      senderId: senderId,
+      recipientId: nil,
+      groupId: groupId,
+      date: .stub(TimeInterval(stubId)),
+      status: status,
+      isUnread: isUnread,
+      text: "text-\(stubId)",
+      replyMessageId: nil,
+      roundURL: "round-url-\(stubId)",
+      fileTransferId: nil
+    )
+  }
 }
 
 extension XXLegacyDatabaseMigrator.GroupMessage {
+  static func stub(_ stubId: Int) -> XXLegacyDatabaseMigrator.GroupMessage {
+    XXLegacyDatabaseMigrator.GroupMessage(
+      id: nil,
+      uniqueId: "group-message-unique-id-\(stubId)".data(using: .utf8)!,
+      groupId: "group-id-\(stubId)".data(using: .utf8)!,
+      sender: "sender-\(stubId)".data(using: .utf8)!,
+      roundId: Int64(stubId),
+      payload: Payload(
+        text: "text-\(stubId)",
+        reply: .init(
+          messageId: "reply-message-id-\(stubId)".data(using: .utf8)!,
+          senderId: "reply-sender-id-\(stubId)".data(using: .utf8)!
+        ),
+        attachment: .init(
+          data: "attachment-data-\(stubId)".data(using: .utf8)!,
+          name: "attachment-name-\(stubId)",
+          transferId: "attachment-tid-\(stubId)".data(using: .utf8)!,
+          _extension: .image,
+          progress: 0.5
+        )
+      ),
+      status: .received,
+      roundURL: "round-url-\(stubId)",
+      unread: false,
+      timestamp: stubId * Int(NSEC_PER_SEC)
+    )
+  }
+
   static func stub(
     _ stubId: Int,
-    groupId: Data? = nil,
-    sender: Data? = nil,
-    reply: Reply? = nil,
-    attachment: Attachment? = nil,
-    status: Status = .received,
+    from sender: Data,
+    toGroup groupId: Data,
+    status: Status,
     unread: Bool = false
   ) -> XXLegacyDatabaseMigrator.GroupMessage {
     XXLegacyDatabaseMigrator.GroupMessage(
       id: nil,
-      uniqueId: "group-message-unique-id-\(stubId)".data(using: .utf8)!,
-      groupId: groupId ?? "group-id-\(stubId)".data(using: .utf8)!,
-      sender: sender ?? "sender-\(stubId)".data(using: .utf8)!,
-      roundId: Int64(stubId),
+      uniqueId: "network-id-\(stubId)-group".data(using: .utf8)!,
+      groupId: groupId,
+      sender: sender,
+      roundId: nil,
       payload: Payload(
         text: "text-\(stubId)",
-        reply: reply,
-        attachment: attachment
+        reply: nil,
+        attachment: nil
       ),
       status: status,
       roundURL: "round-url-\(stubId)",
       unread: unread,
-      timestamp: stubId
+      timestamp: stubId * Int(NSEC_PER_SEC)
     )
   }
 }

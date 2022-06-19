@@ -19,8 +19,75 @@ final class MigrateMessageTests: XCTestCase {
     newDb = nil
   }
 
-  func testMigrating() throws {
-    // TODO:
+  func testMigratingDirectMessages() throws {
+    let contact1 = try newDb.saveContact(.stub(1))
+    let contact2 = try newDb.saveContact(.stub(2))
+
+    let legacyMessages: [XXLegacyDatabaseMigrator.Message] = [
+      .stub(1, from: contact1.id, to: contact2.id, status: .read),
+      .stub(2, from: contact2.id, to: contact1.id, status: .sent),
+      .stub(3, from: contact2.id, to: contact1.id, status: .sending),
+      .stub(4, from: contact2.id, to: contact1.id, status: .sendingAttachment),
+      .stub(5, from: contact1.id, to: contact2.id, status: .receivingAttachment),
+      .stub(6, from: contact1.id, to: contact2.id, status: .received, unread: true),
+      .stub(7, from: contact2.id, to: contact1.id, status: .failedToSend),
+      .stub(8, from: contact2.id, to: contact1.id, status: .timedOut),
+    ]
+
+    try legacyMessages.forEach { message in
+      try migrate(message, to: newDb)
+    }
+
+    let newMessages: [XXModels.Message] = try newDb.fetchMessages(.init()).map {
+      var message = $0
+      message.id = nil
+      return message
+    }
+
+    XCTAssertNoDifference(newMessages, [
+      .stub(1, from: contact1.id, to: contact2.id, status: .received),
+      .stub(2, from: contact2.id, to: contact1.id, status: .sent),
+      .stub(3, from: contact2.id, to: contact1.id, status: .sending),
+      .stub(4, from: contact2.id, to: contact1.id, status: .sending),
+      .stub(5, from: contact1.id, to: contact2.id, status: .receiving),
+      .stub(6, from: contact1.id, to: contact2.id, status: .received, isUnread: true),
+      .stub(7, from: contact2.id, to: contact1.id, status: .sendingFailed),
+      .stub(8, from: contact2.id, to: contact1.id, status: .sendingTimedOut),
+    ])
+  }
+
+  func testMigratingGroupMessages() throws {
+    let contact1 = try newDb.saveContact(.stub(1))
+    let contact2 = try newDb.saveContact(.stub(2))
+    let contact3 = try newDb.saveContact(.stub(3))
+    let group1 = try newDb.saveGroup(.stub(1, leaderId: contact1.id))
+    let group2 = try newDb.saveGroup(.stub(2, leaderId: contact2.id))
+
+    let legacyGroupMessages: [XXLegacyDatabaseMigrator.GroupMessage] = [
+      .stub(1, from: contact1.id, toGroup: group1.id, status: .sent),
+      .stub(2, from: contact2.id, toGroup: group1.id, status: .read),
+      .stub(3, from: contact3.id, toGroup: group1.id, status: .failed),
+      .stub(4, from: contact1.id, toGroup: group2.id, status: .sending),
+      .stub(5, from: contact2.id, toGroup: group2.id, status: .received, unread: true),
+    ]
+
+    try legacyGroupMessages.forEach { groupMessage in
+      try migrate(groupMessage, to: newDb)
+    }
+
+    let newMessages: [XXModels.Message] = try newDb.fetchMessages(.init()).map {
+      var message = $0
+      message.id = nil
+      return message
+    }
+
+    XCTAssertNoDifference(newMessages, [
+      .stub(1, from: contact1.id, toGroup: group1.id, status: .sent),
+      .stub(2, from: contact2.id, toGroup: group1.id, status: .received),
+      .stub(3, from: contact3.id, toGroup: group1.id, status: .sendingFailed),
+      .stub(4, from: contact1.id, toGroup: group2.id, status: .sending),
+      .stub(5, from: contact2.id, toGroup: group2.id, status: .received, isUnread: true),
+    ])
   }
 
   func testMigratingReplyToUnknownMessage() throws {
@@ -36,5 +103,29 @@ final class MigrateMessageTests: XCTestCase {
         MigrateMessage.ReplyMessageNotFound()
       )
     }
+  }
+
+  func testMigratingMessageWithUnknownSender() throws {
+    // TODO:
+  }
+
+  func testMigratingMessageWithUnknownRecipient() throws {
+    // TODO:
+  }
+
+  func testMigratingMessageWithUnknownGroup() throws {
+    // TODO:
+  }
+
+  func testMigratingReplyMessage() throws {
+    // TODO:
+  }
+
+  func testMigratingIncomingFileTransfer() throws {
+    // TODO:
+  }
+
+  func testMigratingOutgoingFileTransfer() throws {
+    // TODO:
   }
 }
