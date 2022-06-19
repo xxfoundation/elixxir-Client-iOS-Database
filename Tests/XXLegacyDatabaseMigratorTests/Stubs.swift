@@ -89,12 +89,13 @@ extension XXModels.Group {
 extension XXLegacyDatabaseMigrator.GroupMember {
   static func stub(
     _ stubId: Int,
+    userId: Data? = nil,
     groupId: Data? = nil,
     status: Status = .usernameSet
   ) -> XXLegacyDatabaseMigrator.GroupMember {
     XXLegacyDatabaseMigrator.GroupMember(
       id: nil,
-      userId: "user-id-\(stubId)".data(using: .utf8)!,
+      userId: userId ?? "user-id-\(stubId)".data(using: .utf8)!,
       groupId: groupId ?? "group-id-\(stubId)".data(using: .utf8)!,
       status: status,
       username: "username-\(stubId)",
