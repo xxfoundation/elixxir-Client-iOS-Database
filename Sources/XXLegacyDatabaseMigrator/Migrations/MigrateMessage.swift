@@ -30,14 +30,18 @@ extension MigrateMessage {
     }
 
     if try newDb.fetchContacts(.init(id: [message.sender])).isEmpty {
-      // TODO: create sender contact
-      fatalError()
+      try newDb.saveContact(.init(
+        id: message.sender,
+        createdAt: Date(nsSince1970: message.timestamp)
+      ))
     }
 
     if let receiver = message.receiver,
        try newDb.fetchContacts(.init(id: [receiver])).isEmpty {
-      // TODO: create recipient contact
-      fatalError()
+      try newDb.saveContact(.init(
+        id: receiver,
+        createdAt: Date(nsSince1970: message.timestamp)
+      ))
     }
 
     if let groupId = message.groupId,

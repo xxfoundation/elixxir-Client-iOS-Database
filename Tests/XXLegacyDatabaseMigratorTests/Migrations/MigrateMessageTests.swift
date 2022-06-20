@@ -105,12 +105,33 @@ final class MigrateMessageTests: XCTestCase {
     }
   }
 
-  func testMigratingMessageWithUnknownSender() throws {
-    // TODO:
-  }
+  func testMigratingMessageWithUnknownSenderAndRecipient() throws {
+    let senderId = "sender-id".data(using: .utf8)!
+    let recipientId = "recipient-id".data(using: .utf8)!
 
-  func testMigratingMessageWithUnknownRecipient() throws {
-    // TODO:
+    let legacyMessage = XXLegacyDatabaseMigrator.Message.stub(
+      1,
+      from: senderId,
+      to: recipientId,
+      status: .received
+    )
+
+    try migrate(legacyMessage, to: newDb)
+
+    let newMessages: [XXModels.Message] = try newDb.fetchMessages(.init()).map {
+      var message = $0
+      message.id = nil
+      return message
+    }
+
+    XCTAssertNoDifference(newMessages, [
+      .stub(1, from: senderId, to: recipientId, status: .received)
+    ])
+
+    XCTAssertNoDifference(try newDb.fetchContacts(.init()), [
+      .init(id: senderId, createdAt: Date(nsSince1970: legacyMessage.timestamp)),
+      .init(id: recipientId, createdAt: Date(nsSince1970: legacyMessage.timestamp)),
+    ])
   }
 
   func testMigratingMessageWithUnknownGroup() throws {
