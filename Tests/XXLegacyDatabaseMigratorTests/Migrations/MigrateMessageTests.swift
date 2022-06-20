@@ -135,7 +135,21 @@ final class MigrateMessageTests: XCTestCase {
   }
 
   func testMigratingMessageWithUnknownGroup() throws {
-    // TODO:
+    let sender = try newDb.saveContact(.stub(1))
+
+    let legacyMessage = XXLegacyDatabaseMigrator.GroupMessage.stub(
+      1,
+      from: sender.id,
+      toGroup: "unknown-group-id".data(using: .utf8)!,
+      status: .sent
+    )
+
+    XCTAssertThrowsError(try migrate(legacyMessage, to: newDb)) { error in
+      XCTAssertEqual(
+        error as? MigrateMessage.GroupNotFound,
+        MigrateMessage.GroupNotFound()
+      )
+    }
   }
 
   func testMigratingReplyMessage() throws {

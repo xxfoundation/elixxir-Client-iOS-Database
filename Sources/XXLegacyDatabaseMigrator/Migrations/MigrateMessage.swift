@@ -22,11 +22,17 @@ public struct MigrateMessage {
 
 extension MigrateMessage {
   public struct ReplyMessageNotFound: Error, Equatable {}
+  public struct GroupNotFound: Error, Equatable {}
 
   public static let live = MigrateMessage { message, newDb in
     if let replyMessageId = message.payload.reply?.messageId,
        try newDb.fetchMessages(.init(networkId: replyMessageId)).isEmpty {
       throw ReplyMessageNotFound()
+    }
+
+    if let groupId = message.groupId,
+       try newDb.fetchGroups(.init(id: [groupId])).isEmpty {
+      throw GroupNotFound()
     }
 
     if try newDb.fetchContacts(.init(id: [message.sender])).isEmpty {
@@ -42,12 +48,6 @@ extension MigrateMessage {
         id: receiver,
         createdAt: Date(nsSince1970: message.timestamp)
       ))
-    }
-
-    if let groupId = message.groupId,
-       try newDb.fetchGroups(.init(id: [groupId])).isEmpty {
-      // TODO: throw group-not-found error
-      fatalError()
     }
 
     let fileTransfer: XXModels.FileTransfer?
