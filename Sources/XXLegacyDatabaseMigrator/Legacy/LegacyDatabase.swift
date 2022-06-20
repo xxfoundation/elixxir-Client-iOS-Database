@@ -5,41 +5,6 @@ import GRDB
 ///
 /// Use this struct to instantiate legacy database from which the migration should be performed.
 public struct LegacyDatabase {
-  /// Instantiate legacy database using its default path on disk
-  ///
-  /// - Throws: Error when database can't be instantiated
-  public init() throws {
-    let fileManager = FileManager.default
-
-    let appDocumentsPath = NSSearchPathForDirectoriesInDomains(
-      .documentDirectory,
-      .userDomainMask,
-      true
-    ).first!
-
-    let appDbPath = appDocumentsPath.appending("/xxmessenger.sqlite")
-
-    let appGroupDbPath = fileManager
-      .containerURL(forSecurityApplicationGroupIdentifier: "group.elixxir.messenger")!
-      .appendingPathComponent("database")
-      .appendingPathExtension("sqlite")
-      .path
-
-    let appDbExists = fileManager.fileExists(atPath: appDbPath)
-    let appGroupDbExists = fileManager.fileExists(atPath: appGroupDbPath)
-
-    if appDbExists && !appGroupDbExists {
-      try fileManager.moveItem(atPath: appDbPath, toPath: appGroupDbPath)
-    }
-
-    try fileManager.setAttributes(
-      [.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication],
-      ofItemAtPath: appGroupDbPath
-    )
-
-    try self.init(path: appGroupDbPath)
-  }
-
   /// Instantiate legacy database at provided path
   ///
   /// - Parameter path: Path to database stored on disk
