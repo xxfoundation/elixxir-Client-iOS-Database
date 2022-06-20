@@ -8,6 +8,7 @@ public struct LegacyDatabase {
   /// Instantiate legacy database at provided path
   ///
   /// - Parameter path: Path to database stored on disk
+  /// - Throws: Error when database can't be instantiated
   public init(path: String) throws {
     try self.init(writer: DatabaseQueue(path: path))
   }
