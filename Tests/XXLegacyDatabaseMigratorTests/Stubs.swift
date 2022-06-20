@@ -139,7 +139,8 @@ extension XXLegacyDatabaseMigrator.Message {
     to receiver: Data,
     status: Status,
     unread: Bool = false,
-    reply: Reply? = nil
+    reply: Reply? = nil,
+    attachment: Attachment? = nil
   ) -> XXLegacyDatabaseMigrator.Message {
     XXLegacyDatabaseMigrator.Message(
       id: nil,
@@ -154,7 +155,7 @@ extension XXLegacyDatabaseMigrator.Message {
       payload: Payload(
         text: "text-\(stubId)",
         reply: reply,
-        attachment: nil
+        attachment: attachment
       )
     )
   }
@@ -167,7 +168,8 @@ extension XXModels.Message {
     to recipientId: XXModels.Contact.ID,
     status: Status,
     isUnread: Bool = false,
-    replyMessageId: Data? = nil
+    replyMessageId: Data? = nil,
+    fileTransferId: Data? = nil
   ) -> XXModels.Message {
     XXModels.Message(
       id: nil,
@@ -181,7 +183,7 @@ extension XXModels.Message {
       text: "text-\(stubId)",
       replyMessageId: replyMessageId,
       roundURL: "round-url-\(stubId)",
-      fileTransferId: nil
+      fileTransferId: fileTransferId
     )
   }
 
@@ -266,6 +268,44 @@ extension XXLegacyDatabaseMigrator.GroupMessage {
       roundURL: "round-url-\(stubId)",
       unread: unread,
       timestamp: stubId * Int(NSEC_PER_SEC)
+    )
+  }
+}
+
+extension XXLegacyDatabaseMigrator.Attachment {
+  static func stub(
+    _ stubId: Int,
+    ext: Extension,
+    progress: Float
+  ) -> XXLegacyDatabaseMigrator.Attachment {
+    XXLegacyDatabaseMigrator.Attachment(
+      data: "attachment-data-\(stubId)".data(using: .utf8)!,
+      name: "attachment-name-\(stubId)",
+      transferId: "attachment-tid-\(stubId)".data(using: .utf8)!,
+      _extension: ext,
+      progress: progress
+    )
+  }
+}
+
+extension XXModels.FileTransfer {
+  static func stub(
+    _ stubId: Int,
+    contactId: XXModels.Contact.ID,
+    type: String,
+    progress: Float,
+    isIncoming: Bool,
+    createdAt: Date
+  ) -> XXModels.FileTransfer {
+    XXModels.FileTransfer(
+      id: "attachment-tid-\(stubId)".data(using: .utf8)!,
+      contactId: contactId,
+      name: "attachment-name-\(stubId)",
+      type: type,
+      data: "attachment-data-\(stubId)".data(using: .utf8)!,
+      progress: progress,
+      isIncoming: isIncoming,
+      createdAt: createdAt
     )
   }
 }

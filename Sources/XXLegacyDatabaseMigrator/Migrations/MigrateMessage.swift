@@ -51,9 +51,8 @@ extension MigrateMessage {
     }
 
     let fileTransfer: XXModels.FileTransfer?
-    if let attachment = message.payload.attachment {
-      // TODO: create file transfer
-      fatalError()
+    if let ft = Self.fileTransfer(for: message) {
+      fileTransfer = try newDb.saveFileTransfer(ft)
     } else {
       fileTransfer = nil
     }
@@ -107,5 +106,52 @@ extension MigrateMessage {
     case .sending: return .sending
     case .received: return .received
     }
+  }
+
+  static func fileTransfer(
+    for anyMessage: XXLegacyDatabaseMigrator.AnyMessage
+  ) -> XXModels.FileTransfer? {
+    guard case .direct(let message) = anyMessage,
+          let attachment = message.payload.attachment,
+          let transferId = attachment.transferId
+    else {
+      return nil
+    }
+
+    func contactId() -> Data {
+      switch message.status {
+      case .read, .receivingAttachment, .received:
+        return message.sender
+      case .sent, .sending, .sendingAttachment, .failedToSend, .timedOut:
+        return message.receiver
+      }
+    }
+
+    func type() -> String {
+      switch attachment._extension {
+      case .image: return "jpeg"
+      case .audio: return "m4a"
+      }
+    }
+
+    func isIncoming() -> Bool {
+      switch message.status {
+      case .read, .receivingAttachment, .received:
+        return true
+      case .sent, .sending, .sendingAttachment, .failedToSend, .timedOut:
+        return false
+      }
+    }
+
+    return .init(
+      id: transferId,
+      contactId: contactId(),
+      name: attachment.name,
+      type: type(),
+      data: attachment.data,
+      progress: attachment.progress,
+      isIncoming: isIncoming(),
+      createdAt: Date(nsSince1970: message.timestamp)
+    )
   }
 }

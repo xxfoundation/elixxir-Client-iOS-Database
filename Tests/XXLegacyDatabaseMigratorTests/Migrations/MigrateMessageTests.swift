@@ -182,11 +182,68 @@ final class MigrateMessageTests: XCTestCase {
     ])
   }
 
-  func testMigratingIncomingFileTransfer() throws {
-    // TODO:
-  }
+  func testMigratingFileTransfer() throws {
+    let contact1 = try newDb.saveContact(.stub(1))
+    let contact2 = try newDb.saveContact(.stub(2))
 
-  func testMigratingOutgoingFileTransfer() throws {
-    // TODO:
+    let legacyMessages: [XXLegacyDatabaseMigrator.Message] = [
+      .stub(
+        1,
+        from: contact1.id,
+        to: contact2.id,
+        status: .received,
+        attachment: .stub(1, ext: .image, progress: 0.1)
+      ),
+      .stub(
+        2,
+        from: contact2.id,
+        to: contact1.id,
+        status: .sent,
+        attachment: .stub(2, ext: .audio, progress: 0.2)
+      ),
+    ]
+
+    try legacyMessages.forEach { message in
+      try migrate(message, to: newDb)
+    }
+
+    let newMessages: [XXModels.Message] = try newDb.fetchMessages(.init())
+      .map { $0.withNilId() }
+
+    XCTAssertNoDifference(newMessages, [
+      .stub(
+        1,
+        from: contact1.id,
+        to: contact2.id,
+        status: .received,
+        fileTransferId: legacyMessages[0].payload.attachment!.transferId!
+      ),
+      .stub(
+        2,
+        from: contact2.id,
+        to: contact1.id,
+        status: .sent,
+        fileTransferId: legacyMessages[1].payload.attachment!.transferId!
+      ),
+    ])
+
+    XCTAssertNoDifference(try newDb.fetchFileTransfers(.init(sortBy: .createdAt())), [
+      .stub(
+        1,
+        contactId: contact1.id,
+        type: "jpeg",
+        progress: 0.1,
+        isIncoming: true,
+        createdAt: Date(nsSince1970: legacyMessages[0].timestamp)
+      ),
+      .stub(
+        2,
+        contactId: contact1.id,
+        type: "m4a",
+        progress: 0.2,
+        isIncoming: false,
+        createdAt: Date(nsSince1970: legacyMessages[1].timestamp)
+      )
+    ])
   }
 }
