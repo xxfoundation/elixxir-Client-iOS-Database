@@ -138,7 +138,8 @@ extension XXLegacyDatabaseMigrator.Message {
     from sender: Data,
     to receiver: Data,
     status: Status,
-    unread: Bool = false
+    unread: Bool = false,
+    reply: Reply? = nil
   ) -> XXLegacyDatabaseMigrator.Message {
     XXLegacyDatabaseMigrator.Message(
       id: nil,
@@ -152,7 +153,7 @@ extension XXLegacyDatabaseMigrator.Message {
       uniqueId: "network-id-\(stubId)".data(using: .utf8)!,
       payload: Payload(
         text: "text-\(stubId)",
-        reply: nil,
+        reply: reply,
         attachment: nil
       )
     )
@@ -165,7 +166,8 @@ extension XXModels.Message {
     from senderId: XXModels.Contact.ID,
     to recipientId: XXModels.Contact.ID,
     status: Status,
-    isUnread: Bool = false
+    isUnread: Bool = false,
+    replyMessageId: Data? = nil
   ) -> XXModels.Message {
     XXModels.Message(
       id: nil,
@@ -177,7 +179,7 @@ extension XXModels.Message {
       status: status,
       isUnread: isUnread,
       text: "text-\(stubId)",
-      replyMessageId: nil,
+      replyMessageId: replyMessageId,
       roundURL: "round-url-\(stubId)",
       fileTransferId: nil
     )
@@ -204,6 +206,12 @@ extension XXModels.Message {
       roundURL: "round-url-\(stubId)",
       fileTransferId: nil
     )
+  }
+
+  func withNilId() -> XXModels.Message {
+    var message = self
+    message.id = nil
+    return message
   }
 }
 

@@ -153,7 +153,42 @@ final class MigrateMessageTests: XCTestCase {
   }
 
   func testMigratingReplyMessage() throws {
-    // TODO:
+    let contact1 = try newDb.saveContact(.stub(1))
+    let contact2 = try newDb.saveContact(.stub(2))
+    let originMessage = try newDb.saveMessage(.stub(
+      1,
+      from: contact1.id,
+      to: contact2.id,
+      status: .sent
+    ))
+
+    let legacyMessage = XXLegacyDatabaseMigrator.Message.stub(
+      2,
+      from: contact2.id,
+      to: contact1.id,
+      status: .received,
+      reply: .init(
+        messageId: originMessage.networkId!,
+        senderId: originMessage.senderId
+      )
+    )
+
+    try migrate(legacyMessage, to: newDb)
+
+    let newMessages: [XXModels.Message] = try newDb.fetchMessages(.init()).map {
+      $0.withNilId()
+    }
+
+    XCTAssertNoDifference(newMessages, [
+      originMessage.withNilId(),
+      .stub(
+        2,
+        from: contact2.id,
+        to: contact1.id,
+        status: .received,
+        replyMessageId: originMessage.networkId!
+      ),
+    ])
   }
 
   func testMigratingIncomingFileTransfer() throws {
