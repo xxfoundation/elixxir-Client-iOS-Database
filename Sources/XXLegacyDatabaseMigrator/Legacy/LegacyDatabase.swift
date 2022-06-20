@@ -37,7 +37,14 @@ public struct LegacyDatabase {
       ofItemAtPath: appGroupDbPath
     )
 
-    try self.init(writer: try DatabaseQueue(path: appGroupDbPath))
+    try self.init(path: appGroupDbPath)
+  }
+
+  /// Instantiate legacy database at provided path
+  ///
+  /// - Parameter path: Path to database stored on disk
+  public init(path: String) throws {
+    try self.init(writer: DatabaseQueue(path: path))
   }
 
   /// Instantiate legacy database with provided writer
