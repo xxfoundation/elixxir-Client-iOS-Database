@@ -38,11 +38,8 @@ final class MigrateMessageTests: XCTestCase {
       try migrate(message, to: newDb)
     }
 
-    let newMessages: [XXModels.Message] = try newDb.fetchMessages(.init()).map {
-      var message = $0
-      message.id = nil
-      return message
-    }
+    let newMessages: [XXModels.Message] = try newDb.fetchMessages(.init())
+      .map { $0.withNilId() }
 
     XCTAssertNoDifference(newMessages, [
       .stub(1, from: contact1.id, to: contact2.id, status: .received),
@@ -75,11 +72,8 @@ final class MigrateMessageTests: XCTestCase {
       try migrate(groupMessage, to: newDb)
     }
 
-    let newMessages: [XXModels.Message] = try newDb.fetchMessages(.init()).map {
-      var message = $0
-      message.id = nil
-      return message
-    }
+    let newMessages: [XXModels.Message] = try newDb.fetchMessages(.init())
+      .map { $0.withNilId() }
 
     XCTAssertNoDifference(newMessages, [
       .stub(1, from: contact1.id, toGroup: group1.id, status: .sent),
@@ -118,11 +112,8 @@ final class MigrateMessageTests: XCTestCase {
 
     try migrate(legacyMessage, to: newDb)
 
-    let newMessages: [XXModels.Message] = try newDb.fetchMessages(.init()).map {
-      var message = $0
-      message.id = nil
-      return message
-    }
+    let newMessages: [XXModels.Message] = try newDb.fetchMessages(.init())
+      .map { $0.withNilId() }
 
     XCTAssertNoDifference(newMessages, [
       .stub(1, from: senderId, to: recipientId, status: .received)
