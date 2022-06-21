@@ -86,6 +86,7 @@ let package = Package(
       ],
       resources: [
         .copy("Resources/legacy_database_1.sqlite"),
+        .copy("Resources/legacy_database_2.sqlite"),
       ],
       swiftSettings: swiftSettings
     ),
