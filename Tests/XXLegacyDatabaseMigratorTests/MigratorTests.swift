@@ -1,8 +1,9 @@
 import CustomDump
 import GRDB
+import SnapshotTesting
 import XCTest
-import XXDatabase
 import XXModels
+@testable import XXDatabase
 @testable import XXLegacyDatabaseMigrator
 
 final class MigratorTests: XCTestCase {
@@ -98,22 +99,26 @@ final class MigratorTests: XCTestCase {
   func testMigratingLegacyDatabase1() throws {
     let path = Bundle.module.path(forResource: "legacy_database_1", ofType: "sqlite")!
     let legacyDb = try LegacyDatabase(path: path)
-    let newDb = try XXModels.Database.inMemory()
+    let newDbQueue = DatabaseQueue()
+    let newDb = try XXModels.Database.grdb(writer: newDbQueue)
     let migrate = Migrator.live()
 
     try migrate(legacyDb, to: newDb)
+    let newDbSnapshot = try DatabaseSnapshot.make(with: newDbQueue)
 
-    // TODO: assert new database content
+    assertSnapshot(matching: newDbSnapshot, as: .json)
   }
 
   func testMigratingLegacyDatabase2() throws {
     let path = Bundle.module.path(forResource: "legacy_database_2", ofType: "sqlite")!
     let legacyDb = try LegacyDatabase(path: path)
-    let newDb = try XXModels.Database.inMemory()
+    let newDbQueue = DatabaseQueue()
+    let newDb = try XXModels.Database.grdb(writer: newDbQueue)
     let migrate = Migrator.live()
 
     try migrate(legacyDb, to: newDb)
+    let newDbSnapshot = try DatabaseSnapshot.make(with: newDbQueue)
 
-    // TODO: assert new database content
+    assertSnapshot(matching: newDbSnapshot, as: .json)
   }
 }
