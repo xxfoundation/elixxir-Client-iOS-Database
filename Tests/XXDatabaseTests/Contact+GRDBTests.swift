@@ -264,4 +264,42 @@ final class ContactGRDBTests: XCTestCase {
       contactF,
     ])
   }
+
+  func testFetchingRecent() throws {
+    // Mock up contacts:
+
+    let contactA = try db.saveContact(.stub("A", isRecent: true))
+    let contactB = try db.saveContact(.stub("B", isRecent: false))
+    let contactC = try db.saveContact(.stub("C", isRecent: true))
+    let contactD = try db.saveContact(.stub("D", isRecent: false))
+    let contactE = try db.saveContact(.stub("E", isRecent: true))
+    let contactF = try db.saveContact(.stub("F", isRecent: false))
+
+    // Fetch recent contacts:
+
+    XCTAssertNoDifference(try db.fetchContacts(.init(isRecent: true)), [
+      contactA,
+      contactC,
+      contactE,
+    ])
+
+    // Fetch non-recent contacts:
+
+    XCTAssertNoDifference(try db.fetchContacts(.init(isRecent: false)), [
+      contactB,
+      contactD,
+      contactF,
+    ])
+
+    // Fetch contacts regardless recent status:
+
+    XCTAssertNoDifference(try db.fetchContacts(.init(isRecent: nil)), [
+      contactA,
+      contactB,
+      contactC,
+      contactD,
+      contactE,
+      contactF,
+    ])
+  }
 }
