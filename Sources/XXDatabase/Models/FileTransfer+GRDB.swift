@@ -15,7 +15,7 @@ extension FileTransfer: FetchableRecord, MutablePersistableRecord {
 
   public static let databaseTableName = "fileTransfers"
 
-  public static func request(_ query: Query) -> QueryInterfaceRequest<FileTransfer> {
+  static func request(_ query: Query) -> QueryInterfaceRequest<FileTransfer> {
     var request = FileTransfer.all()
 
     if let id = query.id {
