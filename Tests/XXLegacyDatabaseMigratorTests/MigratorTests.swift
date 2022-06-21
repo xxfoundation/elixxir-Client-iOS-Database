@@ -94,4 +94,15 @@ final class MigratorTests: XCTestCase {
       ].flatMap { $0 }
     })
   }
+
+  func testMigratingLegacyDatabase1() throws {
+    let path = Bundle.module.path(forResource: "legacy_database_1", ofType: "sqlite")!
+    let legacyDb = try LegacyDatabase(path: path)
+    let newDb = try XXModels.Database.inMemory()
+    let migrate = Migrator.live()
+
+    try migrate(legacyDb, to: newDb)
+
+    // TODO: assert new database content
+  }
 }
