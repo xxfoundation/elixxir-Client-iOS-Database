@@ -3,7 +3,7 @@ import GRDB
 import XXModels
 
 public struct MigrateMessage {
-  var run: (AnyMessage, XXModels.Database) throws -> Void
+  var run: (LegacyMessage, XXModels.Database) throws -> Void
 
   func callAsFunction(
     _ message: Message,
@@ -116,7 +116,7 @@ extension MigrateMessage {
   }
 
   static func fileTransfer(
-    for anyMessage: XXLegacyDatabaseMigrator.AnyMessage
+    for anyMessage: XXLegacyDatabaseMigrator.LegacyMessage
   ) -> XXModels.FileTransfer? {
     guard case .direct(let message) = anyMessage,
           let attachment = message.payload.attachment,

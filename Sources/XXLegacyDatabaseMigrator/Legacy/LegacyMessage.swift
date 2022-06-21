@@ -1,11 +1,11 @@
 import Foundation
 
-enum AnyMessage: Equatable {
+enum LegacyMessage: Equatable {
   case direct(Message)
   case group(GroupMessage)
 }
 
-extension AnyMessage {
+extension LegacyMessage {
   var payload: Payload {
     switch self {
     case .direct(let message): return message.payload
