@@ -119,6 +119,9 @@ extension Contact {
   /// Save (insert new or update existing) contact operation
   public typealias Save = XXModels.Save<Contact>
 
+  /// Bulk update contacts operation
+  public typealias BulkUpdate = XXModels.BulkUpdate<Query, Update>
+
   /// Delete contact operation
   public typealias Delete = XXModels.Delete<Contact>
 
@@ -181,5 +184,26 @@ extension Contact {
 
     /// Contacts sort order
     public var sortBy: SortOrder
+  }
+
+  /// Bulk update definition
+  public struct Update: Equatable {
+    /// Instantiate definition
+    ///
+    /// - Parameters:
+    ///   - authStatus: Set auth status.
+    ///     If provided, change auth status to given value.
+    ///     If `nil` (default), do not change auth status.
+    public init(
+      authStatus: Contact.AuthStatus? = nil
+    ) {
+      self.authStatus = authStatus
+    }
+
+    /// Set auth status
+    ///
+    /// If provided, change auth status to given value.
+    /// If `nil`, do not change auth status.
+    public var authStatus: AuthStatus?
   }
 }
