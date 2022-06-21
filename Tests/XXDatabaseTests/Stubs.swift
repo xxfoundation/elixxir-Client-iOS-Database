@@ -11,6 +11,7 @@ extension Contact {
   static func stub(
     _ id: String,
     authStatus: AuthStatus = .stranger,
+    isRecent: Bool = false,
     createdAt: Date = .stub(0)
   ) -> Contact {
     Contact(
@@ -21,6 +22,7 @@ extension Contact {
       phone: "contact-phone-\(id)",
       nickname: "contact-nickname-\(id)",
       authStatus: authStatus,
+      isRecent: isRecent,
       createdAt: createdAt
     )
   }

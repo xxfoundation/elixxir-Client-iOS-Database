@@ -146,14 +146,20 @@ extension Contact {
     ///   - authStatus: Filter contacts by auth status.
     ///     If set, only contacts with any of the provided auth statuses will be fetched.
     ///     If `nil` (default), the filter is not used.
+    ///   - isRecent: Filter by `isRecent` status.
+    ///     If `true`, only recent contacts are included.
+    ///     If `false`, only non-recent contacts are included.
+    ///     If `nil` (default), the filter is not used.
     ///   - sortBy: Sort order (defaults to `.username()`).
     public init(
       id: Set<Contact.ID>? = nil,
       authStatus: Set<AuthStatus>? = nil,
+      isRecent: Bool? = nil,
       sortBy: SortOrder = .username()
     ) {
       self.id = id
       self.authStatus = authStatus
+      self.isRecent = isRecent
       self.sortBy = sortBy
     }
 
@@ -165,6 +171,13 @@ extension Contact {
     /// If set, only contacts with any of the provided auth statuses will be fetched.
     /// If `nil`, the filter is not used.
     public var authStatus: Set<AuthStatus>?
+
+    /// Filter by `isRecent` status
+    ///
+    /// If `true`, only recent contacts are included.
+    /// If `false`, only non-recent contacts are included.
+    /// If `nil`, the filter is not used.
+    public var isRecent: Bool?
 
     /// Contacts sort order
     public var sortBy: SortOrder
