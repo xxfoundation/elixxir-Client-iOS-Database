@@ -26,6 +26,12 @@ extension Contact {
       createdAt: createdAt
     )
   }
+
+  func withAuthStatus(_ authStatus: AuthStatus) -> Contact {
+    var contact = self
+    contact.authStatus = authStatus
+    return contact
+  }
 }
 
 extension Group {
