@@ -42,6 +42,7 @@ public struct Message: Identifiable, Equatable, Codable {
   ///   - text: Text
   ///   - replyMessageId: Network id of the message this message replies to (defaults to `nil`)
   ///   - roundURL: Network round URL (defaults to `nil`)
+  ///   - fileTransferId: File transfer id (defaults to `nil`)
   public init(
     id: ID = nil,
     networkId: Data? = nil,
@@ -53,7 +54,8 @@ public struct Message: Identifiable, Equatable, Codable {
     isUnread: Bool,
     text: String,
     replyMessageId: Data? = nil,
-    roundURL: String? = nil
+    roundURL: String? = nil,
+    fileTransferId: FileTransfer.ID? = nil
   ) {
     self.id = id
     self.networkId = networkId
@@ -66,6 +68,7 @@ public struct Message: Identifiable, Equatable, Codable {
     self.text = text
     self.replyMessageId = replyMessageId
     self.roundURL = roundURL
+    self.fileTransferId = fileTransferId
   }
 
   /// Unique identifier of the message
@@ -106,6 +109,9 @@ public struct Message: Identifiable, Equatable, Codable {
 
   /// Network round URL
   public var roundURL: String?
+
+  /// File transfer id
+  public var fileTransferId: FileTransfer.ID?
 }
 
 extension Message {
@@ -167,6 +173,10 @@ extension Message {
     ///     If `true`, get only unread messages.
     ///     If `false`, get only read messages.
     ///     If `nil` (default), disable the filter.
+    ///   - fileTransferId: Filter by file transfer id.
+    ///     If `.some(.some(fileTransferId))`, get messages with provided `fileTransferId`.
+    ///     If `.some(.none)`, get messages without `fileTransferId`.
+    ///     If `.none` (default), disable the filter.
     ///   - sortBy: Sort order (defaults to `.date()`).
     public init(
       id: Set<Message.ID>? = nil,
@@ -174,6 +184,7 @@ extension Message {
       chat: Chat? = nil,
       status: Set<Status>? = nil,
       isUnread: Bool? = nil,
+      fileTransferId: FileTransfer.ID?? = nil,
       sortBy: SortOrder = .date()
     ) {
       self.id = id
@@ -181,6 +192,7 @@ extension Message {
       self.chat = chat
       self.status = status
       self.isUnread = isUnread
+      self.fileTransferId = fileTransferId
       self.sortBy = sortBy
     }
 
@@ -209,6 +221,13 @@ extension Message {
     /// If `false`, get only read messages.
     /// If `nil`, disable the filter.
     public var isUnread: Bool?
+
+    /// Filter by file transfer id
+    ///
+    /// If `.some(.some(fileTransferId))`, get messages with provided `fileTransferId`.
+    /// If `.some(.none)`, get messages without `fileTransferId`.
+    /// If `.none`, disable the filter.
+    public var fileTransferId: FileTransfer.ID??
 
     /// Messages sort order
     public var sortBy: SortOrder

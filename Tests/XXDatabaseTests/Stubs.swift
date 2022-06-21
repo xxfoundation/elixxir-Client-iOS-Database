@@ -53,7 +53,8 @@ extension Message {
     at timeInterval: TimeInterval,
     networkId: Data? = nil,
     status: Status = .received,
-    isUnread: Bool = false
+    isUnread: Bool = false,
+    fileTransfer: FileTransfer? = nil
   ) -> Message {
     Message(
       networkId: networkId,
@@ -63,7 +64,8 @@ extension Message {
       date: .stub(timeInterval),
       status: status,
       isUnread: isUnread,
-      text: "\(sender.username ?? "?") → \(recipient.username ?? "?") @ \(timeInterval)"
+      text: "\(sender.username ?? "?") → \(recipient.username ?? "?") @ \(timeInterval)",
+      fileTransferId: fileTransfer?.id
     )
   }
 
@@ -73,7 +75,8 @@ extension Message {
     at timeInterval: TimeInterval,
     networkId: Data? = nil,
     status: Status = .received,
-    isUnread: Bool = false
+    isUnread: Bool = false,
+    fileTransfer: FileTransfer? = nil
   ) -> Message {
     Message(
       networkId: networkId,
@@ -83,7 +86,26 @@ extension Message {
       date: .stub(timeInterval),
       status: status,
       isUnread: isUnread,
-      text: "\(sender.username ?? "?") → G:\(group.name) @ \(timeInterval)"
+      text: "\(sender.username ?? "?") → G:\(group.name) @ \(timeInterval)",
+      fileTransferId: fileTransfer?.id
+    )
+  }
+}
+
+extension FileTransfer {
+  static func stub(
+    _ id: String,
+    contact: Contact,
+    isIncoming: Bool,
+    at timeInterval: TimeInterval
+  ) -> FileTransfer {
+    FileTransfer(
+      id: "file-transfer-\(id)".data(using: .utf8)!,
+      contactId: contact.id,
+      name: "file-name-\(id)",
+      type: "file-type-\(id)",
+      isIncoming: isIncoming,
+      createdAt: .stub(timeInterval)
     )
   }
 }
