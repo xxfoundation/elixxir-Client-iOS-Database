@@ -25,7 +25,14 @@ extension MigrateMessage {
   public struct GroupNotFound: Error, Equatable {}
 
   public static let live = MigrateMessage { message, newDb in
-    if let replyMessageId = message.payload.reply?.messageId,
+    let replyMessageId: Data?
+    if let id = message.payload.reply?.messageId, id != "".data(using: .utf8) {
+      replyMessageId = id
+    } else {
+      replyMessageId = nil
+    }
+
+    if let replyMessageId = replyMessageId,
        try newDb.fetchMessages(.init(networkId: replyMessageId)).isEmpty {
       throw ReplyMessageNotFound()
     }
@@ -75,7 +82,7 @@ extension MigrateMessage {
       status: status,
       isUnread: message.unread,
       text: message.payload.text,
-      replyMessageId: message.payload.reply?.messageId,
+      replyMessageId: replyMessageId,
       roundURL: message.roundURL,
       fileTransferId: fileTransfer?.id
     ))
