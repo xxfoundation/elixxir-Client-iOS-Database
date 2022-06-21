@@ -81,7 +81,7 @@ public struct Database {
   /// Save (insert new or update existing) contact
   public var saveContact: Contact.Save
 
-  /// Bulk update contatcs
+  /// Bulk update contacts
   public var bulkUpdateContacts: Contact.BulkUpdate
 
   /// Delete contact
