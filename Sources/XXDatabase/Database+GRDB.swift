@@ -5,22 +5,16 @@ import XXModels
 extension XXModels.Database {
   /// Create in-memory database implementation powered by GRDB
   ///
-  /// - Parameter migrations: GRDB migrations
-  /// - Returns: Database implementation
-  public static func inMemory(
-    migrations: [Migration] = .all
-  ) throws -> XXModels.Database {
-    try grdb(
-      writer: DatabaseQueue(),
-      queue: DispatchQueue(label: "XXDatabase"),
-      migrations: migrations
-    )
+  /// - Returns: Database implementation.
+  /// - Throws: Error when database can't be instantiated.
+  public static func inMemory() throws -> XXModels.Database {
+    try grdb(writer: DatabaseQueue())
   }
 
   static func grdb(
     writer: DatabaseWriter,
-    queue: DispatchQueue,
-    migrations: [Migration]
+    queue: DispatchQueue = DispatchQueue(label: "XXDatabase"),
+    migrations: [Migration] = .all
   ) throws -> XXModels.Database {
     var migrator = DatabaseMigrator()
     migrations.forEach { migration in
