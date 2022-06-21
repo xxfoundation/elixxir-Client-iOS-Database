@@ -53,13 +53,13 @@ extension Contact: FetchableRecord, PersistableRecord {
     return request
   }
 
-  static func assignments(_ update: Update) -> [ColumnAssignment] {
-    var assignments: [ColumnAssignment] = []
+  static func columnAssignments(_ assignments: Assignments) -> [ColumnAssignment] {
+    var columnAssignments: [ColumnAssignment] = []
 
-    if let authStatus = update.authStatus {
-      assignments.append(Column.authStatus.set(to: authStatus.rawValue))
+    if let authStatus = assignments.authStatus {
+      columnAssignments.append(Column.authStatus.set(to: authStatus.rawValue))
     }
 
-    return assignments
+    return columnAssignments
   }
 }

@@ -120,7 +120,7 @@ extension Contact {
   public typealias Save = XXModels.Save<Contact>
 
   /// Bulk update contacts operation
-  public typealias BulkUpdate = XXModels.BulkUpdate<Query, Update>
+  public typealias BulkUpdate = XXModels.BulkUpdate<Query, Assignments>
 
   /// Delete contact operation
   public typealias Delete = XXModels.Delete<Contact>
@@ -187,7 +187,7 @@ extension Contact {
   }
 
   /// Bulk update definition
-  public struct Update: Equatable {
+  public struct Assignments: Equatable {
     /// Instantiate definition
     ///
     /// - Parameters:
