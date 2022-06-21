@@ -2,7 +2,7 @@
 ///
 /// - Takes `Query` that should be used for the fetch.
 /// - Returns array of fetched `Model`s.
-/// - Throws `Error` on operation failure.
+/// - Throws: `Error` on operation failure.
 public struct Fetch<Model, Query> {
   /// Instantiate operation
   ///

@@ -1,7 +1,8 @@
 /// Models delete operation
 ///
-/// - Deletes all `Model` objects that matches provided query.
+/// - Deletes all `Model` objects that matches provided `Query`.
 /// - Returns number of deleted objects.
+/// - Throws: `Error` on operation failure.
 public struct DeleteMany<Model, Query> {
   /// Instantiate operation
   ///

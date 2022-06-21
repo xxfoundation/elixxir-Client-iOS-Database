@@ -5,7 +5,7 @@
 /// - If the model does not yet exists, it will be inserted.
 /// - Returns saved `Model`.
 /// - Saved `Model` could be different from the input one (e.g. unique id could be set).
-/// - Throws `Error` on operation failure.
+/// - Throws: `Error` on operation failure.
 public struct Save<Model> {
   /// Instantiate operation
   ///
