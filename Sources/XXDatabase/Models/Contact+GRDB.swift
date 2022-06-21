@@ -32,6 +32,10 @@ extension Contact: FetchableRecord, PersistableRecord {
       request = request.filter(Set(authStatus.map(\.rawValue)).contains(Column.authStatus))
     }
 
+    if let isRecent = query.isRecent {
+      request = request.filter(Column.isRecent == isRecent)
+    }
+
     switch query.sortBy {
     case .username(desc: false):
       request = request.order(Column.username)
