@@ -84,6 +84,9 @@ let package = Package(
           package: "swift-custom-dump"
         ),
       ],
+      resources: [
+        .copy("Resources/legacy_database_1.sqlite"),
+      ],
       swiftSettings: swiftSettings
     ),
     .target(
