@@ -6,6 +6,7 @@ public struct Database {
     fetchContacts: Contact.Fetch,
     fetchContactsPublisher: Contact.FetchPublisher,
     saveContact: Contact.Save,
+    bulkUpdateContacts: Contact.BulkUpdate,
     deleteContact: Contact.Delete,
     fetchContactChatInfos: ContactChatInfo.Fetch,
     fetchContactChatInfosPublisher: ContactChatInfo.FetchPublisher,
@@ -35,6 +36,7 @@ public struct Database {
     self.fetchContacts = fetchContacts
     self.fetchContactsPublisher = fetchContactsPublisher
     self.saveContact = saveContact
+    self.bulkUpdateContacts = bulkUpdateContacts
     self.deleteContact = deleteContact
     self.fetchContactChatInfos = fetchContactChatInfos
     self.fetchContactChatInfosPublisher = fetchContactChatInfosPublisher
@@ -78,6 +80,9 @@ public struct Database {
 
   /// Save (insert new or update existing) contact
   public var saveContact: Contact.Save
+
+  /// Bulk update contatcs
+  public var bulkUpdateContacts: Contact.BulkUpdate
 
   /// Delete contact
   public var deleteContact: Contact.Delete
@@ -173,6 +178,7 @@ extension Database {
     fetchContacts: .failing(),
     fetchContactsPublisher: .failing(),
     saveContact: .failing(),
+    bulkUpdateContacts: .failing(),
     deleteContact: .failing(),
     fetchContactChatInfos: .failing(),
     fetchContactChatInfosPublisher: .failing(),
