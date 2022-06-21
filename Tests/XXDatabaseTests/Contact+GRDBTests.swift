@@ -302,4 +302,33 @@ final class ContactGRDBTests: XCTestCase {
       contactF,
     ])
   }
+
+  func testBulkUpdateAuthStatus() throws {
+    // Mock up contacts:
+
+    let contactA = try db.saveContact(.stub("A", authStatus: .stranger))
+    let contactB = try db.saveContact(.stub("B", authStatus: .verificationFailed))
+    let contactC = try db.saveContact(.stub("C", authStatus: .requested))
+    let contactD = try db.saveContact(.stub("D", authStatus: .verificationInProgress))
+    let contactE = try db.saveContact(.stub("E", authStatus: .confirming))
+    let contactF = try db.saveContact(.stub("F", authStatus: .verificationInProgress))
+
+    // Bulk update auth status:
+
+    let updatedContactsCount = try db.bulkUpdateContacts(
+      .init(authStatus: [.verificationInProgress]),
+      .init(authStatus: .verificationFailed)
+    )
+
+    XCTAssertEqual(updatedContactsCount, 2)
+
+    XCTAssertNoDifference(try db.fetchContacts(.init()), [
+      contactA,
+      contactB,
+      contactC,
+      contactD.withAuthStatus(.verificationFailed),
+      contactE,
+      contactF.withAuthStatus(.verificationFailed),
+    ])
+  }
 }

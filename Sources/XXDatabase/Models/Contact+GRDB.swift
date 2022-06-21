@@ -52,4 +52,14 @@ extension Contact: FetchableRecord, PersistableRecord {
 
     return request
   }
+
+  static func columnAssignments(_ assignments: Assignments) -> [ColumnAssignment] {
+    var columnAssignments: [ColumnAssignment] = []
+
+    if let authStatus = assignments.authStatus {
+      columnAssignments.append(Column.authStatus.set(to: authStatus.rawValue))
+    }
+
+    return columnAssignments
+  }
 }
