@@ -96,6 +96,12 @@ extension Message {
       fileTransferId: fileTransfer?.id
     )
   }
+
+  func withIsUnread(_ isUnread: Bool) -> Message {
+    var contact = self
+    contact.isUnread = isUnread
+    return contact
+  }
 }
 
 extension FileTransfer {

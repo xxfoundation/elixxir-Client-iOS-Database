@@ -50,6 +50,7 @@ extension XXModels.Database {
       fetchMessages: .grdb(writer, queue, Message.request(_:)),
       fetchMessagesPublisher: .grdb(writer, queue, Message.request(_:)),
       saveMessage: .grdb(writer, queue),
+      bulkUpdateMessages: .grdb(writer, queue, Message.request(_:), Message.columnAssignments(_:)),
       deleteMessage: .grdb(writer, queue),
       deleteMessages: .grdb(writer, queue, Message.request(_:)),
       fetchFileTransfers: .grdb(writer, queue, FileTransfer.request(_:)),

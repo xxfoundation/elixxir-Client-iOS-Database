@@ -124,6 +124,9 @@ extension Message {
   /// Save message operation
   public typealias Save = XXModels.Save<Message>
 
+  /// Bulk update operation
+  public typealias BulkUpdate = XXModels.BulkUpdate<Query, Assignments>
+
   /// Delete message operation
   public typealias Delete = XXModels.Delete<Message>
 
@@ -235,5 +238,26 @@ extension Message {
 
     /// Messages sort order
     public var sortBy: SortOrder
+  }
+
+  /// Bulk update definition
+  public struct Assignments: Equatable {
+    /// Instantiate definition
+    ///
+    /// - Parameters:
+    ///   - isUnread: Set `isUnread` flag.
+    ///     If provided, change `isUnread` flag to given value.
+    ///     If `nil` (default), do not change `isUnread` flag.
+    public init(
+      isUnread: Bool? = nil
+    ) {
+      self.isUnread = isUnread
+    }
+
+    /// Set `isUnread` flag
+    ///
+    /// If provided, change `isUnread` flag to given value.
+    /// If `nil`, do not change `isUnread` flag.
+    public var isUnread: Bool?
   }
 }

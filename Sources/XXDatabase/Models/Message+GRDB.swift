@@ -85,6 +85,16 @@ extension Message: FetchableRecord, MutablePersistableRecord {
     return request
   }
 
+  static func columnAssignments(_ assignments: Assignments) -> [ColumnAssignment] {
+    var columnAssignments: [ColumnAssignment] = []
+
+    if let isUnread = assignments.isUnread {
+      columnAssignments.append(Column.isUnread.set(to: isUnread))
+    }
+
+    return columnAssignments
+  }
+
   public mutating func didInsert(with rowID: Int64, for column: String?) {
     if column == Column.id.rawValue {
       id = rowID
