@@ -36,7 +36,7 @@ extension Group: PersistableRecord, FetchableRecord {
 
   public static let databaseTableName = "groups"
 
-  public static func request(_ query: Query) -> QueryInterfaceRequest<Group> {
+  static func request(_ query: Query) -> QueryInterfaceRequest<Group> {
     var request = Group.all()
 
     if let id = query.id {

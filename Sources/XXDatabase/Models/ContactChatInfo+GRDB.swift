@@ -8,7 +8,7 @@ extension ContactChatInfo: FetchableRecord {
     case unreadCount
   }
 
-  public static func request(_ query: Query) -> AdaptedFetchRequest<SQLRequest<ContactChatInfo>> {
+  static func request(_ query: Query) -> AdaptedFetchRequest<SQLRequest<ContactChatInfo>> {
     SQLRequest(
       sql: """
         SELECT

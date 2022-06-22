@@ -8,7 +8,7 @@ extension GroupInfo: FetchableRecord {
     case members
   }
 
-  public static func request(_ query: Query) -> QueryInterfaceRequest<GroupInfo> {
+  static func request(_ query: Query) -> QueryInterfaceRequest<GroupInfo> {
     var request = Group
       .including(required: Group.Association.leader.forKey(Column.leader.rawValue))
       .including(all: Group.Association.members.forKey(Column.members.rawValue))
