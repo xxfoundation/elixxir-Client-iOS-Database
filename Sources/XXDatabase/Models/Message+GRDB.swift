@@ -19,7 +19,7 @@ extension Message: FetchableRecord, MutablePersistableRecord {
 
   public static let databaseTableName = "messages"
 
-  public static func request(_ query: Query) -> QueryInterfaceRequest<Message> {
+  static func request(_ query: Query) -> QueryInterfaceRequest<Message> {
     var request = Message.all()
 
     if let id = query.id {
