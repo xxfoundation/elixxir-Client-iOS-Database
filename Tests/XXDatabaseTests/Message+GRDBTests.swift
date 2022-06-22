@@ -542,4 +542,39 @@ final class MessageGRDBTests: XCTestCase {
       ]
     )
   }
+
+  func testBulkUpdateUnreadFlag() throws {
+    // Mock up contacts:
+
+    let contactA = try db.saveContact(.stub("A"))
+    let contactB = try db.saveContact(.stub("B"))
+    let contactC = try db.saveContact(.stub("C"))
+
+    // Mock up messages:
+
+    let message1 = try db.saveMessage(.stub(from: contactA, to: contactB, at: 1, isUnread: false))
+    let message2 = try db.saveMessage(.stub(from: contactB, to: contactA, at: 2, isUnread: true))
+    let message3 = try db.saveMessage(.stub(from: contactA, to: contactB, at: 3, isUnread: true))
+    let message4 = try db.saveMessage(.stub(from: contactA, to: contactC, at: 4, isUnread: false))
+    let message5 = try db.saveMessage(.stub(from: contactC, to: contactA, at: 5, isUnread: true))
+    let message6 = try db.saveMessage(.stub(from: contactC, to: contactB, at: 6, isUnread: false))
+    let message7 = try db.saveMessage(.stub(from: contactB, to: contactC, at: 7, isUnread: true))
+
+    // Mark all messages between contactA and contactB as read:
+
+    try db.bulkUpdateMessages(
+      .init(chat: .direct(contactA.id, contactB.id)),
+      .init(isUnread: false)
+    )
+
+    XCTAssertNoDifference(try db.fetchMessages(.init()), [
+      message1,
+      message2.withIsUnread(false),
+      message3.withIsUnread(false),
+      message4,
+      message5,
+      message6,
+      message7,
+    ])
+  }
 }

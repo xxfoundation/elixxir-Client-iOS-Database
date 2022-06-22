@@ -17,7 +17,7 @@ extension Contact: FetchableRecord, PersistableRecord {
 
   public static let databaseTableName = "contacts"
 
-  public static func request(_ query: Query) -> QueryInterfaceRequest<Contact> {
+  static func request(_ query: Query) -> QueryInterfaceRequest<Contact> {
     var request = Contact.all()
 
     if let id = query.id {

@@ -8,7 +8,7 @@ extension GroupChatInfo: FetchableRecord {
     case unreadCount
   }
 
-  public static func request(_ query: Query) -> AdaptedFetchRequest<SQLRequest<GroupChatInfo>> {
+  static func request(_ query: Query) -> AdaptedFetchRequest<SQLRequest<GroupChatInfo>> {
     SQLRequest(sql: """
       SELECT
         -- All group columns:

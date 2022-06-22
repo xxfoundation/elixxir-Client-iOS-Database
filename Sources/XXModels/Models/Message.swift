@@ -124,6 +124,9 @@ extension Message {
   /// Save message operation
   public typealias Save = XXModels.Save<Message>
 
+  /// Bulk update operation
+  public typealias BulkUpdate = XXModels.BulkUpdate<Query, Assignments>
+
   /// Delete message operation
   public typealias Delete = XXModels.Delete<Message>
 
@@ -163,8 +166,8 @@ extension Message {
     ///   - id: Filter by message id (defaults to `nil`).
     ///   - networkId: Filter by network id (defaults to `nil`).
     ///   - chat: Chat filter.
-    ///     If `.some(.some(networkId))`, get messages with provided `networkId`.
-    ///     If `.some(.none)`, get messages without `networkId`.
+    ///     If `.direct(idA, idB)`, get direct messages between contacts with provided ids.
+    ///     If `.group(groupId)`, get messages within group with provided id.
     ///     If `.none` (default), disable the filter.
     ///   - status: Filter messages by status.
     ///     If set, only messages with any of the provided statuses will be included.
@@ -206,7 +209,11 @@ extension Message {
     /// If `.none`, disable the filter.
     public var networkId: Data??
 
-    /// Messages chat filter
+    /// Chat filter
+    /// 
+    /// If `.direct(idA, idB)`, get direct messages between contacts with provided ids.
+    /// If `.group(groupId)`, get messages within group with provided id.
+    /// If `.none`, disable the filter.
     public var chat: Chat?
 
     /// Filter messages by status
@@ -231,5 +238,26 @@ extension Message {
 
     /// Messages sort order
     public var sortBy: SortOrder
+  }
+
+  /// Bulk update definition
+  public struct Assignments: Equatable {
+    /// Instantiate definition
+    ///
+    /// - Parameters:
+    ///   - isUnread: Set `isUnread` flag.
+    ///     If provided, change `isUnread` flag to given value.
+    ///     If `nil` (default), do not change `isUnread` flag.
+    public init(
+      isUnread: Bool? = nil
+    ) {
+      self.isUnread = isUnread
+    }
+
+    /// Set `isUnread` flag
+    ///
+    /// If provided, change `isUnread` flag to given value.
+    /// If `nil`, do not change `isUnread` flag.
+    public var isUnread: Bool?
   }
 }

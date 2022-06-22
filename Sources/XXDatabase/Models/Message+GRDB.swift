@@ -19,7 +19,7 @@ extension Message: FetchableRecord, MutablePersistableRecord {
 
   public static let databaseTableName = "messages"
 
-  public static func request(_ query: Query) -> QueryInterfaceRequest<Message> {
+  static func request(_ query: Query) -> QueryInterfaceRequest<Message> {
     var request = Message.all()
 
     if let id = query.id {
@@ -83,6 +83,16 @@ extension Message: FetchableRecord, MutablePersistableRecord {
     }
 
     return request
+  }
+
+  static func columnAssignments(_ assignments: Assignments) -> [ColumnAssignment] {
+    var columnAssignments: [ColumnAssignment] = []
+
+    if let isUnread = assignments.isUnread {
+      columnAssignments.append(Column.isUnread.set(to: isUnread))
+    }
+
+    return columnAssignments
   }
 
   public mutating func didInsert(with rowID: Int64, for column: String?) {
