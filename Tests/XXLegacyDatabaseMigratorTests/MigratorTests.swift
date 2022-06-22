@@ -1,6 +1,5 @@
 import CustomDump
 import GRDB
-import SnapshotTesting
 import XCTest
 import XXModels
 @testable import XXDatabase
@@ -104,9 +103,12 @@ final class MigratorTests: XCTestCase {
     let migrate = Migrator.live()
 
     try migrate(legacyDb, to: newDb)
-    let newDbSnapshot = try DatabaseSnapshot.make(with: newDbQueue)
 
-    assertSnapshot(matching: newDbSnapshot, as: .json)
+    assertSnapshot(matchingContactsIn: newDbQueue)
+    assertSnapshot(matchingGroupsIn: newDbQueue)
+    assertSnapshot(matchingGroupMembersIn: newDbQueue)
+    assertSnapshot(matchingMessagesIn: newDbQueue)
+    assertSnapshot(matchingFileTransfersIn: newDbQueue)
   }
 
   func testMigratingLegacyDatabase2() throws {
@@ -117,8 +119,11 @@ final class MigratorTests: XCTestCase {
     let migrate = Migrator.live()
 
     try migrate(legacyDb, to: newDb)
-    let newDbSnapshot = try DatabaseSnapshot.make(with: newDbQueue)
 
-    assertSnapshot(matching: newDbSnapshot, as: .json)
+    assertSnapshot(matchingContactsIn: newDbQueue)
+    assertSnapshot(matchingGroupsIn: newDbQueue)
+    assertSnapshot(matchingGroupMembersIn: newDbQueue)
+    assertSnapshot(matchingMessagesIn: newDbQueue)
+    assertSnapshot(matchingFileTransfersIn: newDbQueue)
   }
 }
