@@ -53,7 +53,7 @@ final class MigrateMessageTests: XCTestCase {
     ])
   }
 
-  func testMigratingDirectMessagesWithMarshaledContactAsId() throws {
+  func testMigratingDirectMessagesWithMarshaledContactAsSenderOrRecipientId() throws {
     let myContact = try newDb.saveContact(.stub(1))
     let otherContact = try newDb.saveContact(.stub(2))
 
