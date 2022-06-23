@@ -32,18 +32,33 @@ final class MigratorTests: XCTestCase {
       _ = try XXLegacyDatabaseMigrator.GroupMessage.stub(3).saved(db)
     }
 
+    // Mock up new database:
+
+    var didSaveContacts = [XXModels.Contact]()
+
+    var newDb = XXModels.Database.failing
+    newDb.fetchContacts = .init { _ in [] }
+    newDb.saveContact = .init(run: {
+      didSaveContacts.append($0)
+      return $0
+    })
+
     // Perform migration:
 
     enum Migrated: Equatable {
       case contact(XXLegacyDatabaseMigrator.Contact)
       case group(XXLegacyDatabaseMigrator.Group)
       case groupMember(XXLegacyDatabaseMigrator.GroupMember)
-      case message(XXLegacyDatabaseMigrator.LegacyMessage)
+      case message(XXLegacyDatabaseMigrator.LegacyMessage, Data, Data)
     }
 
+    let currentDate = Date()
     var didMigrate = [Migrated]()
 
     let migrate = Migrator.live(
+      currentDate: {
+        currentDate
+      },
       migrateContact: .init { contact, _ in
         didMigrate.append(.contact(contact))
       },
@@ -53,14 +68,21 @@ final class MigratorTests: XCTestCase {
       migrateGroupMember: .init { groupMember, _ in
         didMigrate.append(.groupMember(groupMember))
       },
-      migrateMessage: .init { message, _ in
-        didMigrate.append(.message(message))
+      migrateMessage: .init { message, _, myContactId, meMarshaled in
+        didMigrate.append(.message(message, myContactId, meMarshaled))
       }
     )
 
-    try migrate(legacyDb, to: .failing)
+    let myContactId = "my-contact-id".data(using: .utf8)!
+    let meMarshaled = "me-marshaled".data(using: .utf8)!
+
+    try migrate(legacyDb, to: newDb, myContactId: myContactId, meMarshaled: meMarshaled)
 
     // Assert migration:
+
+    XCTAssertNoDifference(didSaveContacts, [
+      .init(id: myContactId, marshaled: meMarshaled, createdAt: currentDate)
+    ])
 
     XCTAssertNoDifference(didMigrate, try legacyDb.writer.read { db in
       [
@@ -83,13 +105,13 @@ final class MigratorTests: XCTestCase {
           .order(XXLegacyDatabaseMigrator.Message.Column.timestamp)
           .fetchAll(db)
           .map(XXLegacyDatabaseMigrator.LegacyMessage.direct)
-          .map(Migrated.message),
+          .map { Migrated.message($0, myContactId, meMarshaled) },
 
         try XXLegacyDatabaseMigrator.GroupMessage
           .order(XXLegacyDatabaseMigrator.GroupMessage.Column.timestamp)
           .fetchAll(db)
           .map(XXLegacyDatabaseMigrator.LegacyMessage.group)
-          .map(Migrated.message),
+          .map { Migrated.message($0, myContactId, meMarshaled) },
 
       ].flatMap { $0 }
     })
@@ -100,9 +122,18 @@ final class MigratorTests: XCTestCase {
     let legacyDb = try LegacyDatabase(path: path)
     let newDbQueue = DatabaseQueue()
     let newDb = try XXModels.Database.grdb(writer: newDbQueue)
-    let migrate = Migrator.live()
+    let currentDate = Date(timeIntervalSince1970: 1234)
+    let migrate = Migrator.live(currentDate: { currentDate })
 
-    try migrate(legacyDb, to: newDb)
+    let myContactId = "my-contact-id".data(using: .utf8)!
+    let meMarshaled = Data(base64Encoded: try String(
+      contentsOfFile: Bundle.module.path(
+        forResource: "legacy_database_1_meMarshaled_base64",
+        ofType: "txt"
+      )!
+    ).trimmingCharacters(in: .whitespacesAndNewlines))!
+
+    try migrate(legacyDb, to: newDb, myContactId: myContactId, meMarshaled: meMarshaled)
 
     assertSnapshot(matchingContactsIn: newDbQueue)
     assertSnapshot(matchingGroupsIn: newDbQueue)
@@ -116,9 +147,18 @@ final class MigratorTests: XCTestCase {
     let legacyDb = try LegacyDatabase(path: path)
     let newDbQueue = DatabaseQueue()
     let newDb = try XXModels.Database.grdb(writer: newDbQueue)
-    let migrate = Migrator.live()
+    let currentDate = Date(timeIntervalSince1970: 1234)
+    let migrate = Migrator.live(currentDate: { currentDate })
 
-    try migrate(legacyDb, to: newDb)
+    let myContactId = "my-contact-id".data(using: .utf8)!
+    let meMarshaled = Data(base64Encoded: try String(
+      contentsOfFile: Bundle.module.path(
+        forResource: "legacy_database_2_meMarshaled_base64",
+        ofType: "txt"
+      )!
+    ).trimmingCharacters(in: .whitespacesAndNewlines))!
+
+    try migrate(legacyDb, to: newDb, myContactId: myContactId, meMarshaled: meMarshaled)
 
     assertSnapshot(matchingContactsIn: newDbQueue)
     assertSnapshot(matchingGroupsIn: newDbQueue)

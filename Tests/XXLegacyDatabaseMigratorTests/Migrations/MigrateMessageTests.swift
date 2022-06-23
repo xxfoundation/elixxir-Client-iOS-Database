@@ -35,7 +35,7 @@ final class MigrateMessageTests: XCTestCase {
     ]
 
     try legacyMessages.forEach { message in
-      try migrate(message, to: newDb)
+      try migrate(message, to: newDb, myContactId: Data(), meMarshaled: Data())
     }
 
     let newMessages: [XXModels.Message] = try newDb.fetchMessages(.init())
@@ -50,6 +50,45 @@ final class MigrateMessageTests: XCTestCase {
       .stub(6, from: contact1.id, to: contact2.id, status: .received, isUnread: true),
       .stub(7, from: contact2.id, to: contact1.id, status: .sendingFailed),
       .stub(8, from: contact2.id, to: contact1.id, status: .sendingTimedOut),
+    ])
+  }
+
+  func testMigratingDirectMessagesWithMarshaledContactAsSenderOrRecipientId() throws {
+    let myContact = try newDb.saveContact(.stub(1))
+    let otherContact = try newDb.saveContact(.stub(2))
+
+    let legacyMessages: [XXLegacyDatabaseMigrator.Message] = [
+      .stub(1, from: myContact.marshaled!, to: otherContact.id, status: .read),
+      .stub(2, from: otherContact.id, to: myContact.marshaled!, status: .sent),
+      .stub(3, from: otherContact.id, to: myContact.marshaled!, status: .sending),
+      .stub(4, from: otherContact.id, to: myContact.marshaled!, status: .sendingAttachment),
+      .stub(5, from: myContact.marshaled!, to: otherContact.id, status: .receivingAttachment),
+      .stub(6, from: myContact.marshaled!, to: otherContact.id, status: .received, unread: true),
+      .stub(7, from: otherContact.id, to: myContact.marshaled!, status: .failedToSend),
+      .stub(8, from: otherContact.id, to: myContact.marshaled!, status: .timedOut),
+    ]
+
+    try legacyMessages.forEach { message in
+      try migrate(
+        message,
+        to: newDb,
+        myContactId: myContact.id,
+        meMarshaled: myContact.marshaled!
+      )
+    }
+
+    let newMessages: [XXModels.Message] = try newDb.fetchMessages(.init())
+      .map { $0.withNilId() }
+
+    XCTAssertNoDifference(newMessages, [
+      .stub(1, from: myContact.id, to: otherContact.id, status: .received),
+      .stub(2, from: otherContact.id, to: myContact.id, status: .sent),
+      .stub(3, from: otherContact.id, to: myContact.id, status: .sending),
+      .stub(4, from: otherContact.id, to: myContact.id, status: .sending),
+      .stub(5, from: myContact.id, to: otherContact.id, status: .receiving),
+      .stub(6, from: myContact.id, to: otherContact.id, status: .received, isUnread: true),
+      .stub(7, from: otherContact.id, to: myContact.id, status: .sendingFailed),
+      .stub(8, from: otherContact.id, to: myContact.id, status: .sendingTimedOut),
     ])
   }
 
@@ -69,7 +108,7 @@ final class MigrateMessageTests: XCTestCase {
     ]
 
     try legacyGroupMessages.forEach { groupMessage in
-      try migrate(groupMessage, to: newDb)
+      try migrate(groupMessage, to: newDb, myContactId: Data(), meMarshaled: Data())
     }
 
     let newMessages: [XXModels.Message] = try newDb.fetchMessages(.init())
@@ -84,6 +123,42 @@ final class MigrateMessageTests: XCTestCase {
     ])
   }
 
+  func testMigratingGroupMessagesWithMarshaledContactAsSenderId() throws {
+    let myContact = try newDb.saveContact(.stub(1))
+    let contact2 = try newDb.saveContact(.stub(2))
+    let contact3 = try newDb.saveContact(.stub(3))
+    let group1 = try newDb.saveGroup(.stub(1, leaderId: myContact.id))
+    let group2 = try newDb.saveGroup(.stub(2, leaderId: contact2.id))
+
+    let legacyGroupMessages: [XXLegacyDatabaseMigrator.GroupMessage] = [
+      .stub(1, from: myContact.marshaled!, toGroup: group1.id, status: .sent),
+      .stub(2, from: contact2.id, toGroup: group1.id, status: .read),
+      .stub(3, from: contact3.id, toGroup: group1.id, status: .failed),
+      .stub(4, from: myContact.marshaled!, toGroup: group2.id, status: .sending),
+      .stub(5, from: contact2.id, toGroup: group2.id, status: .received, unread: true),
+    ]
+
+    try legacyGroupMessages.forEach { groupMessage in
+      try migrate(
+        groupMessage,
+        to: newDb,
+        myContactId: myContact.id,
+        meMarshaled: myContact.marshaled!
+      )
+    }
+
+    let newMessages: [XXModels.Message] = try newDb.fetchMessages(.init())
+      .map { $0.withNilId() }
+
+    XCTAssertNoDifference(newMessages, [
+      .stub(1, from: myContact.id, toGroup: group1.id, status: .sent),
+      .stub(2, from: contact2.id, toGroup: group1.id, status: .received),
+      .stub(3, from: contact3.id, toGroup: group1.id, status: .sendingFailed),
+      .stub(4, from: myContact.id, toGroup: group2.id, status: .sending),
+      .stub(5, from: contact2.id, toGroup: group2.id, status: .received, isUnread: true),
+    ])
+  }
+
   func testMigratingReplyToUnknownMessage() throws {
     var legacyMessage = XXLegacyDatabaseMigrator.Message.stub(1)
     legacyMessage.payload.reply = .init(
@@ -91,7 +166,9 @@ final class MigrateMessageTests: XCTestCase {
       senderId: "unknown-contact-id".data(using: .utf8)!
     )
 
-    XCTAssertThrowsError(try migrate(legacyMessage, to: newDb)) { error in
+    XCTAssertThrowsError(
+      try migrate(legacyMessage, to: newDb, myContactId: Data(), meMarshaled: Data())
+    ) { error in
       XCTAssertEqual(
         error as? MigrateMessage.ReplyMessageNotFound,
         MigrateMessage.ReplyMessageNotFound()
@@ -110,7 +187,7 @@ final class MigrateMessageTests: XCTestCase {
       status: .received
     )
 
-    try migrate(legacyMessage, to: newDb)
+    try migrate(legacyMessage, to: newDb, myContactId: Data(), meMarshaled: Data())
 
     let newMessages: [XXModels.Message] = try newDb.fetchMessages(.init())
       .map { $0.withNilId() }
@@ -135,7 +212,9 @@ final class MigrateMessageTests: XCTestCase {
       status: .sent
     )
 
-    XCTAssertThrowsError(try migrate(legacyMessage, to: newDb)) { error in
+    XCTAssertThrowsError(
+      try migrate(legacyMessage, to: newDb, myContactId: Data(), meMarshaled: Data())
+    ) { error in
       XCTAssertEqual(
         error as? MigrateMessage.GroupNotFound,
         MigrateMessage.GroupNotFound()
@@ -164,7 +243,7 @@ final class MigrateMessageTests: XCTestCase {
       )
     )
 
-    try migrate(legacyMessage, to: newDb)
+    try migrate(legacyMessage, to: newDb, myContactId: Data(), meMarshaled: Data())
 
     let newMessages: [XXModels.Message] = try newDb.fetchMessages(.init()).map {
       $0.withNilId()
@@ -197,7 +276,7 @@ final class MigrateMessageTests: XCTestCase {
       )
     )
 
-    try migrate(legacyMessage, to: newDb)
+    try migrate(legacyMessage, to: newDb, myContactId: Data(), meMarshaled: Data())
 
     let newMessages: [XXModels.Message] = try newDb.fetchMessages(.init()).map {
       $0.withNilId()
@@ -236,7 +315,7 @@ final class MigrateMessageTests: XCTestCase {
     ]
 
     try legacyMessages.forEach { message in
-      try migrate(message, to: newDb)
+      try migrate(message, to: newDb, myContactId: Data(), meMarshaled: Data())
     }
 
     let newMessages: [XXModels.Message] = try newDb.fetchMessages(.init())
