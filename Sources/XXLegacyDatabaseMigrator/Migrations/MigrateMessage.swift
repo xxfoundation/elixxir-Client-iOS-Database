@@ -26,6 +26,8 @@ public struct MigrateMessage {
 
 extension MigrateMessage {
   public struct ReplyMessageNotFound: Error, Equatable {}
+  public struct SenderNotFound: Error, Equatable {}
+  public struct RecipientNotFound: Error, Equatable {}
   public struct GroupNotFound: Error, Equatable {}
 
   public static let live = MigrateMessage { message, newDb, myContactId, meMarshaled in
@@ -66,18 +68,12 @@ extension MigrateMessage {
     }
 
     if try newDb.fetchContacts(.init(id: [message.sender])).isEmpty {
-      try newDb.saveContact(.init(
-        id: message.sender,
-        createdAt: Date(nsSince1970: message.timestamp)
-      ))
+      throw SenderNotFound()
     }
 
     if let receiver = message.receiver,
        try newDb.fetchContacts(.init(id: [receiver])).isEmpty {
-      try newDb.saveContact(.init(
-        id: receiver,
-        createdAt: Date(nsSince1970: message.timestamp)
-      ))
+      throw RecipientNotFound()
     }
 
     let fileTransfer: XXModels.FileTransfer?
