@@ -2,7 +2,7 @@
 ///
 /// - Takes existing `Model` that should be deleted.
 /// - Returns `true` on success. Otherwise returns `false`.
-/// - Throws `Error` on operation failure.
+/// - Throws: `Error` on operation failure.
 public struct Delete<Model> {
   /// Instantiate operation
   ///

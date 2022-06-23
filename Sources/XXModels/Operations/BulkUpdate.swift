@@ -1,8 +1,9 @@
 /// Models bulk update operation
 ///
-/// - Updates all `Model` objects that matches provided query.
-/// - Performs updates defined by provided `Assignments` struct.
+/// - Updates all objects that matches provided `Query`.
+/// - Performs updates defined by provided `Assignments`.
 /// - Returns number of updated objects.
+/// - Throws: `Error` on operation failure.
 public struct BulkUpdate<Query, Assignments> {
   /// Instantiate operation
   ///

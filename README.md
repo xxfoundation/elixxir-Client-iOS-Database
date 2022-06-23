@@ -14,6 +14,9 @@ Open `Package.swift` in Xcode (≥13).
 ```
 xx-client-ios-db (Swift Package)
  ├─ XXModels (Swift Library)
+ ├─ XXLegacyDatabaseMigrator (Swift Library)
+ |   ├─ XXModels
+ |   └─ XXDatabase
  └─ XXDatabase (Swift Library)
      ├─ XXModels
      └─ GRDB.swift
@@ -22,6 +25,7 @@ xx-client-ios-db (Swift Package)
 |Library|Description|
 |:--|:--|
 |**XXModels**|Domain models and database interfaces.|
+|**XXLegacyDatabaseMigrator**|Legacy database migration helper.|
 |**XXDatabase**|Database interface implementation powered by [GRDB library](https://github.com/groue/GRDB.swift).|
 
 ### Build schemes

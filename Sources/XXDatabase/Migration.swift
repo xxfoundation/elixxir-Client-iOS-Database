@@ -1,12 +1,12 @@
 import GRDB
 
-public struct Migration {
+struct Migration {
   var id: String
   var migrate: (GRDB.Database) throws -> Void
 }
 
 extension Sequence where Element == Migration {
-  public static var all: [Migration] {[
+  static var all: [Migration] {[
     Migration(id: "0") { db in
       try db.create(table: "contacts") { t in
         t.column("id", .blob).notNull().primaryKey()

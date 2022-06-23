@@ -25,6 +25,10 @@ let package = Package(
       targets: ["XXModels"]
     ),
     .library(
+      name: "XXLegacyDatabaseMigrator",
+      targets: ["XXLegacyDatabaseMigrator"]
+    ),
+    .library(
       name: "XXDatabase",
       targets: ["XXDatabase"]
     ),
@@ -38,6 +42,10 @@ let package = Package(
       url: "https://github.com/pointfreeco/swift-custom-dump.git",
       .upToNextMajor(from: "0.4.0")
     ),
+    .package(
+      url: "https://github.com/pointfreeco/swift-snapshot-testing.git",
+      .upToNextMajor(from: "1.9.0")
+    ),
   ],
   targets: [
     .target(
@@ -47,7 +55,49 @@ let package = Package(
     .testTarget(
       name: "XXModelsTests",
       dependencies: [
-        .target(name: "XXModels"),
+        .target(
+          name: "XXModels"
+        ),
+      ],
+      swiftSettings: swiftSettings
+    ),
+    .target(
+      name: "XXLegacyDatabaseMigrator",
+      dependencies: [
+        .target(
+          name: "XXDatabase"
+        ),
+        .target(
+          name: "XXModels"
+        ),
+        .product(
+          name: "GRDB",
+          package: "GRDB.swift"
+        ),
+      ],
+      swiftSettings: swiftSettings
+    ),
+    .testTarget(
+      name: "XXLegacyDatabaseMigratorTests",
+      dependencies: [
+        .target(
+          name: "XXLegacyDatabaseMigrator"
+        ),
+        .product(
+          name: "CustomDump",
+          package: "swift-custom-dump"
+        ),
+        .product(
+          name: "SnapshotTesting",
+          package: "swift-snapshot-testing"
+        ),
+      ],
+      exclude: [
+        "__Snapshots__",
+      ],
+      resources: [
+        .copy("Resources/legacy_database_1.sqlite"),
+        .copy("Resources/legacy_database_2.sqlite"),
       ],
       swiftSettings: swiftSettings
     ),

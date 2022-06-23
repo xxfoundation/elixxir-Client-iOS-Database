@@ -62,6 +62,20 @@
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "XXLegacyDatabaseMigrator"
+               BuildableName = "XXLegacyDatabaseMigrator"
+               BlueprintName = "XXLegacyDatabaseMigrator"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -88,6 +102,16 @@
                BlueprintIdentifier = "XXModelsTests"
                BuildableName = "XXModelsTests"
                BlueprintName = "XXModelsTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "XXLegacyDatabaseMigratorTests"
+               BuildableName = "XXLegacyDatabaseMigratorTests"
+               BlueprintName = "XXLegacyDatabaseMigratorTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
