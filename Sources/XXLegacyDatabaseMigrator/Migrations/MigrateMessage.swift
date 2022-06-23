@@ -29,6 +29,25 @@ extension MigrateMessage {
   public struct GroupNotFound: Error, Equatable {}
 
   public static let live = MigrateMessage { message, newDb, myContactId, meMarshaled in
+    let message: LegacyMessage = {
+      switch message {
+      case .direct(var message):
+        if message.sender == meMarshaled {
+          message.sender = myContactId
+        }
+        if message.receiver == meMarshaled {
+          message.receiver = myContactId
+        }
+        return .direct(message)
+
+      case .group(var groupMessage):
+        if groupMessage.sender == meMarshaled {
+          groupMessage.sender = myContactId
+        }
+        return .group(groupMessage)
+      }
+    }()
+
     let replyMessageId: Data?
     if let id = message.payload.reply?.messageId, id != "".data(using: .utf8) {
       replyMessageId = id
