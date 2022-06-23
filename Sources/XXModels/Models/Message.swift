@@ -245,14 +245,25 @@ extension Message {
     /// Instantiate definition
     ///
     /// - Parameters:
+    ///   - status: Set message status.
+    ///     If provided, change status to the given value.
+    ///     If `nil` (default), do not change status.
     ///   - isUnread: Set `isUnread` flag.
     ///     If provided, change `isUnread` flag to given value.
     ///     If `nil` (default), do not change `isUnread` flag.
     public init(
+      status: Status? = nil,
       isUnread: Bool? = nil
     ) {
+      self.status = status
       self.isUnread = isUnread
     }
+
+    /// Set message status
+    ///
+    /// If provided, change status to the given value.
+    /// If `nil`, do not change status.
+    public var status: Status?
 
     /// Set `isUnread` flag
     ///

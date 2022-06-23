@@ -102,6 +102,12 @@ extension Message {
     contact.isUnread = isUnread
     return contact
   }
+
+  func withStatus(_ status: Status) -> Message {
+    var contact = self
+    contact.status = status
+    return contact
+  }
 }
 
 extension FileTransfer {

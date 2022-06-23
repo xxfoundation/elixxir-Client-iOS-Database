@@ -577,4 +577,39 @@ final class MessageGRDBTests: XCTestCase {
       message7,
     ])
   }
+
+  func testBulkUpdateStatus() throws {
+    // Mock up contacts:
+
+    let contactA = try db.saveContact(.stub("A"))
+    let contactB = try db.saveContact(.stub("B"))
+    let contactC = try db.saveContact(.stub("C"))
+
+    // Mock up messages:
+
+    let message1 = try db.saveMessage(.stub(from: contactA, to: contactB, at: 1, status: .sent))
+    let message2 = try db.saveMessage(.stub(from: contactB, to: contactA, at: 2, status: .received))
+    let message3 = try db.saveMessage(.stub(from: contactA, to: contactB, at: 3, status: .sending))
+    let message4 = try db.saveMessage(.stub(from: contactA, to: contactC, at: 4, status: .sent))
+    let message5 = try db.saveMessage(.stub(from: contactC, to: contactA, at: 5, status: .sendingFailed))
+    let message6 = try db.saveMessage(.stub(from: contactC, to: contactB, at: 6, status: .receiving))
+    let message7 = try db.saveMessage(.stub(from: contactB, to: contactC, at: 7, status: .sending))
+
+    // Set status of all "sending" messages to "sendingFailed":
+
+    try db.bulkUpdateMessages(
+      .init(status: [.sending]),
+      .init(status: .sendingFailed)
+    )
+
+    XCTAssertNoDifference(try db.fetchMessages(.init()), [
+      message1,
+      message2,
+      message3.withStatus(.sendingFailed),
+      message4,
+      message5,
+      message6,
+      message7.withStatus(.sendingFailed),
+    ])
+  }
 }

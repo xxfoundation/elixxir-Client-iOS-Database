@@ -88,6 +88,10 @@ extension Message: FetchableRecord, MutablePersistableRecord {
   static func columnAssignments(_ assignments: Assignments) -> [ColumnAssignment] {
     var columnAssignments: [ColumnAssignment] = []
 
+    if let status = assignments.status {
+      columnAssignments.append(Column.status.set(to: status.rawValue))
+    }
+
     if let isUnread = assignments.isUnread {
       columnAssignments.append(Column.isUnread.set(to: isUnread))
     }
