@@ -176,46 +176,30 @@ final class MigrateMessageTests: XCTestCase {
     }
   }
 
-  func testMigratingMessageWithUnknownSender() throws {
+  func testMigratingMessageWithUnknownSenderAndRecipient() throws {
     let senderId = "sender-id".data(using: .utf8)!
-    let recipientContact = try newDb.saveContact(.stub(1))
-
-    let legacyMessage = XXLegacyDatabaseMigrator.Message.stub(
-      1,
-      from: senderId,
-      to: recipientContact.id,
-      status: .received
-    )
-
-    XCTAssertThrowsError(
-      try migrate(legacyMessage, to: newDb, myContactId: Data(), meMarshaled: Data())
-    ) { error in
-      XCTAssertEqual(
-        error as? MigrateMessage.SenderNotFound,
-        MigrateMessage.SenderNotFound()
-      )
-    }
-  }
-
-  func testMigratingMessageWithUnknownRecipient() throws {
-    let senderContact = try newDb.saveContact(.stub(1))
     let recipientId = "recipient-id".data(using: .utf8)!
 
     let legacyMessage = XXLegacyDatabaseMigrator.Message.stub(
       1,
-      from: senderContact.id,
+      from: senderId,
       to: recipientId,
       status: .received
     )
 
-    XCTAssertThrowsError(
-      try migrate(legacyMessage, to: newDb, myContactId: Data(), meMarshaled: Data())
-    ) { error in
-      XCTAssertEqual(
-        error as? MigrateMessage.RecipientNotFound,
-        MigrateMessage.RecipientNotFound()
-      )
-    }
+    try migrate(legacyMessage, to: newDb, myContactId: Data(), meMarshaled: Data())
+
+    let newMessages: [XXModels.Message] = try newDb.fetchMessages(.init())
+      .map { $0.withNilId() }
+
+    XCTAssertNoDifference(newMessages, [
+      .stub(1, from: senderId, to: recipientId, status: .received)
+    ])
+
+    XCTAssertNoDifference(try newDb.fetchContacts(.init()), [
+      .init(id: senderId, createdAt: Date(nsSince1970: legacyMessage.timestamp)),
+      .init(id: recipientId, createdAt: Date(nsSince1970: legacyMessage.timestamp)),
+    ])
   }
 
   func testMigratingMessageWithUnknownGroup() throws {
