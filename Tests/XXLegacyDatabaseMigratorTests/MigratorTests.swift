@@ -32,6 +32,17 @@ final class MigratorTests: XCTestCase {
       _ = try XXLegacyDatabaseMigrator.GroupMessage.stub(3).saved(db)
     }
 
+    // Mock up new database:
+
+    var didSaveContacts = [XXModels.Contact]()
+
+    var newDb = XXModels.Database.failing
+    newDb.fetchContacts = .init { _ in [] }
+    newDb.saveContact = .init(run: {
+      didSaveContacts.append($0)
+      return $0
+    })
+
     // Perform migration:
 
     enum Migrated: Equatable {
@@ -41,9 +52,13 @@ final class MigratorTests: XCTestCase {
       case message(XXLegacyDatabaseMigrator.LegacyMessage, Data, Data)
     }
 
+    let currentDate = Date()
     var didMigrate = [Migrated]()
 
     let migrate = Migrator.live(
+      currentDate: {
+        currentDate
+      },
       migrateContact: .init { contact, _ in
         didMigrate.append(.contact(contact))
       },
@@ -61,9 +76,13 @@ final class MigratorTests: XCTestCase {
     let myContactId = "my-contact-id".data(using: .utf8)!
     let meMarshaled = "me-marshaled".data(using: .utf8)!
 
-    try migrate(legacyDb, to: .failing, myContactId: myContactId, meMarshaled: meMarshaled)
+    try migrate(legacyDb, to: newDb, myContactId: myContactId, meMarshaled: meMarshaled)
 
     // Assert migration:
+
+    XCTAssertNoDifference(didSaveContacts, [
+      .init(id: myContactId, marshaled: meMarshaled, createdAt: currentDate)
+    ])
 
     XCTAssertNoDifference(didMigrate, try legacyDb.writer.read { db in
       [
@@ -103,7 +122,8 @@ final class MigratorTests: XCTestCase {
     let legacyDb = try LegacyDatabase(path: path)
     let newDbQueue = DatabaseQueue()
     let newDb = try XXModels.Database.grdb(writer: newDbQueue)
-    let migrate = Migrator.live()
+    let currentDate = Date(timeIntervalSince1970: 1234)
+    let migrate = Migrator.live(currentDate: { currentDate })
 
     let myContactId = "my-contact-id".data(using: .utf8)!
     let meMarshaled = Data(base64Encoded: try String(
@@ -127,7 +147,8 @@ final class MigratorTests: XCTestCase {
     let legacyDb = try LegacyDatabase(path: path)
     let newDbQueue = DatabaseQueue()
     let newDb = try XXModels.Database.grdb(writer: newDbQueue)
-    let migrate = Migrator.live()
+    let currentDate = Date(timeIntervalSince1970: 1234)
+    let migrate = Migrator.live(currentDate: { currentDate })
 
     let myContactId = "my-contact-id".data(using: .utf8)!
     let meMarshaled = Data(base64Encoded: try String(

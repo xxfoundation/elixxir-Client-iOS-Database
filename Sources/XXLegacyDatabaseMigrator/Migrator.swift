@@ -20,12 +20,21 @@ public struct Migrator {
 extension Migrator {
   /// Live migrator implementation
   public static func live(
+    currentDate: @escaping () -> Date = Date.init,
     migrateContact: MigrateContact = .live,
     migrateGroup: MigrateGroup = .live,
     migrateGroupMember: MigrateGroupMember = .live,
     migrateMessage: MigrateMessage = .live
   ) -> Migrator {
     Migrator { legacyDb, newDb, myContactId, meMarshaled in
+      if try newDb.fetchContacts(.init(id: [myContactId])).isEmpty {
+        try newDb.saveContact(.init(
+          id: myContactId,
+          marshaled: meMarshaled,
+          createdAt: currentDate()
+        ))
+      }
+
       try legacyDb.writer.read { db in
         let contacts = try Contact.order(Contact.Column.createdAt).fetchCursor(db)
         while let contact = try contacts.next() {
