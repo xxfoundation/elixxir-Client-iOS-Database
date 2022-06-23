@@ -2,15 +2,16 @@
 import PackageDescription
 
 let swiftSettings: [SwiftSetting] = [
-  .unsafeFlags(
-    [
-      "-Xfrontend",
-      "-debug-time-function-bodies",
-      "-Xfrontend",
-      "-debug-time-expression-type-checking",
-    ],
-    .when(configuration: .debug)
-  ),
+  // Uncomment to measure compilation time:
+  //.unsafeFlags(
+  //  [
+  //    "-Xfrontend",
+  //    "-debug-time-function-bodies",
+  //    "-Xfrontend",
+  //    "-debug-time-expression-type-checking",
+  //  ],
+  //  .when(configuration: .debug)
+  //),
 ]
 
 let package = Package(
