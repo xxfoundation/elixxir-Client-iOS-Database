@@ -1,7 +1,7 @@
 import Foundation
 
 /// Represents file transfer
-public struct FileTransfer: Identifiable, Equatable, Codable {
+public struct FileTransfer: Identifiable, Equatable, Hashable, Codable {
   /// Unique identifier of the file transfer
   public typealias ID = Data
 

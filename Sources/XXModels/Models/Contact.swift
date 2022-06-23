@@ -1,12 +1,12 @@
 import Foundation
 
 /// Represents contact
-public struct Contact: Identifiable, Equatable, Codable {
+public struct Contact: Identifiable, Equatable, Hashable, Codable {
   /// Unique identifier of a contact
   public typealias ID = Data
 
   /// Represents contact authorization status
-  public enum AuthStatus: String, Equatable, Codable {
+  public enum AuthStatus: String, Equatable, Hashable, Codable {
     /// Not authorized
     case stranger
 

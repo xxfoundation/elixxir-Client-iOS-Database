@@ -1,7 +1,7 @@
 import Foundation
 
 /// Represents aggregated info about a group
-public struct GroupInfo: Identifiable, Equatable, Decodable {
+public struct GroupInfo: Identifiable, Equatable, Hashable, Decodable {
   /// Unique identifier of a group info
   public typealias ID = Group.ID
 
