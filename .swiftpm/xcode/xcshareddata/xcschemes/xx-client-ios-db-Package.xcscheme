@@ -28,20 +28,6 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "XXLegacyDatabaseMigrator"
-               BuildableName = "XXLegacyDatabaseMigrator"
-               BlueprintName = "XXLegacyDatabaseMigrator"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "XXModels"
                BuildableName = "XXModels"
                BlueprintName = "XXModels"
@@ -70,23 +56,23 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "XXLegacyDatabaseMigratorTests"
-               BuildableName = "XXLegacyDatabaseMigratorTests"
-               BlueprintName = "XXLegacyDatabaseMigratorTests"
+               BlueprintIdentifier = "XXModelsTests"
+               BuildableName = "XXModelsTests"
+               BlueprintName = "XXModelsTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
             buildForTesting = "YES"
             buildForRunning = "YES"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "XXModelsTests"
-               BuildableName = "XXModelsTests"
-               BlueprintName = "XXModelsTests"
+               BlueprintIdentifier = "XXLegacyDatabaseMigrator"
+               BuildableName = "XXLegacyDatabaseMigrator"
+               BlueprintName = "XXLegacyDatabaseMigrator"
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
@@ -113,9 +99,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "XXLegacyDatabaseMigratorTests"
-               BuildableName = "XXLegacyDatabaseMigratorTests"
-               BlueprintName = "XXLegacyDatabaseMigratorTests"
+               BlueprintIdentifier = "XXModelsTests"
+               BuildableName = "XXModelsTests"
+               BlueprintName = "XXModelsTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
@@ -123,9 +109,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "XXModelsTests"
-               BuildableName = "XXModelsTests"
-               BlueprintName = "XXModelsTests"
+               BlueprintIdentifier = "XXLegacyDatabaseMigratorTests"
+               BuildableName = "XXLegacyDatabaseMigratorTests"
+               BlueprintName = "XXLegacyDatabaseMigratorTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
