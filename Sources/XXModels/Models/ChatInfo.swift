@@ -1,7 +1,7 @@
 import Foundation
 
 /// Represents chat within a group or with a contact
-public enum ChatInfo: Identifiable, Equatable, Codable {
+public enum ChatInfo: Identifiable, Equatable, Hashable, Codable {
   /// Unique identifier of a chat
   public enum ID: Hashable {
     /// Identifier of direct chat with a contact

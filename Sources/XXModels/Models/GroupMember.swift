@@ -1,7 +1,7 @@
 import Foundation
 
 /// Represents a group-member relation
-public struct GroupMember: Equatable, Codable {
+public struct GroupMember: Equatable, Hashable, Codable {
   /// Instantiate group-member relation
   /// 
   /// - Parameters:

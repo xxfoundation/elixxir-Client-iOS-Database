@@ -1,5 +1,5 @@
 /// Represents chat within a group
-public struct GroupChatInfo: Identifiable, Equatable, Codable {
+public struct GroupChatInfo: Identifiable, Equatable, Hashable, Codable {
   /// Unique identifier of group chat
   public typealias ID = Group.ID
 

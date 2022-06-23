@@ -1,12 +1,12 @@
 import Foundation
 
 /// Represents group
-public struct Group: Identifiable, Equatable, Codable {
+public struct Group: Identifiable, Equatable, Hashable, Codable {
   /// Unique identifier of a group
   public typealias ID = Data
 
   /// Represents group authorization status
-  public enum AuthStatus: String, Equatable, Codable {
+  public enum AuthStatus: String, Equatable, Hashable, Codable {
     /// Invitation to the group received
     case pending
 

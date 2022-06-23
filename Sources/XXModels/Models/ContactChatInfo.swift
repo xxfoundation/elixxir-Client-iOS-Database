@@ -1,5 +1,5 @@
 /// Represents chat with a contact
-public struct ContactChatInfo: Identifiable, Equatable, Codable {
+public struct ContactChatInfo: Identifiable, Equatable, Hashable, Codable {
   /// Unique identifier of contact chat
   public typealias ID = Contact.ID
 

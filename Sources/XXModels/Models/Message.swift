@@ -1,12 +1,12 @@
 import Foundation
 
 /// Represents message
-public struct Message: Identifiable, Equatable, Codable {
+public struct Message: Identifiable, Equatable, Hashable, Codable {
   /// Unique identifier of a message
   public typealias ID = Int64?
 
   /// Represents status of the message
-  public enum Status: String, Equatable, Codable {
+  public enum Status: String, Equatable, Hashable, Codable {
     /// Outgoing message is sending
     case sending
 
