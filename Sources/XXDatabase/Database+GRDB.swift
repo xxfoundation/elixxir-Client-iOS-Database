@@ -11,6 +11,16 @@ extension XXModels.Database {
     try grdb(writer: DatabaseQueue())
   }
 
+  /// Create on-disk database implementation powered by GRDB
+  ///
+  /// - Parameters:
+  ///   - path: Path to the database file.
+  /// - Returns: Database implementation.
+  /// - Throws: Error when database can't be instantiated.
+  public static func onDisk(path: String) throws -> XXModels.Database {
+    try grdb(writer: try DatabaseQueue(path: path))
+  }
+
   static func grdb(
     writer: DatabaseWriter,
     queue: DispatchQueue = DispatchQueue(label: "XXDatabase"),
