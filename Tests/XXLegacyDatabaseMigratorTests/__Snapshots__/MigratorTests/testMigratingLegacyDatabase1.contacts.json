@@ -9,6 +9,12 @@
     "username" : "qwer35"
   },
   {
+    "authStatus" : "stranger",
+    "createdAt" : "2022-06-21T11:39:52Z",
+    "id" : "bXktY29udGFjdC1pZA==",
+    "isRecent" : false
+  },
+  {
     "authStatus" : "friend",
     "createdAt" : "2022-06-21T11:46:18Z",
     "id" : "2qcF7Xl/QEn6Zu6cdQC0fteI6EeoEX9IY0nkBdmBbRYD",

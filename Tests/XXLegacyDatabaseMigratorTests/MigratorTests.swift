@@ -106,7 +106,12 @@ final class MigratorTests: XCTestCase {
     let migrate = Migrator.live()
 
     let myContactId = "my-contact-id".data(using: .utf8)!
-    let meMarshaled = "me-marshaled".data(using: .utf8)!
+    let meMarshaled = Data(base64Encoded: try String(
+      contentsOfFile: Bundle.module.path(
+        forResource: "legacy_database_1_meMarshaled_base64",
+        ofType: "txt"
+      )!
+    ).trimmingCharacters(in: .whitespacesAndNewlines))!
 
     try migrate(legacyDb, to: newDb, myContactId: myContactId, meMarshaled: meMarshaled)
 
@@ -125,7 +130,12 @@ final class MigratorTests: XCTestCase {
     let migrate = Migrator.live()
 
     let myContactId = "my-contact-id".data(using: .utf8)!
-    let meMarshaled = "me-marshaled".data(using: .utf8)!
+    let meMarshaled = Data(base64Encoded: try String(
+      contentsOfFile: Bundle.module.path(
+        forResource: "legacy_database_2_meMarshaled_base64",
+        ofType: "txt"
+      )!
+    ).trimmingCharacters(in: .whitespacesAndNewlines))!
 
     try migrate(legacyDb, to: newDb, myContactId: myContactId, meMarshaled: meMarshaled)
 
