@@ -32,6 +32,12 @@ extension Contact {
     contact.authStatus = authStatus
     return contact
   }
+
+  func withUsername(_ username: String?) -> Contact {
+    var contact = self
+    contact.username = username
+    return contact
+  }
 }
 
 extension Group {

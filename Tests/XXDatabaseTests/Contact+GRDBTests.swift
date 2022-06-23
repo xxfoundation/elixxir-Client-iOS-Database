@@ -198,6 +198,41 @@ final class ContactGRDBTests: XCTestCase {
     XCTAssertNil(fetchAssertion.receivedCompletion())
   }
 
+  func testFetchingByUsername() throws {
+    // Mock up contacts:
+
+    let contactA = try db.saveContact(.stub("A", createdAt: .stub(1)))
+    let contactB = try db.saveContact(.stub("B", createdAt: .stub(2)).withUsername(nil))
+    let contactC = try db.saveContact(.stub("C", createdAt: .stub(3)))
+    let contactD = try db.saveContact(.stub("D", createdAt: .stub(4)).withUsername(nil))
+
+    // Fetch contacts with provided username:
+
+    XCTAssertNoDifference(
+      try db.fetchContacts(.init(username: contactA.username!)),
+      [contactA]
+    )
+
+    XCTAssertNoDifference(
+      try db.fetchContacts(.init(username: contactC.username!)),
+      [contactC]
+    )
+
+    // Fetch contacts without username:
+
+    XCTAssertNoDifference(
+      try db.fetchContacts(.init(username: .some(nil), sortBy: .createdAt())),
+      [contactB, contactD]
+    )
+
+    // Fetch contacts regardless username:
+
+    XCTAssertNoDifference(
+      try db.fetchContacts(.init(username: nil, sortBy: .createdAt())),
+      [contactA, contactB, contactC, contactD]
+    )
+  }
+
   func testFetchingAuthRequest() throws {
     // Mock up contacts:
 

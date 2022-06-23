@@ -28,6 +28,17 @@ extension Contact: FetchableRecord, PersistableRecord {
       }
     }
 
+    switch query.username {
+    case .some(.some(let username)):
+      request = request.filter(Column.username == username)
+
+    case .some(.none):
+      request = request.filter(Column.username == nil)
+
+    case .none:
+      break
+    }
+
     if let authStatus = query.authStatus {
       request = request.filter(Set(authStatus.map(\.rawValue)).contains(Column.authStatus))
     }

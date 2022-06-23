@@ -146,6 +146,10 @@ extension Contact {
     ///
     /// - Parameters:
     ///   - id: Filter by id (defaults to `nil`).
+    ///   - username: Filter contacts by username.
+    ///     If `.some(.some("username"))`, include contacts with provided username.
+    ///     If `.some(.none)`, include contacts without username set.
+    ///     If `.none` (default), disable the filter.
     ///   - authStatus: Filter contacts by auth status.
     ///     If set, only contacts with any of the provided auth statuses will be fetched.
     ///     If `nil` (default), the filter is not used.
@@ -156,11 +160,13 @@ extension Contact {
     ///   - sortBy: Sort order (defaults to `.username()`).
     public init(
       id: Set<Contact.ID>? = nil,
+      username: String?? = nil,
       authStatus: Set<AuthStatus>? = nil,
       isRecent: Bool? = nil,
       sortBy: SortOrder = .username()
     ) {
       self.id = id
+      self.username = username
       self.authStatus = authStatus
       self.isRecent = isRecent
       self.sortBy = sortBy
@@ -168,6 +174,13 @@ extension Contact {
 
     /// Filter by id
     public var id: Set<Contact.ID>?
+
+    /// Filter contacts by username
+    ///
+    /// If `.some(.some("username"))`, include contacts with provided username.
+    /// If `.some(.none)`, include contacts without username set.
+    /// If `.none`, disable the filter.
+    public var username: String??
 
     /// Filter contacts by auth status
     ///
