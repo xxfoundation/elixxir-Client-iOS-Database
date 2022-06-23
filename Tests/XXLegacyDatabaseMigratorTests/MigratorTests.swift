@@ -58,7 +58,10 @@ final class MigratorTests: XCTestCase {
       }
     )
 
-    try migrate(legacyDb, to: .failing)
+    let myContactId = "my-contact-id".data(using: .utf8)!
+    let meMarshaled = "me-marshaled".data(using: .utf8)!
+
+    try migrate(legacyDb, to: .failing, myContactId: myContactId, meMarshaled: meMarshaled)
 
     // Assert migration:
 
@@ -102,7 +105,10 @@ final class MigratorTests: XCTestCase {
     let newDb = try XXModels.Database.grdb(writer: newDbQueue)
     let migrate = Migrator.live()
 
-    try migrate(legacyDb, to: newDb)
+    let myContactId = "my-contact-id".data(using: .utf8)!
+    let meMarshaled = "me-marshaled".data(using: .utf8)!
+
+    try migrate(legacyDb, to: newDb, myContactId: myContactId, meMarshaled: meMarshaled)
 
     assertSnapshot(matchingContactsIn: newDbQueue)
     assertSnapshot(matchingGroupsIn: newDbQueue)
@@ -118,7 +124,10 @@ final class MigratorTests: XCTestCase {
     let newDb = try XXModels.Database.grdb(writer: newDbQueue)
     let migrate = Migrator.live()
 
-    try migrate(legacyDb, to: newDb)
+    let myContactId = "my-contact-id".data(using: .utf8)!
+    let meMarshaled = "me-marshaled".data(using: .utf8)!
+
+    try migrate(legacyDb, to: newDb, myContactId: myContactId, meMarshaled: meMarshaled)
 
     assertSnapshot(matchingContactsIn: newDbQueue)
     assertSnapshot(matchingGroupsIn: newDbQueue)
