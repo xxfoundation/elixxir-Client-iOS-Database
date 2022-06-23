@@ -44,12 +44,12 @@ extension Migrator {
 
         let messages = try Message.order(Message.Column.timestamp).fetchCursor(db)
         while let message = try messages.next() {
-          try migrateMessage(message, to: newDb)
+          try migrateMessage(message, to: newDb, myContactId: myContactId, meMarshaled: meMarshaled)
         }
 
         let groupMessages = try GroupMessage.order(GroupMessage.Column.timestamp).fetchCursor(db)
         while let groupMessage = try groupMessages.next() {
-          try migrateMessage(groupMessage, to: newDb)
+          try migrateMessage(groupMessage, to: newDb, myContactId: myContactId, meMarshaled: meMarshaled)
         }
       }
     }

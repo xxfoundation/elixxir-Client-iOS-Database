@@ -3,20 +3,24 @@ import GRDB
 import XXModels
 
 public struct MigrateMessage {
-  var run: (LegacyMessage, XXModels.Database) throws -> Void
+  var run: (LegacyMessage, XXModels.Database, Data, Data) throws -> Void
 
   func callAsFunction(
     _ message: Message,
-    to newDb: XXModels.Database
+    to newDb: XXModels.Database,
+    myContactId: Data,
+    meMarshaled: Data
   ) throws {
-    try run(.direct(message), newDb)
+    try run(.direct(message), newDb, myContactId, meMarshaled)
   }
 
   func callAsFunction(
     _ message: GroupMessage,
-    to newDb: XXModels.Database
+    to newDb: XXModels.Database,
+    myContactId: Data,
+    meMarshaled: Data
   ) throws {
-    try run(.group(message), newDb)
+    try run(.group(message), newDb, myContactId, meMarshaled)
   }
 }
 
@@ -24,7 +28,7 @@ extension MigrateMessage {
   public struct ReplyMessageNotFound: Error, Equatable {}
   public struct GroupNotFound: Error, Equatable {}
 
-  public static let live = MigrateMessage { message, newDb in
+  public static let live = MigrateMessage { message, newDb, myContactId, meMarshaled in
     let replyMessageId: Data?
     if let id = message.payload.reply?.messageId, id != "".data(using: .utf8) {
       replyMessageId = id

@@ -35,7 +35,7 @@ final class MigrateMessageTests: XCTestCase {
     ]
 
     try legacyMessages.forEach { message in
-      try migrate(message, to: newDb)
+      try migrate(message, to: newDb, myContactId: Data(), meMarshaled: Data())
     }
 
     let newMessages: [XXModels.Message] = try newDb.fetchMessages(.init())
@@ -69,7 +69,7 @@ final class MigrateMessageTests: XCTestCase {
     ]
 
     try legacyGroupMessages.forEach { groupMessage in
-      try migrate(groupMessage, to: newDb)
+      try migrate(groupMessage, to: newDb, myContactId: Data(), meMarshaled: Data())
     }
 
     let newMessages: [XXModels.Message] = try newDb.fetchMessages(.init())
@@ -91,7 +91,9 @@ final class MigrateMessageTests: XCTestCase {
       senderId: "unknown-contact-id".data(using: .utf8)!
     )
 
-    XCTAssertThrowsError(try migrate(legacyMessage, to: newDb)) { error in
+    XCTAssertThrowsError(
+      try migrate(legacyMessage, to: newDb, myContactId: Data(), meMarshaled: Data())
+    ) { error in
       XCTAssertEqual(
         error as? MigrateMessage.ReplyMessageNotFound,
         MigrateMessage.ReplyMessageNotFound()
@@ -110,7 +112,7 @@ final class MigrateMessageTests: XCTestCase {
       status: .received
     )
 
-    try migrate(legacyMessage, to: newDb)
+    try migrate(legacyMessage, to: newDb, myContactId: Data(), meMarshaled: Data())
 
     let newMessages: [XXModels.Message] = try newDb.fetchMessages(.init())
       .map { $0.withNilId() }
@@ -135,7 +137,9 @@ final class MigrateMessageTests: XCTestCase {
       status: .sent
     )
 
-    XCTAssertThrowsError(try migrate(legacyMessage, to: newDb)) { error in
+    XCTAssertThrowsError(
+      try migrate(legacyMessage, to: newDb, myContactId: Data(), meMarshaled: Data())
+    ) { error in
       XCTAssertEqual(
         error as? MigrateMessage.GroupNotFound,
         MigrateMessage.GroupNotFound()
@@ -164,7 +168,7 @@ final class MigrateMessageTests: XCTestCase {
       )
     )
 
-    try migrate(legacyMessage, to: newDb)
+    try migrate(legacyMessage, to: newDb, myContactId: Data(), meMarshaled: Data())
 
     let newMessages: [XXModels.Message] = try newDb.fetchMessages(.init()).map {
       $0.withNilId()
@@ -197,7 +201,7 @@ final class MigrateMessageTests: XCTestCase {
       )
     )
 
-    try migrate(legacyMessage, to: newDb)
+    try migrate(legacyMessage, to: newDb, myContactId: Data(), meMarshaled: Data())
 
     let newMessages: [XXModels.Message] = try newDb.fetchMessages(.init()).map {
       $0.withNilId()
@@ -236,7 +240,7 @@ final class MigrateMessageTests: XCTestCase {
     ]
 
     try legacyMessages.forEach { message in
-      try migrate(message, to: newDb)
+      try migrate(message, to: newDb, myContactId: Data(), meMarshaled: Data())
     }
 
     let newMessages: [XXModels.Message] = try newDb.fetchMessages(.init())
