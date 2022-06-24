@@ -61,14 +61,39 @@ extension ChatInfo {
   /// Query used for fetching chat infos
   public struct Query: Equatable {
     /// Instantiate chat info query
-    /// 
+    ///
+    /// Results are sorted by `ChatInfo.date` in descending order.
+    ///
     /// - Parameters:
-    ///   - userId: Current user's contact ID
-    public init(userId: Contact.ID) {
-      self.userId = userId
+    ///   - contactChatInfoQuery: Direct chat infos query.
+    ///     If `nil`, exclude direct chats from results.
+    ///   - groupChatInfoQuery: Group chat infos query.
+    ///     If `nil`, exclude group chats from results.
+    ///   - groupQuery: Groups query.
+    ///     If `nil`, exclude groups results.
+    public init(
+      contactChatInfoQuery: ContactChatInfo.Query?,
+      groupChatInfoQuery: GroupChatInfo.Query?,
+      groupQuery: Group.Query?
+    ) {
+      self.contactChatInfoQuery = contactChatInfoQuery
+      self.groupChatInfoQuery = groupChatInfoQuery
+      self.groupQuery = groupQuery
     }
 
-    /// Current user's contact ID
-    public var userId: Contact.ID
+    /// Direct chats query
+    ///
+    /// If `nil`, exclude direct chats from results.
+    public var contactChatInfoQuery: ContactChatInfo.Query?
+
+    /// Group chats query
+    ///
+    /// If `nil`, exclude group chats from results.
+    public var groupChatInfoQuery: GroupChatInfo.Query?
+
+    /// Groups query
+    ///
+    /// If `nil`, exclude groups results.
+    public var groupQuery: Group.Query?
   }
 }

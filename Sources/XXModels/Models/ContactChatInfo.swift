@@ -46,12 +46,27 @@ extension ContactChatInfo {
     /// Instantiate query
     ///
     /// - Parameters:
-    ///   - userId: Current user's contact ID
-    public init(userId: Contact.ID) {
+    ///   - userId: Current user's contact ID.
+    ///   - authStatus: Filter by other contact auth status.
+    ///     If set, only chats with contacts that have any of the provided
+    ///     auth statuses will be included.
+    ///     If `nil` (default), the filter is not used.
+    public init(
+      userId: Contact.ID,
+      authStatus: Set<Contact.AuthStatus>? = nil
+    ) {
       self.userId = userId
+      self.authStatus = authStatus
     }
 
     /// Current user's contact ID
     public var userId: Contact.ID
+
+    /// Filter by other contact auth status
+    ///
+    /// If set, only chats with contacts that have any of the provided
+    /// auth statuses will be included.
+    /// If `nil`, the filter is not used.
+    public var authStatus: Set<Contact.AuthStatus>?
   }
 }
