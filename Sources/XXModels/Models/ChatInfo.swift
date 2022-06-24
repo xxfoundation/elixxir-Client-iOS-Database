@@ -66,12 +66,15 @@ extension ChatInfo {
     ///
     /// - Parameters:
     ///   - contactChatInfoQuery: Direct chat infos query.
+    ///     If `nil`, exclude direct chats from results.
     ///   - groupChatInfoQuery: Group chat infos query.
+    ///     If `nil`, exclude group chats from results.
     ///   - groupQuery: Groups query.
+    ///     If `nil`, exclude groups results.
     public init(
-      contactChatInfoQuery: ContactChatInfo.Query,
-      groupChatInfoQuery: GroupChatInfo.Query,
-      groupQuery: Group.Query
+      contactChatInfoQuery: ContactChatInfo.Query?,
+      groupChatInfoQuery: GroupChatInfo.Query?,
+      groupQuery: Group.Query?
     ) {
       self.contactChatInfoQuery = contactChatInfoQuery
       self.groupChatInfoQuery = groupChatInfoQuery
@@ -79,12 +82,18 @@ extension ChatInfo {
     }
 
     /// Direct chats query
-    public var contactChatInfoQuery: ContactChatInfo.Query
+    ///
+    /// If `nil`, exclude direct chats from results.
+    public var contactChatInfoQuery: ContactChatInfo.Query?
 
     /// Group chats query
-    public var groupChatInfoQuery: GroupChatInfo.Query
+    ///
+    /// If `nil`, exclude group chats from results.
+    public var groupChatInfoQuery: GroupChatInfo.Query?
 
     /// Groups query
-    public var groupQuery: Group.Query
+    ///
+    /// If `nil`, exclude groups results.
+    public var groupQuery: Group.Query?
   }
 }

@@ -177,7 +177,7 @@ final class ChatInfoGRDBTests: XCTestCase {
       )),
     ]
 
-    let query: ChatInfo.Query = .init(
+    let query = ChatInfo.Query(
       contactChatInfoQuery: .init(userId: contactA.id),
       groupChatInfoQuery: .init(),
       groupQuery: .init(withMessages: false)
@@ -197,5 +197,31 @@ final class ChatInfoGRDBTests: XCTestCase {
 
     XCTAssertNoDifference(fetchAssertion.receivedValues(), [expectedFetchResults])
     XCTAssertNil(fetchAssertion.receivedCompletion())
+  }
+
+  func testFetchingExcludingSubqueries() throws {
+    let query = ChatInfo.Query(
+      contactChatInfoQuery: nil,
+      groupChatInfoQuery: nil,
+      groupQuery: nil
+    )
+
+    // Fetch excluding subqueries:
+
+    XCTAssertNoDifference(try db.fetchChatInfos(query), [])
+
+    // Subscribe to publisher:
+
+    let fetchAssertion = PublisherAssertion<[ChatInfo], Error>()
+    fetchAssertion.expectValue()
+    fetchAssertion.expectCompletion()
+    fetchAssertion.subscribe(to: db.fetchChatInfosPublisher(query))
+    fetchAssertion.waitForValues()
+
+    XCTAssertNoDifference(fetchAssertion.receivedValues(), [[]])
+
+    fetchAssertion.waitForCompletion()
+
+    XCTAssert(fetchAssertion.receivedCompletion()?.isFinished == true)
   }
 }
