@@ -138,6 +138,15 @@ public struct LegacyDatabase {
     }
 
     migrator.registerMigration("v2") { db in
+      let contactsTableContainsIsRecentColumn = try Row
+        .fetchAll(db, sql: "pragma table_info(contacts)")
+        .map { $0["name"] }
+        .contains("isRecent")
+
+      guard contactsTableContainsIsRecentColumn == false else {
+        return
+      }
+
       try db.alter(table: Contact.databaseTableName) { table in
         table.add(column: Contact.Column.isRecent.rawValue, .boolean)
       }
