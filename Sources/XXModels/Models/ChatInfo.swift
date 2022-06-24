@@ -62,6 +62,8 @@ extension ChatInfo {
   public struct Query: Equatable {
     /// Instantiate chat info query
     ///
+    /// Results are sorted by `ChatInfo.date` in descending order.
+    ///
     /// - Parameters:
     ///   - contactChatInfoQuery: Direct chat infos query.
     ///   - groupChatInfoQuery: Group chat infos query.
