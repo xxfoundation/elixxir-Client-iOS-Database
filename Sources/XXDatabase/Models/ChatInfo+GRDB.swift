@@ -18,19 +18,13 @@ extension Fetch where Model == ChatInfo, Query == ChatInfo.Query {
       let fetchGroups: Group.Fetch =
         .grdb(writer, queue, Group.request(_:))
 
-      let contactChatsQuery = ContactChatInfo.Query(userId: query.userId)
-      let contactChats = try fetchContactChats(contactChatsQuery)
+      let contactChats = try fetchContactChats(query.contactChatInfoQuery)
         .map(ChatInfo.contactChat)
 
-      let groupChatsQuery = GroupChatInfo.Query()
-      let groupChats = try fetchGroupChats(groupChatsQuery)
+      let groupChats = try fetchGroupChats(query.groupChatInfoQuery)
         .map(ChatInfo.groupChat)
 
-      let groupsQuery = Group.Query(
-        withMessages: false,
-        sortBy: .createdAt(desc: true)
-      )
-      let groups = try fetchGroups(groupsQuery)
+      let groups = try fetchGroups(query.groupQuery)
         .map(ChatInfo.group)
 
       let chats = (contactChats + groupChats + groups)
@@ -56,15 +50,11 @@ extension FetchPublisher where Model == ChatInfo, Query == ChatInfo.Query {
       let fetchGroups: Group.FetchPublisher =
         .grdb(writer, queue, Group.request(_:))
 
-      let contactChatsQuery = ContactChatInfo.Query(userId: query.userId)
-      let groupChatsQuery = GroupChatInfo.Query()
-      let groupsQuery = Group.Query(withMessages: false, sortBy: .createdAt(desc: true))
-
       return Publishers
         .CombineLatest3(
-          fetchContactChats(contactChatsQuery).map { $0.map(ChatInfo.contactChat) },
-          fetchGroupChats(groupChatsQuery).map { $0.map(ChatInfo.groupChat) },
-          fetchGroups(groupsQuery).map { $0.map(ChatInfo.group) }
+          fetchContactChats(query.contactChatInfoQuery).map { $0.map(ChatInfo.contactChat) },
+          fetchGroupChats(query.groupChatInfoQuery).map { $0.map(ChatInfo.groupChat) },
+          fetchGroups(query.groupQuery).map { $0.map(ChatInfo.group) }
         )
         .map { (contactChats: [ChatInfo],
                 groupChats: [ChatInfo],

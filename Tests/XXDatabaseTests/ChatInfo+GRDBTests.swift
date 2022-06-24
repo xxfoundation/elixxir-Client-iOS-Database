@@ -177,8 +177,14 @@ final class ChatInfoGRDBTests: XCTestCase {
       )),
     ]
 
+    let query: ChatInfo.Query = .init(
+      contactChatInfoQuery: .init(userId: contactA.id),
+      groupChatInfoQuery: .init(),
+      groupQuery: .init(withMessages: false)
+    )
+
     XCTAssertNoDifference(
-      try db.fetchChatInfos(ChatInfo.Query(userId: contactA.id)),
+      try db.fetchChatInfos(query),
       expectedFetchResults
     )
 
@@ -186,7 +192,7 @@ final class ChatInfoGRDBTests: XCTestCase {
 
     let fetchAssertion = PublisherAssertion<[ChatInfo], Error>()
     fetchAssertion.expectValue()
-    fetchAssertion.subscribe(to: db.fetchChatInfosPublisher(ChatInfo.Query(userId: contactA.id)))
+    fetchAssertion.subscribe(to: db.fetchChatInfosPublisher(query))
     fetchAssertion.waitForValues()
 
     XCTAssertNoDifference(fetchAssertion.receivedValues(), [expectedFetchResults])
