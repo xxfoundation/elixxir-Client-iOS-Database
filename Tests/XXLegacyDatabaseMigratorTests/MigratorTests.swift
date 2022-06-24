@@ -81,7 +81,12 @@ final class MigratorTests: XCTestCase {
     // Assert migration:
 
     XCTAssertNoDifference(didSaveContacts, [
-      .init(id: myContactId, marshaled: meMarshaled, createdAt: currentDate)
+      .init(
+        id: myContactId,
+        marshaled: meMarshaled,
+        authStatus: .friend,
+        createdAt: currentDate
+      )
     ])
 
     XCTAssertNoDifference(didMigrate, try legacyDb.writer.read { db in
