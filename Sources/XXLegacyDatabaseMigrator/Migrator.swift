@@ -31,6 +31,7 @@ extension Migrator {
         try newDb.saveContact(.init(
           id: myContactId,
           marshaled: meMarshaled,
+          authStatus: .friend,
           createdAt: currentDate()
         ))
       }
