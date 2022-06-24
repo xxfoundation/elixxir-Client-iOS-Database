@@ -9,15 +9,12 @@ extension ContactChatInfo: FetchableRecord {
   }
 
   static func request(_ query: Query) -> AdaptedFetchRequest<SQLRequest<ContactChatInfo>> {
-    var whereQuery: [String] = ["c1.id = :userId"]
-    var arguments: StatementArguments = ["userId": query.userId]
+    var sqlWhere: [String] = ["c1.id = :userId"]
+    var sqlArguments: StatementArguments = ["userId": query.userId]
 
     if let authStatus = query.authStatus {
-      let authStatusArgumentNames = (0..<authStatus.count).map { ":authStatus\($0)" }
-      whereQuery.append("c2.authStatus IN (\(authStatusArgumentNames.joined(separator: ", ")))")
-      authStatus.enumerated().forEach { index, status in
-        _ = arguments.append(contentsOf: ["authStatus\(index)": status.rawValue])
-      }
+      sqlWhere.append("AND \(sqlWhereAuthStatus(count: authStatus.count))")
+      _ = sqlArguments.append(contentsOf: sqlArgumentsAuthStatus(authStatus))
     }
 
     let sql = """
@@ -38,7 +35,7 @@ extension ContactChatInfo: FetchableRecord {
         ON c2.id IN (m.senderId, m.recipientId)
         AND c1.id <> c2.id
       WHERE
-        \(whereQuery.joined(separator: "\n  AND "))
+        \(sqlWhere.joined(separator: "\n  "))
       GROUP BY
         c2.id
       ORDER BY
@@ -47,7 +44,7 @@ extension ContactChatInfo: FetchableRecord {
 
     return SQLRequest(
       sql: sql,
-      arguments: arguments
+      arguments: sqlArguments
     )
     .adapted { db in
       let adapters = try splittingRowAdapters(columnCounts: [
@@ -60,5 +57,18 @@ extension ContactChatInfo: FetchableRecord {
         ContactChatInfo.Column.lastMessage.rawValue: adapters[2],
       ])
     }
+  }
+
+  private static func sqlWhereAuthStatus(count: Int) -> String {
+    let arguments = (0..<count).map { ":authStatus\($0)" }.joined(separator: ", ")
+    return "c2.authStatus IN (\(arguments))"
+  }
+
+  private static func sqlArgumentsAuthStatus(
+    _ statuses: Set<Contact.AuthStatus>
+  ) -> StatementArguments {
+    StatementArguments(statuses.enumerated().reduce(into: [:]) {
+      $0["authStatus\($1.offset)"] = $1.element.rawValue
+    })
   }
 }
