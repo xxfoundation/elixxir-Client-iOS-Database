@@ -44,6 +44,21 @@ extension GroupChatInfo {
   /// Query used for fetching group chat infos
   public struct Query: Equatable {
     /// Instantiate query
-    public init() {}
+    ///
+    /// - Parameters:
+    ///   - authStatus: Filter groups by auth status.
+    ///     If set, only groups with any of the provided auth statuses will be included.
+    ///     If `nil`, the filter is not used.
+    public init(
+      authStatus: Set<Group.AuthStatus>? = nil
+    ) {
+      self.authStatus = authStatus
+    }
+
+    /// Filter groups by auth status
+    ///
+    /// If set, only groups with any of the provided auth statuses will be included.
+    /// If `nil`, the filter is not used.
+    public var authStatus: Set<Group.AuthStatus>?
   }
 }
