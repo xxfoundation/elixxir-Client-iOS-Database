@@ -27,7 +27,8 @@ final class GroupChatInfoGRDBTests: XCTestCase {
     let groupA = try db.saveGroup(.stub(
       "A",
       leaderId: contactA.id,
-      createdAt: .stub(1)
+      createdAt: .stub(1),
+      authStatus: .participating
     ))
 
     try db.saveGroupMember(GroupMember(groupId: groupA.id, contactId: contactA.id))
@@ -37,7 +38,8 @@ final class GroupChatInfoGRDBTests: XCTestCase {
     let groupB = try db.saveGroup(.stub(
       "B",
       leaderId: contactB.id,
-      createdAt: .stub(2)
+      createdAt: .stub(2),
+      authStatus: .hidden
     ))
 
     try db.saveGroupMember(GroupMember(groupId: groupB.id, contactId: contactB.id))
@@ -47,7 +49,8 @@ final class GroupChatInfoGRDBTests: XCTestCase {
     try db.saveGroup(.stub(
       "C",
       leaderId: contactC.id,
-      createdAt: .stub(3)
+      createdAt: .stub(3),
+      authStatus: .participating
     ))
 
     // Mock up messages in group A:
@@ -113,6 +116,21 @@ final class GroupChatInfoGRDBTests: XCTestCase {
           lastMessage: lastMessage_inGroupB_at7,
           unreadCount: 0
         ),
+        GroupChatInfo(
+          group: groupA,
+          lastMessage: lastMessage_inGroupA_at4,
+          unreadCount: 2
+        ),
+      ]
+    )
+
+    // Fetch group chat infos for groups with `participating` auth status:
+
+    XCTAssertNoDifference(
+      try db.fetchGroupChatInfos(GroupChatInfo.Query(
+        authStatus: [.participating]
+      )),
+      [
         GroupChatInfo(
           group: groupA,
           lastMessage: lastMessage_inGroupA_at4,

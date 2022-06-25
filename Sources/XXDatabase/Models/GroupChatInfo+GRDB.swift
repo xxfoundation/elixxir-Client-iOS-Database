@@ -9,7 +9,15 @@ extension GroupChatInfo: FetchableRecord {
   }
 
   static func request(_ query: Query) -> AdaptedFetchRequest<SQLRequest<GroupChatInfo>> {
-    SQLRequest(sql: """
+    var sqlWhere: [String] = []
+    var sqlArguments: StatementArguments = [:]
+
+    if let authStatus = query.authStatus {
+      sqlWhere.append(sqlWhereAuthStatus(count: authStatus.count))
+      _ = sqlArguments.append(contentsOf: sqlArgumentsAuthStatus(authStatus))
+    }
+
+    let sql = """
       SELECT
         -- All group columns:
         g.*,
@@ -23,11 +31,16 @@ extension GroupChatInfo: FetchableRecord {
         messages m
       INNER JOIN groups g
         ON g.id = m.groupId
+      \(sqlWhere.isEmpty ? "" : "WHERE\n  \(sqlWhere.joined(separator: "\n  "))")
       GROUP BY
         g.id
       ORDER BY
         date DESC;
       """
+
+    return SQLRequest(
+      sql: sql,
+      arguments: sqlArguments
     )
     .adapted { db in
       let adapters = try splittingRowAdapters(columnCounts: [
@@ -40,5 +53,18 @@ extension GroupChatInfo: FetchableRecord {
         Column.lastMessage.rawValue: adapters[2],
       ])
     }
+  }
+
+  private static func sqlWhereAuthStatus(count: Int) -> String {
+    let arguments = (0..<count).map { ":authStatus\($0)" }.joined(separator: ", ")
+    return "g.authStatus IN (\(arguments))"
+  }
+
+  private static func sqlArgumentsAuthStatus(
+    _ statuses: Set<Group.AuthStatus>
+  ) -> StatementArguments {
+    StatementArguments(statuses.enumerated().reduce(into: [:]) {
+      $0["authStatus\($1.offset)"] = $1.element.rawValue
+    })
   }
 }
