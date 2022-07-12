@@ -171,4 +171,39 @@ final class MigratorTests: XCTestCase {
     assertSnapshot(matchingMessagesIn: newDbQueue)
     assertSnapshot(matchingFileTransfersIn: newDbQueue)
   }
+
+  func testMigrateMessageGroupNotFound() throws {
+    // Mock up legacy database:
+
+    let legacyDb = try LegacyDatabase(writer: DatabaseQueue())
+    let message = LegacyMessage.group(try legacyDb.writer.write { db in
+      try XXLegacyDatabaseMigrator.GroupMessage.stub(1).saved(db)
+    })
+
+    // Mock up new database:
+
+    var newDb = XXModels.Database.failing
+    newDb.fetchContacts = .init { _ in [] }
+    newDb.saveContact = .init { $0 }
+
+    // Perform migration:
+
+    var didMigrateMessages = [LegacyMessage]()
+
+    let migrate = Migrator.live(
+      migrateContact: .init { _, _ in fatalError() },
+      migrateGroup: .init { _, _ in fatalError() },
+      migrateGroupMember: .init { _, _ in fatalError() },
+      migrateMessage: .init { message, _, _, _ in
+        didMigrateMessages.append(message)
+        throw MigrateMessage.GroupNotFound()
+      }
+    )
+
+    // Database migration should not throw, despite message migration throws `GroupNotFound`:
+
+    try migrate(legacyDb, to: newDb, myContactId: Data(), meMarshaled: Data())
+
+    XCTAssertNoDifference(didMigrateMessages, [message])
+  }
 }

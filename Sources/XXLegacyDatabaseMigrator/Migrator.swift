@@ -59,7 +59,10 @@ extension Migrator {
 
         let groupMessages = try GroupMessage.order(GroupMessage.Column.timestamp).fetchCursor(db)
         while let groupMessage = try groupMessages.next() {
-          try migrateMessage(groupMessage, to: newDb, myContactId: myContactId, meMarshaled: meMarshaled)
+          do {
+            try migrateMessage(groupMessage, to: newDb, myContactId: myContactId, meMarshaled: meMarshaled)
+          }
+          catch _ as MigrateMessage.GroupNotFound {}
         }
       }
     }
