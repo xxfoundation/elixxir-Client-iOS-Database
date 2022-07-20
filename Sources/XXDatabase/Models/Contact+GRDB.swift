@@ -39,6 +39,17 @@ extension Contact: FetchableRecord, PersistableRecord {
       break
     }
 
+    if let text = query.text {
+      let columns = [Column.username, Column.email, Column.phone, Column.nickname]
+      let escape = #"\"#
+      let escapedText = text.replacingOccurrences(of: "%", with: "\(escape)%")
+      let pattern = "%\(escapedText)%"
+      request = request.filter(columns
+        .map { $0.like(pattern, escape: escape) }
+        .joined(operator: .or)
+      )
+    }
+
     if let authStatus = query.authStatus {
       request = request.filter(Set(authStatus.map(\.rawValue)).contains(Column.authStatus))
     }
