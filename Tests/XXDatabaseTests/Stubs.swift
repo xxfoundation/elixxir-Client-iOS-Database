@@ -38,6 +38,30 @@ extension Contact {
     contact.username = username
     return contact
   }
+
+  func withEmail(_ email: String?) -> Contact {
+    var contact = self
+    contact.email = email
+    return contact
+  }
+
+  func withPhone(_ phone: String?) -> Contact {
+    var contact = self
+    contact.phone = phone
+    return contact
+  }
+
+  func withNickname(_ nickname: String?) -> Contact {
+    var contact = self
+    contact.nickname = nickname
+    return contact
+  }
+
+  func withCreatedAt(_ createdAt: Date) -> Contact {
+    var contact = self
+    contact.createdAt = createdAt
+    return contact
+  }
 }
 
 extension Group {
