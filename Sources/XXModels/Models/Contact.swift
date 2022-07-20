@@ -150,6 +150,10 @@ extension Contact {
     ///     If `.some(.some("username"))`, include contacts with provided username.
     ///     If `.some(.none)`, include contacts without username set.
     ///     If `.none` (default), disable the filter.
+    ///   - text: Filter contacts using text search.
+    ///     If set, include contacts with `username`, `email`, `phone` or `nickname`
+    ///     containing the provided phrase.
+    ///     If `nil` (default), disable the filter.
     ///   - authStatus: Filter contacts by auth status.
     ///     If set, only contacts with any of the provided auth statuses will be fetched.
     ///     If `nil` (default), the filter is not used.
@@ -161,12 +165,14 @@ extension Contact {
     public init(
       id: Set<Contact.ID>? = nil,
       username: String?? = nil,
+      text: String? = nil,
       authStatus: Set<AuthStatus>? = nil,
       isRecent: Bool? = nil,
       sortBy: SortOrder = .username()
     ) {
       self.id = id
       self.username = username
+      self.text = text
       self.authStatus = authStatus
       self.isRecent = isRecent
       self.sortBy = sortBy
@@ -181,6 +187,13 @@ extension Contact {
     /// If `.some(.none)`, include contacts without username set.
     /// If `.none`, disable the filter.
     public var username: String??
+
+    /// Filter contacts using text search
+    ///
+    /// If set, include contacts with `username`, `email`, `phone` or `nickname`
+    /// containing the provided phrase.
+    /// If `nil`, disable the filter.
+    public var text: String?
 
     /// Filter contacts by auth status
     ///
