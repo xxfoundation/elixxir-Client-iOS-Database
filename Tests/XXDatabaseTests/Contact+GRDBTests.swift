@@ -366,4 +366,90 @@ final class ContactGRDBTests: XCTestCase {
       contactF.withAuthStatus(.verificationFailed),
     ])
   }
+
+  func testFetchingByText() throws {
+    // Mock up contacts:
+
+    let contactA = try db.saveContact(.stub("A")
+      .withUsername("john_a")
+      .withEmail("john.a@test.com")
+      .withPhone("100-200-001")
+      .withNickname("JohnA")
+      .withCreatedAt(.stub(1))
+    )
+    let contactB = try db.saveContact(.stub("B")
+      .withUsername("john_b")
+      .withEmail("john.b@test.com")
+      .withPhone("100-123-002")
+      .withNickname("JohnB")
+      .withCreatedAt(.stub(2))
+    )
+    let contactC = try db.saveContact(.stub("C")
+      .withUsername("mary-1")
+      .withEmail("mary2@test.com")
+      .withPhone("100-123-003")
+      .withNickname("Mary1")
+      .withCreatedAt(.stub(3))
+    )
+    let contactD = try db.saveContact(.stub("D")
+      .withUsername("mary-2")
+      .withEmail("mary2@test.com")
+      .withPhone("100-200-004")
+      .withNickname("Mary2")
+      .withCreatedAt(.stub(4))
+    )
+    let contactE = try db.saveContact(.stub("E")
+      .withUsername("admin1")
+      .withEmail("admin1@test.com")
+      .withPhone("100-200-005")
+      .withNickname("Admin 100% (1)")
+      .withCreatedAt(.stub(5))
+    )
+    let contactF = try db.saveContact(.stub("F")
+      .withUsername("admin2")
+      .withEmail("admin2@test.com")
+      .withPhone("100-123-006")
+      .withNickname("Admin 100% (2)")
+      .withCreatedAt(.stub(6))
+    )
+
+    // Fetch contacts with text:
+
+    XCTAssertNoDifference(try db.fetchContacts(.init(text: "john", sortBy: .createdAt())), [
+      contactA,
+      contactB,
+    ])
+
+    XCTAssertNoDifference(try db.fetchContacts(.init(text: "John", sortBy: .createdAt())), [
+      contactA,
+      contactB,
+    ])
+
+    XCTAssertNoDifference(try db.fetchContacts(.init(text: "mary", sortBy: .createdAt())), [
+      contactC,
+      contactD,
+    ])
+
+    XCTAssertNoDifference(try db.fetchContacts(.init(text: "123", sortBy: .createdAt())), [
+      contactB,
+      contactC,
+      contactF,
+    ])
+
+    XCTAssertNoDifference(try db.fetchContacts(.init(text: "100%", sortBy: .createdAt())), [
+      contactE,
+      contactF,
+    ])
+
+    // Fetch contacts with `nil` text query:
+
+    XCTAssertNoDifference(try db.fetchContacts(.init(text: nil, sortBy: .createdAt())), [
+      contactA,
+      contactB,
+      contactC,
+      contactD,
+      contactE,
+      contactF,
+    ])
+  }
 }
