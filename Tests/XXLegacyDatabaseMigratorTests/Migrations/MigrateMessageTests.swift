@@ -166,14 +166,28 @@ final class MigrateMessageTests: XCTestCase {
       senderId: "unknown-contact-id".data(using: .utf8)!
     )
 
-    XCTAssertThrowsError(
-      try migrate(legacyMessage, to: newDb, myContactId: Data(), meMarshaled: Data())
-    ) { error in
-      XCTAssertEqual(
-        error as? MigrateMessage.ReplyMessageNotFound,
-        MigrateMessage.ReplyMessageNotFound()
+    try migrate(legacyMessage, to: newDb, myContactId: Data(), meMarshaled: Data())
+
+    let newMessages: [XXModels.Message] = try newDb
+      .fetchMessages(.init())
+      .map { $0.withNilId() }
+
+    XCTAssertNoDifference(newMessages, [
+      .init(
+        id: nil,
+        networkId: legacyMessage.uniqueId,
+        senderId: legacyMessage.sender,
+        recipientId: legacyMessage.receiver,
+        groupId: nil,
+        date: Date(nsSince1970: legacyMessage.timestamp),
+        status: MigrateMessage.newStatus(for: legacyMessage.status),
+        isUnread: legacyMessage.unread,
+        text: legacyMessage.payload.text,
+        replyMessageId: legacyMessage.payload.reply!.messageId,
+        roundURL: legacyMessage.roundURL,
+        fileTransferId: legacyMessage.payload.attachment?.transferId
       )
-    }
+    ])
   }
 
   func testMigratingMessageWithUnknownSenderAndRecipient() throws {
