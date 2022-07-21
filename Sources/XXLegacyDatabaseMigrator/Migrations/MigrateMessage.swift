@@ -25,7 +25,6 @@ public struct MigrateMessage {
 }
 
 extension MigrateMessage {
-  public struct ReplyMessageNotFound: Error, Equatable {}
   public struct GroupNotFound: Error, Equatable {}
 
   public static let live = MigrateMessage { message, newDb, myContactId, meMarshaled in
@@ -53,11 +52,6 @@ extension MigrateMessage {
       replyMessageId = id
     } else {
       replyMessageId = nil
-    }
-
-    if let replyMessageId = replyMessageId,
-       try newDb.fetchMessages(.init(networkId: replyMessageId)).isEmpty {
-      throw ReplyMessageNotFound()
     }
 
     if let groupId = message.groupId,
