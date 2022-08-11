@@ -9,12 +9,43 @@ extension GroupChatInfo: FetchableRecord {
   }
 
   static func request(_ query: Query) -> AdaptedFetchRequest<SQLRequest<GroupChatInfo>> {
+    var sqlJoins: [String] = ["INNER JOIN groups g ON g.id = m.groupId"]
     var sqlWhere: [String] = []
     var sqlArguments: StatementArguments = [:]
 
     if let authStatus = query.authStatus {
       sqlWhere.append(sqlWhereAuthStatus(count: authStatus.count))
       _ = sqlArguments.append(contentsOf: sqlArgumentsAuthStatus(authStatus))
+    }
+
+    if query.isLeaderBlocked != nil || query.isLeaderBanned != nil {
+      sqlJoins.append("INNER JOIN contacts l ON g.leaderId = l.id")
+
+      if let isLeaderBlocked = query.isLeaderBlocked {
+        sqlWhere.append("l.isBlocked = :isLeaderBlocked")
+        _ = sqlArguments.append(contentsOf: StatementArguments([
+          "isLeaderBlocked": isLeaderBlocked
+        ]))
+      }
+
+      if let isLeaderBanned = query.isLeaderBanned {
+        sqlWhere.append("l.isBanned = :isLeaderBanned")
+        _ = sqlArguments.append(contentsOf: StatementArguments([
+          "isLeaderBanned": isLeaderBanned
+        ]))
+      }
+    }
+
+    if query.excludeBlockedContactsMessages || query.excludeBannedContactsMessages {
+      sqlJoins.append("INNER JOIN contacts s ON m.senderId = s.id")
+
+      if query.excludeBlockedContactsMessages {
+        sqlWhere.append("s.isBlocked != 1")
+      }
+
+      if query.excludeBannedContactsMessages {
+        sqlWhere.append("s.isBanned != 1")
+      }
     }
 
     let sql = """
@@ -29,9 +60,8 @@ extension GroupChatInfo: FetchableRecord {
         MAX(m.date) AS date
       FROM
         messages m
-      INNER JOIN groups g
-        ON g.id = m.groupId
-      \(sqlWhere.isEmpty ? "" : "WHERE\n  \(sqlWhere.joined(separator: "\n  "))")
+      \(sqlJoins.joined(separator: "\n"))
+      \(sqlWhere.isEmpty ? "" : "WHERE\n  \(sqlWhere.joined(separator: "\n  AND "))")
       GROUP BY
         g.id
       ORDER BY

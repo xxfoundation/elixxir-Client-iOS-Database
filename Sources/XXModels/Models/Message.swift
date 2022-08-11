@@ -176,6 +176,14 @@ extension Message {
     ///     If `true`, get only unread messages.
     ///     If `false`, get only read messages.
     ///     If `nil` (default), disable the filter.
+    ///   - isBlocked: Filter by sender's contact `isBlocked` status.
+    ///     If `true`, include only messages from blocked senders.
+    ///     If `false`, include only messages from non-blocked senders.
+    ///     If `nil` (default), disable the filter.
+    ///   - isBanned: Filter by sender's contact `isBanned` status.
+    ///     If `true`, include only messages from banned senders.
+    ///     If `false`, include only messages from non-banned senders.
+    ///     If `nil` (default), disable the filter.
     ///   - fileTransferId: Filter by file transfer id.
     ///     If `.some(.some(fileTransferId))`, get messages with provided `fileTransferId`.
     ///     If `.some(.none)`, get messages without `fileTransferId`.
@@ -187,6 +195,8 @@ extension Message {
       chat: Chat? = nil,
       status: Set<Status>? = nil,
       isUnread: Bool? = nil,
+      isSenderBlocked: Bool? = nil,
+      isSenderBanned: Bool? = nil,
       fileTransferId: FileTransfer.ID?? = nil,
       sortBy: SortOrder = .date()
     ) {
@@ -195,6 +205,8 @@ extension Message {
       self.chat = chat
       self.status = status
       self.isUnread = isUnread
+      self.isSenderBlocked = isSenderBlocked
+      self.isSenderBanned = isSenderBanned
       self.fileTransferId = fileTransferId
       self.sortBy = sortBy
     }
@@ -228,6 +240,20 @@ extension Message {
     /// If `false`, get only read messages.
     /// If `nil`, disable the filter.
     public var isUnread: Bool?
+
+    /// Filter by sender's contact `isBlocked` status
+    ///
+    /// If `true`, include only messages from blocked senders.
+    /// If `false`, include only messages from non-blocked senders.
+    /// If `nil`, disable the filter.
+    public var isSenderBlocked: Bool?
+
+    /// Filter by sender's contact `isBanned` status
+    ///
+    /// If `true`, include only messages from banned senders.
+    /// If `false`, include only messages from non-banned senders.
+    /// If `nil`, disable the filter.
+    public var isSenderBanned: Bool?
 
     /// Filter by file transfer id
     ///

@@ -12,6 +12,8 @@ extension Contact: FetchableRecord, PersistableRecord {
     case photo
     case authStatus
     case isRecent
+    case isBlocked
+    case isBanned
     case createdAt
   }
 
@@ -56,6 +58,14 @@ extension Contact: FetchableRecord, PersistableRecord {
 
     if let isRecent = query.isRecent {
       request = request.filter(Column.isRecent == isRecent)
+    }
+
+    if let isBlocked = query.isBlocked {
+      request = request.filter(Column.isBlocked == isBlocked)
+    }
+
+    if let isBanned = query.isBanned {
+      request = request.filter(Column.isBanned == isBanned)
     }
 
     switch query.sortBy {

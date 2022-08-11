@@ -53,6 +53,8 @@ public struct Contact: Identifiable, Equatable, Hashable, Codable {
   ///   - photo: Photo data (defaults to `nil`)
   ///   - authStatus: Contact authorization status (defaults to `.stranger`)
   ///   - isRecent: Flag determining recent contact status (defaults to `false`)
+  ///   - isBlocked: Flag determining blocked status (defaults to `false`)
+  ///   - isBanned: Flag determining banned status (defaults to `false`)
   ///   - createdAt: Creation date (defaults to current date)
   public init(
     id: ID,
@@ -64,6 +66,8 @@ public struct Contact: Identifiable, Equatable, Hashable, Codable {
     photo: Data? = nil,
     authStatus: AuthStatus = .stranger,
     isRecent: Bool = false,
+    isBlocked: Bool = false,
+    isBanned: Bool = false,
     createdAt: Date = Date()
   ) {
     self.id = id
@@ -75,6 +79,8 @@ public struct Contact: Identifiable, Equatable, Hashable, Codable {
     self.photo = photo
     self.authStatus = authStatus
     self.isRecent = isRecent
+    self.isBlocked = isBlocked
+    self.isBanned = isBanned
     self.createdAt = createdAt
   }
 
@@ -104,6 +110,12 @@ public struct Contact: Identifiable, Equatable, Hashable, Codable {
 
   /// Flag determining recent contact status
   public var isRecent: Bool
+
+  /// Flag determining blocked status
+  public var isBlocked: Bool
+
+  /// Flag determining banned status
+  public var isBanned: Bool
 
   /// Creation date
   public var createdAt: Date
@@ -161,6 +173,14 @@ extension Contact {
     ///     If `true`, only recent contacts are included.
     ///     If `false`, only non-recent contacts are included.
     ///     If `nil` (default), the filter is not used.
+    ///   - isBlocked: Filter by `isBlocked` status.
+    ///     If `true`, only blocked contacts are included.
+    ///     If `false`, only non-blocked contacts are included.
+    ///     If `nil` (default), the filter is not used.
+    ///   - isBanned: Filter by `isBanned` status.
+    ///     If `true`, only banned contacts are included.
+    ///     If `false`, only non-banned contacts are included.
+    ///     If `nil` (default), the filter is not used.
     ///   - sortBy: Sort order (defaults to `.username()`).
     public init(
       id: Set<Contact.ID>? = nil,
@@ -168,6 +188,8 @@ extension Contact {
       text: String? = nil,
       authStatus: Set<AuthStatus>? = nil,
       isRecent: Bool? = nil,
+      isBlocked: Bool? = nil,
+      isBanned: Bool? = nil,
       sortBy: SortOrder = .username()
     ) {
       self.id = id
@@ -175,6 +197,8 @@ extension Contact {
       self.text = text
       self.authStatus = authStatus
       self.isRecent = isRecent
+      self.isBlocked = isBlocked
+      self.isBanned = isBanned
       self.sortBy = sortBy
     }
 
@@ -207,6 +231,20 @@ extension Contact {
     /// If `false`, only non-recent contacts are included.
     /// If `nil`, the filter is not used.
     public var isRecent: Bool?
+
+    /// Filter by `isBlocked` status
+    ///
+    /// If `true`, only blocked contacts are included.
+    /// If `false`, only non-blocked contacts are included.
+    /// If `nil`, the filter is not used.
+    public var isBlocked: Bool?
+
+    /// Filter by `isBanned` status
+    ///
+    /// If `true`, only banned contacts are included.
+    /// If `false`, only non-banned contacts are included.
+    /// If `nil`, the filter is not used.
+    public var isBanned: Bool?
 
     /// Contacts sort order
     public var sortBy: SortOrder

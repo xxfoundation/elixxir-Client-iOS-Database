@@ -51,12 +51,24 @@ extension ContactChatInfo {
     ///     If set, only chats with contacts that have any of the provided
     ///     auth statuses will be included.
     ///     If `nil` (default), the filter is not used.
+    ///   - isBlocked: Filter by other contact's `isBlocked` status.
+    ///     If `true`, only chats with blocked contacts are included.
+    ///     If `false`, only chats with non-blocked contacts are included.
+    ///     If `nil` (default), the filter is not used.
+    ///   - isBanned: Filter by other contact's `isBanned` status
+    ///     If `true`, only chats with banned contacts are included.
+    ///     If `false`, only chats with non-banned contacts are included.
+    ///     If `nil` (default), the filter is not used.
     public init(
       userId: Contact.ID,
-      authStatus: Set<Contact.AuthStatus>? = nil
+      authStatus: Set<Contact.AuthStatus>? = nil,
+      isBlocked: Bool? = nil,
+      isBanned: Bool? = nil
     ) {
       self.userId = userId
       self.authStatus = authStatus
+      self.isBlocked = isBlocked
+      self.isBanned = isBanned
     }
 
     /// Current user's contact ID
@@ -68,5 +80,19 @@ extension ContactChatInfo {
     /// auth statuses will be included.
     /// If `nil`, the filter is not used.
     public var authStatus: Set<Contact.AuthStatus>?
+
+    /// Filter by other contact's `isBlocked` status
+    ///
+    /// If `true`, only chats with blocked contacts are included.
+    /// If `false`, only chats with non-blocked contacts are included.
+    /// If `nil`, the filter is not used.
+    public var isBlocked: Bool?
+
+    /// Filter by other contact's `isBanned` status
+    ///
+    /// If `true`, only chats with banned contacts are included.
+    /// If `false`, only chats with non-banned contacts are included.
+    /// If `nil`, the filter is not used.
+    public var isBanned: Bool?
   }
 }

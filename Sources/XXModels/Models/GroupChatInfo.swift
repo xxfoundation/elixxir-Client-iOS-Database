@@ -49,10 +49,30 @@ extension GroupChatInfo {
     ///   - authStatus: Filter groups by auth status.
     ///     If set, only groups with any of the provided auth statuses will be included.
     ///     If `nil`, the filter is not used.
+    ///   - isLeaderBlocked: Filter by leader contact's `isBlocked` status.
+    ///     If `true`, only groups with blocked leader contacts are included.
+    ///     If `false`, only groups with non-blocked contacts are included.
+    ///     If `nil` (default), the filter is not used.
+    ///   - isLeaderBanned: Filter by leader contact's `isBlocked` status.
+    ///     If `true`, only groups with blocked leader contacts are included.
+    ///     If `false`, only groups with non-blocked contacts are included.
+    ///     If `nil` (default), the filter is not used.
+    ///   - excludeBlockedContactsMessages: Exclude messages from blocked contacts
+    ///     (defaults to `false`).
+    ///   - excludeBannedContactsMessages: Exclude messages from banned contacts
+    ///     (defaults to `false`).
     public init(
-      authStatus: Set<Group.AuthStatus>? = nil
+      authStatus: Set<Group.AuthStatus>? = nil,
+      isLeaderBlocked: Bool? = nil,
+      isLeaderBanned: Bool? = nil,
+      excludeBlockedContactsMessages: Bool = false,
+      excludeBannedContactsMessages: Bool = false
     ) {
       self.authStatus = authStatus
+      self.isLeaderBlocked = isLeaderBlocked
+      self.isLeaderBanned = isLeaderBanned
+      self.excludeBlockedContactsMessages = excludeBlockedContactsMessages
+      self.excludeBannedContactsMessages = excludeBannedContactsMessages
     }
 
     /// Filter groups by auth status
@@ -60,5 +80,25 @@ extension GroupChatInfo {
     /// If set, only groups with any of the provided auth statuses will be included.
     /// If `nil`, the filter is not used.
     public var authStatus: Set<Group.AuthStatus>?
+
+    /// Filter by leader contact's `isBlocked` status
+    ///
+    /// If `true`, only groups with blocked leader contacts are included.
+    /// If `false`, only groups with non-blocked contacts are included.
+    /// If `nil`, the filter is not used.
+    public var isLeaderBlocked: Bool?
+
+    /// Filter by leader contact's `isBanned` status
+    ///
+    /// If `true`, only groups with banned leader contacts are included.
+    /// If `false`, only groups with non-banned leader contacts are included.
+    /// If `nil`, the filter is not used.
+    public var isLeaderBanned: Bool?
+
+    /// Exclude messages from blocked contacts.
+    public var excludeBlockedContactsMessages: Bool
+
+    /// Exclude messages from banned contacts.
+    public var excludeBannedContactsMessages: Bool
   }
 }

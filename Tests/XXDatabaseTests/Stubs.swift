@@ -62,6 +62,18 @@ extension Contact {
     contact.createdAt = createdAt
     return contact
   }
+
+  func withBlocked(_ isBlocked: Bool) -> Contact {
+    var contact = self
+    contact.isBlocked = isBlocked
+    return contact
+  }
+
+  func withBanned(_ isBanned: Bool) -> Contact {
+    var contact = self
+    contact.isBanned = isBanned
+    return contact
+  }
 }
 
 extension Group {
