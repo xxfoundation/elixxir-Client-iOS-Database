@@ -452,4 +452,68 @@ final class ContactGRDBTests: XCTestCase {
       contactF,
     ])
   }
+
+  func testFetchingByBlockedStatus() throws {
+    // Mock up contacts:
+
+    let contactA = try db.saveContact(.stub("A").withBlocked(false))
+    let contactB = try db.saveContact(.stub("B").withBlocked(true))
+    let contactC = try db.saveContact(.stub("C").withBlocked(false))
+    let contactD = try db.saveContact(.stub("D").withBlocked(true))
+
+    // Fetch blocked contacts:
+
+    XCTAssertNoDifference(try db.fetchContacts(.init(isBlocked: true)), [
+      contactB,
+      contactD,
+    ])
+
+    // Fetch not blocked contacts:
+
+    XCTAssertNoDifference(try db.fetchContacts(.init(isBlocked: false)), [
+      contactA,
+      contactC,
+    ])
+
+    // Fetch contacts regardless blocked status:
+
+    XCTAssertNoDifference(try db.fetchContacts(.init(isBlocked: nil)), [
+      contactA,
+      contactB,
+      contactC,
+      contactD,
+    ])
+  }
+
+  func testFetchingByBannedStatus() throws {
+    // Mock up contacts:
+
+    let contactA = try db.saveContact(.stub("A").withBanned(false))
+    let contactB = try db.saveContact(.stub("B").withBanned(true))
+    let contactC = try db.saveContact(.stub("C").withBanned(false))
+    let contactD = try db.saveContact(.stub("D").withBanned(true))
+
+    // Fetch banned contacts:
+
+    XCTAssertNoDifference(try db.fetchContacts(.init(isBanned: true)), [
+      contactB,
+      contactD,
+    ])
+
+    // Fetch not banned contacts:
+
+    XCTAssertNoDifference(try db.fetchContacts(.init(isBanned: false)), [
+      contactA,
+      contactC,
+    ])
+
+    // Fetch contacts regardless banned status:
+
+    XCTAssertNoDifference(try db.fetchContacts(.init(isBanned: nil)), [
+      contactA,
+      contactB,
+      contactC,
+      contactD,
+    ])
+  }
 }
