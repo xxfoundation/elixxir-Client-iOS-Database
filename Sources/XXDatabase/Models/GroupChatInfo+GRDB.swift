@@ -18,17 +18,32 @@ extension GroupChatInfo: FetchableRecord {
       _ = sqlArguments.append(contentsOf: sqlArgumentsAuthStatus(authStatus))
     }
 
-    if query.excludeBlockedContacts || query.excludeBannedContacts {
+    if query.isLeaderBlocked != nil || query.isLeaderBanned != nil {
       sqlJoins.append("INNER JOIN contacts l ON g.leaderId = l.id")
+
+      if let isLeaderBlocked = query.isLeaderBlocked {
+        sqlWhere.append("l.isBlocked = :isLeaderBlocked")
+        _ = sqlArguments.append(contentsOf: StatementArguments([
+          "isLeaderBlocked": isLeaderBlocked
+        ]))
+      }
+
+      if let isLeaderBanned = query.isLeaderBanned {
+        sqlWhere.append("l.isBanned = :isLeaderBanned")
+        _ = sqlArguments.append(contentsOf: StatementArguments([
+          "isLeaderBanned": isLeaderBanned
+        ]))
+      }
+    }
+
+    if query.excludeBlockedContactsMessages || query.excludeBannedContactsMessages {
       sqlJoins.append("INNER JOIN contacts s ON m.senderId = s.id")
 
-      if query.excludeBlockedContacts {
-        sqlWhere.append("l.isBlocked != 1")
+      if query.excludeBlockedContactsMessages {
         sqlWhere.append("s.isBlocked != 1")
       }
 
-      if query.excludeBannedContacts {
-        sqlWhere.append("l.isBanned != 1")
+      if query.excludeBannedContactsMessages {
         sqlWhere.append("s.isBanned != 1")
       }
     }

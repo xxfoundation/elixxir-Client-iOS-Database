@@ -213,7 +213,7 @@ final class GroupChatInfoGRDBTests: XCTestCase {
 
     // Mock up messages in group C:
 
-    try db.saveMessage(.stub(
+    let groupC_message_fromA_at5 = try db.saveMessage(.stub(
       from: contactA,
       to: groupC,
       at: 5,
@@ -229,7 +229,12 @@ final class GroupChatInfoGRDBTests: XCTestCase {
 
     // Fetch group chats excluding messages from blocked contacts:
 
-    XCTAssertNoDifference(try db.fetchGroupChatInfos(.init(excludeBlockedContacts: true)), [
+    XCTAssertNoDifference(try db.fetchGroupChatInfos(.init(excludeBlockedContactsMessages: true)), [
+      GroupChatInfo(
+        group: groupC,
+        lastMessage: groupC_message_fromA_at5,
+        unreadCount: 1
+      ),
       GroupChatInfo(
         group: groupA,
         lastMessage: groupA_message_fromB_at2,
@@ -239,7 +244,7 @@ final class GroupChatInfoGRDBTests: XCTestCase {
 
     // Fetch group chats including messages from blocked contacts:
 
-    XCTAssertNoDifference(try db.fetchGroupChatInfos(.init(excludeBlockedContacts: false)), [
+    XCTAssertNoDifference(try db.fetchGroupChatInfos(.init(excludeBlockedContactsMessages: false)), [
       GroupChatInfo(
         group: groupC,
         lastMessage: groupC_message_fromC_at6,
@@ -331,7 +336,7 @@ final class GroupChatInfoGRDBTests: XCTestCase {
 
     // Mock up messages in group C:
 
-    try db.saveMessage(.stub(
+    let groupC_message_fromA_at5 = try db.saveMessage(.stub(
       from: contactA,
       to: groupC,
       at: 5,
@@ -347,7 +352,12 @@ final class GroupChatInfoGRDBTests: XCTestCase {
 
     // Fetch group chats excluding messages from banned contacts:
 
-    XCTAssertNoDifference(try db.fetchGroupChatInfos(.init(excludeBannedContacts: true)), [
+    XCTAssertNoDifference(try db.fetchGroupChatInfos(.init(excludeBannedContactsMessages: true)), [
+      GroupChatInfo(
+        group: groupC,
+        lastMessage: groupC_message_fromA_at5,
+        unreadCount: 1
+      ),
       GroupChatInfo(
         group: groupA,
         lastMessage: groupA_message_fromB_at2,
@@ -357,7 +367,7 @@ final class GroupChatInfoGRDBTests: XCTestCase {
 
     // Fetch group chats including messages from banned contacts:
 
-    XCTAssertNoDifference(try db.fetchGroupChatInfos(.init(excludeBannedContacts: false)), [
+    XCTAssertNoDifference(try db.fetchGroupChatInfos(.init(excludeBannedContactsMessages: false)), [
       GroupChatInfo(
         group: groupC,
         lastMessage: groupC_message_fromC_at6,
@@ -372,6 +382,192 @@ final class GroupChatInfoGRDBTests: XCTestCase {
         group: groupA,
         lastMessage: groupA_message_fromC_at3,
         unreadCount: 3
+      ),
+    ])
+  }
+
+  func testFilterGroupsWithBlockedLeaders() throws {
+    // Mock up contacts:
+
+    let contactA = try db.saveContact(.stub("A"))
+    let contactB = try db.saveContact(.stub("B"))
+    let contactC = try db.saveContact(.stub("C").withBlocked(true))
+
+    // Mock up groups:
+
+    let groupA = try db.saveGroup(.stub(
+      "A",
+      leaderId: contactA.id,
+      createdAt: .stub(1)
+    ))
+
+    let groupB = try db.saveGroup(.stub(
+      "B",
+      leaderId: contactB.id,
+      createdAt: .stub(2)
+    ))
+
+    let groupC = try db.saveGroup(.stub(
+      "C",
+      leaderId: contactC.id,
+      createdAt: .stub(3)
+    ))
+
+    // Mock up messages:
+
+    let groupA_message_fromA_at1 = try db.saveMessage(.stub(
+      from: contactA,
+      to: groupA,
+      at: 1
+    ))
+
+    let groupB_message_fromA_at2 = try db.saveMessage(.stub(
+      from: contactA,
+      to: groupB,
+      at: 2
+    ))
+
+    let groupC_message_fromA_at3 = try db.saveMessage(.stub(
+      from: contactA,
+      to: groupC,
+      at: 3
+    ))
+
+    // Fetch group chats with blocked leaders:
+
+    XCTAssertNoDifference(try db.fetchGroupChatInfos(.init(isLeaderBlocked: true)), [
+      GroupChatInfo(
+        group: groupC,
+        lastMessage: groupC_message_fromA_at3,
+        unreadCount: 0
+      ),
+    ])
+
+    // Fetch group chats with non-blocked leaders:
+
+    XCTAssertNoDifference(try db.fetchGroupChatInfos(.init(isLeaderBlocked: false)), [
+      GroupChatInfo(
+        group: groupB,
+        lastMessage: groupB_message_fromA_at2,
+        unreadCount: 0
+      ),
+      GroupChatInfo(
+        group: groupA,
+        lastMessage: groupA_message_fromA_at1,
+        unreadCount: 0
+      ),
+    ])
+
+    // Fetch group chats with regardless leader's blocked status:
+
+    XCTAssertNoDifference(try db.fetchGroupChatInfos(.init(isLeaderBlocked: nil)), [
+      GroupChatInfo(
+        group: groupC,
+        lastMessage: groupC_message_fromA_at3,
+        unreadCount: 0
+      ),
+      GroupChatInfo(
+        group: groupB,
+        lastMessage: groupB_message_fromA_at2,
+        unreadCount: 0
+      ),
+      GroupChatInfo(
+        group: groupA,
+        lastMessage: groupA_message_fromA_at1,
+        unreadCount: 0
+      ),
+    ])
+  }
+
+  func testFilterGroupsWithBannedLeaders() throws {
+    // Mock up contacts:
+
+    let contactA = try db.saveContact(.stub("A"))
+    let contactB = try db.saveContact(.stub("B"))
+    let contactC = try db.saveContact(.stub("C").withBanned(true))
+
+    // Mock up groups:
+
+    let groupA = try db.saveGroup(.stub(
+      "A",
+      leaderId: contactA.id,
+      createdAt: .stub(1)
+    ))
+
+    let groupB = try db.saveGroup(.stub(
+      "B",
+      leaderId: contactB.id,
+      createdAt: .stub(2)
+    ))
+
+    let groupC = try db.saveGroup(.stub(
+      "C",
+      leaderId: contactC.id,
+      createdAt: .stub(3)
+    ))
+
+    // Mock up messages:
+
+    let groupA_message_fromA_at1 = try db.saveMessage(.stub(
+      from: contactA,
+      to: groupA,
+      at: 1
+    ))
+
+    let groupB_message_fromA_at2 = try db.saveMessage(.stub(
+      from: contactA,
+      to: groupB,
+      at: 2
+    ))
+
+    let groupC_message_fromA_at3 = try db.saveMessage(.stub(
+      from: contactA,
+      to: groupC,
+      at: 3
+    ))
+
+    // Fetch group chats with banned leaders:
+
+    XCTAssertNoDifference(try db.fetchGroupChatInfos(.init(isLeaderBanned: true)), [
+      GroupChatInfo(
+        group: groupC,
+        lastMessage: groupC_message_fromA_at3,
+        unreadCount: 0
+      ),
+    ])
+
+    // Fetch group chats with non-banned leaders:
+
+    XCTAssertNoDifference(try db.fetchGroupChatInfos(.init(isLeaderBanned: false)), [
+      GroupChatInfo(
+        group: groupB,
+        lastMessage: groupB_message_fromA_at2,
+        unreadCount: 0
+      ),
+      GroupChatInfo(
+        group: groupA,
+        lastMessage: groupA_message_fromA_at1,
+        unreadCount: 0
+      ),
+    ])
+
+    // Fetch group chats with regardless leader's banned status:
+
+    XCTAssertNoDifference(try db.fetchGroupChatInfos(.init(isLeaderBanned: nil)), [
+      GroupChatInfo(
+        group: groupC,
+        lastMessage: groupC_message_fromA_at3,
+        unreadCount: 0
+      ),
+      GroupChatInfo(
+        group: groupB,
+        lastMessage: groupB_message_fromA_at2,
+        unreadCount: 0
+      ),
+      GroupChatInfo(
+        group: groupA,
+        lastMessage: groupA_message_fromA_at1,
+        unreadCount: 0
       ),
     ])
   }
