@@ -17,6 +17,16 @@ extension ContactChatInfo: FetchableRecord {
       _ = sqlArguments.append(contentsOf: sqlArgumentsAuthStatus(authStatus))
     }
 
+    if let isBlocked = query.isBlocked {
+      sqlWhere.append("AND c2.isBlocked = :isBlocked")
+      _ = sqlArguments.append(contentsOf: StatementArguments(["isBlocked": isBlocked]))
+    }
+
+    if let isBanned = query.isBanned {
+      sqlWhere.append("AND c2.isBanned = :isBanned")
+      _ = sqlArguments.append(contentsOf: StatementArguments(["isBanned": isBanned]))
+    }
+
     let sql = """
       SELECT
         -- All contact columns:

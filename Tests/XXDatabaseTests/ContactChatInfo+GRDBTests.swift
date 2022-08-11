@@ -259,4 +259,258 @@ final class ContactChatInfoGRDBTests: XCTestCase {
       ]
     )
   }
+
+  func testFetchingByContactBlockedStatus() throws {
+    // Mock up contacts:
+
+    let contactA = try db.saveContact(.stub("A").withBlocked(false))
+    let contactB = try db.saveContact(.stub("B").withBlocked(true))
+    let contactC = try db.saveContact(.stub("C").withBlocked(false))
+    let contactD = try db.saveContact(.stub("D").withBlocked(true))
+
+    // Mock up conversation between contact A and B:
+
+    try db.saveMessage(.stub(
+      from: contactA,
+      to: contactB,
+      at: 1,
+      isUnread: false
+    ))
+
+    try db.saveMessage(.stub(
+      from: contactB,
+      to: contactA,
+      at: 2,
+      isUnread: true
+    ))
+
+    let lastMessage_betweenAandB_at3 = try db.saveMessage(.stub(
+      from: contactA,
+      to: contactB,
+      at: 3,
+      isUnread: true
+    ))
+
+    // Mock up conversation between contact A and C:
+
+    try db.saveMessage(.stub(
+      from: contactA,
+      to: contactC,
+      at: 4,
+      isUnread: false
+    ))
+
+    let lastMessage_betweenAandC_at5 = try db.saveMessage(.stub(
+      from: contactC,
+      to: contactA,
+      at: 5,
+      isUnread: true
+    ))
+
+    // Mock up conversation between contact A and D:
+
+    try db.saveMessage(.stub(
+      from: contactA,
+      to: contactD,
+      at: 6,
+      isUnread: false
+    ))
+
+    let lastMessage_betweenAandD_at7 = try db.saveMessage(.stub(
+      from: contactD,
+      to: contactA,
+      at: 7,
+      isUnread: false
+    ))
+
+    // Fetch chats between contact A and blocked contacts:
+
+    XCTAssertNoDifference(
+      try db.fetchContactChatInfos(ContactChatInfo.Query(
+        userId: contactA.id,
+        isBlocked: true
+      )),
+      [
+        ContactChatInfo(
+          contact: contactD,
+          lastMessage: lastMessage_betweenAandD_at7,
+          unreadCount: 0
+        ),
+        ContactChatInfo(
+          contact: contactB,
+          lastMessage: lastMessage_betweenAandB_at3,
+          unreadCount: 2
+        ),
+      ]
+    )
+
+    // Fetch chats between contact A and non-blocked contacts:
+
+    XCTAssertNoDifference(
+      try db.fetchContactChatInfos(ContactChatInfo.Query(
+        userId: contactA.id,
+        isBlocked: false
+      )),
+      [
+        ContactChatInfo(
+          contact: contactC,
+          lastMessage: lastMessage_betweenAandC_at5,
+          unreadCount: 1
+        ),
+      ]
+    )
+
+    // Fetch chats between contact A and other contacts, regardless its `isBlocked` status:
+
+    XCTAssertNoDifference(
+      try db.fetchContactChatInfos(ContactChatInfo.Query(
+        userId: contactA.id,
+        isBlocked: nil
+      )),
+      [
+        ContactChatInfo(
+          contact: contactD,
+          lastMessage: lastMessage_betweenAandD_at7,
+          unreadCount: 0
+        ),
+        ContactChatInfo(
+          contact: contactC,
+          lastMessage: lastMessage_betweenAandC_at5,
+          unreadCount: 1
+        ),
+        ContactChatInfo(
+          contact: contactB,
+          lastMessage: lastMessage_betweenAandB_at3,
+          unreadCount: 2
+        ),
+      ]
+    )
+  }
+
+  func testFetchingByContactBannedStatus() throws {
+    // Mock up contacts:
+
+    let contactA = try db.saveContact(.stub("A").withBanned(false))
+    let contactB = try db.saveContact(.stub("B").withBanned(true))
+    let contactC = try db.saveContact(.stub("C").withBanned(false))
+    let contactD = try db.saveContact(.stub("D").withBanned(true))
+
+    // Mock up conversation between contact A and B:
+
+    try db.saveMessage(.stub(
+      from: contactA,
+      to: contactB,
+      at: 1,
+      isUnread: false
+    ))
+
+    try db.saveMessage(.stub(
+      from: contactB,
+      to: contactA,
+      at: 2,
+      isUnread: true
+    ))
+
+    let lastMessage_betweenAandB_at3 = try db.saveMessage(.stub(
+      from: contactA,
+      to: contactB,
+      at: 3,
+      isUnread: true
+    ))
+
+    // Mock up conversation between contact A and C:
+
+    try db.saveMessage(.stub(
+      from: contactA,
+      to: contactC,
+      at: 4,
+      isUnread: false
+    ))
+
+    let lastMessage_betweenAandC_at5 = try db.saveMessage(.stub(
+      from: contactC,
+      to: contactA,
+      at: 5,
+      isUnread: true
+    ))
+
+    // Mock up conversation between contact A and D:
+
+    try db.saveMessage(.stub(
+      from: contactA,
+      to: contactD,
+      at: 6,
+      isUnread: false
+    ))
+
+    let lastMessage_betweenAandD_at7 = try db.saveMessage(.stub(
+      from: contactD,
+      to: contactA,
+      at: 7,
+      isUnread: false
+    ))
+
+    // Fetch chats between contact A and banned contacts:
+
+    XCTAssertNoDifference(
+      try db.fetchContactChatInfos(ContactChatInfo.Query(
+        userId: contactA.id,
+        isBanned: true
+      )),
+      [
+        ContactChatInfo(
+          contact: contactD,
+          lastMessage: lastMessage_betweenAandD_at7,
+          unreadCount: 0
+        ),
+        ContactChatInfo(
+          contact: contactB,
+          lastMessage: lastMessage_betweenAandB_at3,
+          unreadCount: 2
+        ),
+      ]
+    )
+
+    // Fetch chats between contact A and non-banned contacts:
+
+    XCTAssertNoDifference(
+      try db.fetchContactChatInfos(ContactChatInfo.Query(
+        userId: contactA.id,
+        isBanned: false
+      )),
+      [
+        ContactChatInfo(
+          contact: contactC,
+          lastMessage: lastMessage_betweenAandC_at5,
+          unreadCount: 1
+        ),
+      ]
+    )
+
+    // Fetch chats between contact A and other contacts, regardless its `isBanned` status:
+
+    XCTAssertNoDifference(
+      try db.fetchContactChatInfos(ContactChatInfo.Query(
+        userId: contactA.id,
+        isBanned: nil
+      )),
+      [
+        ContactChatInfo(
+          contact: contactD,
+          lastMessage: lastMessage_betweenAandD_at7,
+          unreadCount: 0
+        ),
+        ContactChatInfo(
+          contact: contactC,
+          lastMessage: lastMessage_betweenAandC_at5,
+          unreadCount: 1
+        ),
+        ContactChatInfo(
+          contact: contactB,
+          lastMessage: lastMessage_betweenAandB_at3,
+          unreadCount: 2
+        ),
+      ]
+    )
+  }
 }
