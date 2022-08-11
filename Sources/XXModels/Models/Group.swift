@@ -99,16 +99,28 @@ extension Group {
     ///   - authStatus: Filter groups by auth status.
     ///     If set, only groups with any of the provided auth statuses will be fetched.
     ///     If `nil` (default), the filter is not used.
+    ///   - isLeaderBlocked: Filter by leader contact's `isBlocked` status.
+    ///     If `true`, only groups with blocked leader contacts are included.
+    ///     If `false`, only groups with non-blocked contacts are included.
+    ///     If `nil` (default), the filter is not used.
+    ///   - isLeaderBanned: Filter by leader contact's `isBlocked` status.
+    ///     If `true`, only groups with blocked leader contacts are included.
+    ///     If `false`, only groups with non-blocked contacts are included.
+    ///     If `nil` (default), the filter is not used.
     ///   - sortBy: Sort order (defaults to `.createdAt(desc: true)`).
     public init(
       id: Set<Group.ID>? = nil,
       withMessages: Bool? = nil,
       authStatus: Set<AuthStatus>? = nil,
+      isLeaderBlocked: Bool? = nil,
+      isLeaderBanned: Bool? = nil,
       sortBy: SortOrder = .createdAt(desc: true)
     ) {
       self.id = id
       self.withMessages = withMessages
       self.authStatus = authStatus
+      self.isLeaderBlocked = isLeaderBlocked
+      self.isLeaderBanned = isLeaderBanned
       self.sortBy = sortBy
     }
 
@@ -127,6 +139,20 @@ extension Group {
     /// If set, only groups with any of the provided auth statuses will be fetched.
     /// If `nil`, the filter is not used.
     public var authStatus: Set<AuthStatus>?
+
+    /// Filter by leader contact's `isBlocked` status
+    ///
+    /// If `true`, only groups with blocked leader contacts are included.
+    /// If `false`, only groups with non-blocked contacts are included.
+    /// If `nil`, the filter is not used.
+    public var isLeaderBlocked: Bool?
+
+    /// Filter by leader contact's `isBanned` status
+    ///
+    /// If `true`, only groups with banned leader contacts are included.
+    /// If `false`, only groups with non-banned leader contacts are included.
+    /// If `nil`, the filter is not used.
+    public var isLeaderBanned: Bool?
 
     /// Groups sort order
     public var sortBy: SortOrder

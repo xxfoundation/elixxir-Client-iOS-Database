@@ -159,4 +159,84 @@ final class GroupGRDBTests: XCTestCase {
       [groupA, groupB]
     )
   }
+
+  func testFetchingWithBlockedLeaders() throws {
+    // Mock up contacts:
+
+    let contactA = try db.saveContact(.stub("A").withBlocked(false))
+    let contactB = try db.saveContact(.stub("B").withBlocked(true))
+
+    // Mock up groups:
+
+    let groupA = try db.saveGroup(.stub(
+      "A",
+      leaderId: contactA.id,
+      createdAt: .stub(1)
+    ))
+
+    let groupB = try db.saveGroup(.stub(
+      "B",
+      leaderId: contactB.id,
+      createdAt: .stub(2)
+    ))
+
+    // Fetch groups with blocked leaders:
+
+    XCTAssertNoDifference(try db.fetchGroups(.init(isLeaderBlocked: true)), [
+      groupB,
+    ])
+
+    // Fetch groups with non-blocked leaders:
+
+    XCTAssertNoDifference(try db.fetchGroups(.init(isLeaderBlocked: false)), [
+      groupA,
+    ])
+
+    // Fetch groups regardless leader's blocked status:
+
+    XCTAssertNoDifference(try db.fetchGroups(.init(isLeaderBlocked: nil)), [
+      groupB,
+      groupA,
+    ])
+  }
+
+  func testFetchingWithBannedLeaders() throws {
+    // Mock up contacts:
+
+    let contactA = try db.saveContact(.stub("A").withBanned(false))
+    let contactB = try db.saveContact(.stub("B").withBanned(true))
+
+    // Mock up groups:
+
+    let groupA = try db.saveGroup(.stub(
+      "A",
+      leaderId: contactA.id,
+      createdAt: .stub(1)
+    ))
+
+    let groupB = try db.saveGroup(.stub(
+      "B",
+      leaderId: contactB.id,
+      createdAt: .stub(2)
+    ))
+
+    // Fetch groups with banned leaders:
+
+    XCTAssertNoDifference(try db.fetchGroups(.init(isLeaderBanned: true)), [
+      groupB,
+    ])
+
+    // Fetch groups with non-banned leaders:
+
+    XCTAssertNoDifference(try db.fetchGroups(.init(isLeaderBanned: false)), [
+      groupA,
+    ])
+
+    // Fetch groups regardless leader's banned status:
+
+    XCTAssertNoDifference(try db.fetchGroups(.init(isLeaderBanned: nil)), [
+      groupB,
+      groupA,
+    ])
+  }
 }

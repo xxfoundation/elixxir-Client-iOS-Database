@@ -58,6 +58,19 @@ extension Group: PersistableRecord, FetchableRecord {
       request = request.filter(authStatus.map(\.rawValue).contains(Column.authStatus))
     }
 
+    if query.isLeaderBlocked != nil || query.isLeaderBanned != nil {
+      let leader = TableAlias(name: "leader")
+      request = request.joining(required: Association.leader.aliased(leader))
+
+      if let isLeaderBlocked = query.isLeaderBlocked {
+        request = request.filter(leader[Contact.Column.isBlocked] == isLeaderBlocked)
+      }
+
+      if let isLeaderBanned = query.isLeaderBanned {
+        request = request.filter(leader[Contact.Column.isBanned] == isLeaderBanned)
+      }
+    }
+
     switch query.sortBy {
     case .createdAt(desc: false):
       request = request.order(Column.createdAt)
