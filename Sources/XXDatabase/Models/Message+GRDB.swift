@@ -17,6 +17,13 @@ extension Message: FetchableRecord, MutablePersistableRecord {
     case fileTransferId
   }
 
+  enum Association {
+    static let sender = belongsTo(
+      Contact.self,
+      using: .init([Column.senderId], to: [Contact.Column.id])
+    )
+  }
+
   public static let databaseTableName = "messages"
 
   static func request(_ query: Query) -> QueryInterfaceRequest<Message> {
@@ -72,6 +79,19 @@ extension Message: FetchableRecord, MutablePersistableRecord {
 
     case .none:
       break
+    }
+
+    if query.isSenderBlocked != nil || query.isSenderBanned != nil {
+      let sender = TableAlias(name: "sender")
+      request = request.joining(required: Association.sender.aliased(sender))
+
+      if let isSenderBlocked = query.isSenderBlocked {
+        request = request.filter(sender[Contact.Column.isBlocked] == isSenderBlocked)
+      }
+
+      if let isSenderBanned = query.isSenderBanned {
+        request = request.filter(sender[Contact.Column.isBanned] == isSenderBanned)
+      }
     }
 
     switch query.sortBy {

@@ -474,6 +474,94 @@ final class MessageGRDBTests: XCTestCase {
     )
   }
 
+  func testFetchingBySenderBlockedStatus() throws {
+    // Mock up contacts:
+
+    let contactA = try db.saveContact(.stub("A").withBlocked(false))
+    let contactB = try db.saveContact(.stub("B").withBlocked(true))
+    let contactC = try db.saveContact(.stub("C").withBlocked(false))
+
+    // Mock up messages:
+
+    let message_AtoB_at1 = try db.saveMessage(.stub(from: contactA, to: contactB, at: 1))
+    let message_AtoC_at2 = try db.saveMessage(.stub(from: contactA, to: contactC, at: 2))
+    let message_BtoA_at3 = try db.saveMessage(.stub(from: contactB, to: contactA, at: 3))
+    let message_BtoC_at4 = try db.saveMessage(.stub(from: contactB, to: contactC, at: 4))
+    let message_CtoA_at5 = try db.saveMessage(.stub(from: contactC, to: contactA, at: 5))
+    let message_CtoB_at6 = try db.saveMessage(.stub(from: contactC, to: contactB, at: 6))
+
+    // Fetch messages from blocked contacts:
+
+    XCTAssertNoDifference(try db.fetchMessages(.init(isSenderBlocked: true)), [
+      message_BtoA_at3,
+      message_BtoC_at4,
+    ])
+
+    // Fetch messages from non-blocked contacts:
+
+    XCTAssertNoDifference(try db.fetchMessages(.init(isSenderBlocked: false)), [
+      message_AtoB_at1,
+      message_AtoC_at2,
+      message_CtoA_at5,
+      message_CtoB_at6,
+    ])
+
+    // Fetch messages regardless sender contact's `isBlocked` status:
+
+    XCTAssertNoDifference(try db.fetchMessages(.init(isSenderBlocked: nil)), [
+      message_AtoB_at1,
+      message_AtoC_at2,
+      message_BtoA_at3,
+      message_BtoC_at4,
+      message_CtoA_at5,
+      message_CtoB_at6,
+    ])
+  }
+
+  func testFetchingBySenderBannedStatus() throws {
+    // Mock up contacts:
+
+    let contactA = try db.saveContact(.stub("A").withBanned(false))
+    let contactB = try db.saveContact(.stub("B").withBanned(true))
+    let contactC = try db.saveContact(.stub("C").withBanned(false))
+
+    // Mock up messages:
+
+    let message_AtoB_at1 = try db.saveMessage(.stub(from: contactA, to: contactB, at: 1))
+    let message_AtoC_at2 = try db.saveMessage(.stub(from: contactA, to: contactC, at: 2))
+    let message_BtoA_at3 = try db.saveMessage(.stub(from: contactB, to: contactA, at: 3))
+    let message_BtoC_at4 = try db.saveMessage(.stub(from: contactB, to: contactC, at: 4))
+    let message_CtoA_at5 = try db.saveMessage(.stub(from: contactC, to: contactA, at: 5))
+    let message_CtoB_at6 = try db.saveMessage(.stub(from: contactC, to: contactB, at: 6))
+
+    // Fetch messages from banned contacts:
+
+    XCTAssertNoDifference(try db.fetchMessages(.init(isSenderBanned: true)), [
+      message_BtoA_at3,
+      message_BtoC_at4,
+    ])
+
+    // Fetch messages from non-banned contacts:
+
+    XCTAssertNoDifference(try db.fetchMessages(.init(isSenderBanned: false)), [
+      message_AtoB_at1,
+      message_AtoC_at2,
+      message_CtoA_at5,
+      message_CtoB_at6,
+    ])
+
+    // Fetch messages regardless sender contact's `isBanned` status:
+
+    XCTAssertNoDifference(try db.fetchMessages(.init(isSenderBanned: nil)), [
+      message_AtoB_at1,
+      message_AtoC_at2,
+      message_BtoA_at3,
+      message_BtoC_at4,
+      message_CtoA_at5,
+      message_CtoB_at6,
+    ])
+  }
+
   func testDeletingMany() throws {
     // Mock up contacts
 
