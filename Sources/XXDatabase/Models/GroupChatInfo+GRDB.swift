@@ -9,12 +9,28 @@ extension GroupChatInfo: FetchableRecord {
   }
 
   static func request(_ query: Query) -> AdaptedFetchRequest<SQLRequest<GroupChatInfo>> {
+    var sqlJoins: [String] = ["INNER JOIN groups g ON g.id = m.groupId"]
     var sqlWhere: [String] = []
     var sqlArguments: StatementArguments = [:]
 
     if let authStatus = query.authStatus {
       sqlWhere.append(sqlWhereAuthStatus(count: authStatus.count))
       _ = sqlArguments.append(contentsOf: sqlArgumentsAuthStatus(authStatus))
+    }
+
+    if query.excludeBlockedContacts || query.excludeBannedContacts {
+      sqlJoins.append("INNER JOIN contacts l ON g.leaderId = l.id")
+      sqlJoins.append("INNER JOIN contacts s ON m.senderId = s.id")
+
+      if query.excludeBlockedContacts {
+        sqlWhere.append("l.isBlocked != 1")
+        sqlWhere.append("s.isBlocked != 1")
+      }
+
+      if query.excludeBannedContacts {
+        sqlWhere.append("l.isBanned != 1")
+        sqlWhere.append("s.isBanned != 1")
+      }
     }
 
     let sql = """
@@ -29,9 +45,8 @@ extension GroupChatInfo: FetchableRecord {
         MAX(m.date) AS date
       FROM
         messages m
-      INNER JOIN groups g
-        ON g.id = m.groupId
-      \(sqlWhere.isEmpty ? "" : "WHERE\n  \(sqlWhere.joined(separator: "\n  "))")
+      \(sqlJoins.joined(separator: "\n"))
+      \(sqlWhere.isEmpty ? "" : "WHERE\n  \(sqlWhere.joined(separator: "\n  AND "))")
       GROUP BY
         g.id
       ORDER BY

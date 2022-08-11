@@ -49,10 +49,18 @@ extension GroupChatInfo {
     ///   - authStatus: Filter groups by auth status.
     ///     If set, only groups with any of the provided auth statuses will be included.
     ///     If `nil`, the filter is not used.
+    ///   - excludeBlockedContacts: Exclude groups with blocked leaders and last messages from
+    ///     blocked contacts (defaults to `false`).
+    ///   - excludeBannedContacts: Exclude groups with banned leaders and last messages from
+    ///     banned contacts (defaults to `false`).
     public init(
-      authStatus: Set<Group.AuthStatus>? = nil
+      authStatus: Set<Group.AuthStatus>? = nil,
+      excludeBlockedContacts: Bool = false,
+      excludeBannedContacts: Bool = false
     ) {
       self.authStatus = authStatus
+      self.excludeBlockedContacts = excludeBlockedContacts
+      self.excludeBannedContacts = excludeBannedContacts
     }
 
     /// Filter groups by auth status
@@ -60,5 +68,11 @@ extension GroupChatInfo {
     /// If set, only groups with any of the provided auth statuses will be included.
     /// If `nil`, the filter is not used.
     public var authStatus: Set<Group.AuthStatus>?
+
+    /// Exclude groups with blocked leaders and last messages from blocked contacts.
+    public var excludeBlockedContacts: Bool
+
+    /// Exclude groups with banned leaders and last messages from banned contacts.
+    public var excludeBannedContacts: Bool
   }
 }
