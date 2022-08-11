@@ -69,6 +69,12 @@ extension Sequence where Element == Migration {
         t.column("fileTransferId", .blob)
           .references("fileTransfers", column: "id", onDelete: .cascade, onUpdate: .cascade)
       }
-    }
+    },
+    Migration(id: "1") { db in
+      try db.alter(table: "contacts") { t in
+        t.add(column: "isBlocked", .boolean).defaults(to: false)
+        t.add(column: "isBanned", .boolean).defaults(to: false)
+      }
+    },
   ]}
 }

@@ -53,6 +53,8 @@ public struct Contact: Identifiable, Equatable, Hashable, Codable {
   ///   - photo: Photo data (defaults to `nil`)
   ///   - authStatus: Contact authorization status (defaults to `.stranger`)
   ///   - isRecent: Flag determining recent contact status (defaults to `false`)
+  ///   - isBlocked: Flag determining blocked status (defaults to `false`)
+  ///   - isBanned: Flag determining banned status (defaults to `false`)
   ///   - createdAt: Creation date (defaults to current date)
   public init(
     id: ID,
@@ -64,6 +66,8 @@ public struct Contact: Identifiable, Equatable, Hashable, Codable {
     photo: Data? = nil,
     authStatus: AuthStatus = .stranger,
     isRecent: Bool = false,
+    isBlocked: Bool = false,
+    isBanned: Bool = false,
     createdAt: Date = Date()
   ) {
     self.id = id
@@ -75,6 +79,8 @@ public struct Contact: Identifiable, Equatable, Hashable, Codable {
     self.photo = photo
     self.authStatus = authStatus
     self.isRecent = isRecent
+    self.isBlocked = isBlocked
+    self.isBanned = isBanned
     self.createdAt = createdAt
   }
 
@@ -104,6 +110,12 @@ public struct Contact: Identifiable, Equatable, Hashable, Codable {
 
   /// Flag determining recent contact status
   public var isRecent: Bool
+
+  /// Flag determining blocked status
+  public var isBlocked: Bool
+
+  /// Flag determining banned status
+  public var isBanned: Bool
 
   /// Creation date
   public var createdAt: Date
