@@ -1,17 +1,10 @@
-// swift-tools-version: 5.6
+// swift-tools-version: 5.7
 import PackageDescription
 
 let swiftSettings: [SwiftSetting] = [
-  // Uncomment to measure compilation time:
-  //.unsafeFlags(
-  //  [
-  //    "-Xfrontend",
-  //    "-debug-time-function-bodies",
-  //    "-Xfrontend",
-  //    "-debug-time-expression-type-checking",
-  //  ],
-  //  .when(configuration: .debug)
-  //),
+  //.unsafeFlags(["-Xfrontend", "-warn-concurrency"], .when(configuration: .debug)),
+  //.unsafeFlags(["-Xfrontend", "-debug-time-function-bodies"], .when(configuration: .debug)),
+  //.unsafeFlags(["-Xfrontend", "-debug-time-expression-type-checking"], .when(configuration: .debug)),
 ]
 
 let package = Package(
