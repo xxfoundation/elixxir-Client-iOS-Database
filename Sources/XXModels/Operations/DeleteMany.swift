@@ -21,9 +21,11 @@ public struct DeleteMany<Model, Query> {
 }
 
 #if DEBUG
+import XCTestDynamicOverlay
+
 extension DeleteMany {
-  public static func failing<Model, Query>() -> DeleteMany<Model, Query> {
-    DeleteMany<Model, Query> { _ in fatalError() }
+  public static func unimplemented<Model>() -> DeleteMany<Model, Query> {
+    DeleteMany<Model, Query>(run: XCTUnimplemented("\(Self.self)"))
   }
 }
 #endif

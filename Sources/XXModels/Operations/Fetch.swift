@@ -22,9 +22,11 @@ public struct Fetch<Model, Query> {
 }
 
 #if DEBUG
+import XCTestDynamicOverlay
+
 extension Fetch {
-  public static func failing<Model, Query>() -> Fetch<Model, Query> {
-    Fetch<Model, Query> { _ in fatalError() }
+  public static func unimplemented<Model, Query>() -> Fetch<Model, Query> {
+    Fetch<Model, Query>(run: XCTUnimplemented("\(Self.self)"))
   }
 }
 #endif

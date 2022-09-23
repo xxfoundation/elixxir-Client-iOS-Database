@@ -36,7 +36,7 @@ final class MigratorTests: XCTestCase {
 
     var didSaveContacts = [XXModels.Contact]()
 
-    var newDb = XXModels.Database.failing
+    var newDb = XXModels.Database.unimplemented
     newDb.fetchContacts = .init { _ in [] }
     newDb.saveContact = .init(run: {
       didSaveContacts.append($0)
@@ -125,7 +125,7 @@ final class MigratorTests: XCTestCase {
   func testMigratingLegacyDatabase1() throws {
     let path = Bundle.module.path(forResource: "legacy_database_1", ofType: "sqlite")!
     let legacyDb = try LegacyDatabase(path: path)
-    let newDbQueue = DatabaseQueue()
+    let newDbQueue = try DatabaseQueue()
     let newDb = try XXModels.Database.grdb(writer: newDbQueue)
     let currentDate = Date(timeIntervalSince1970: 1234)
     let migrate = Migrator.live(currentDate: { currentDate })
@@ -150,7 +150,7 @@ final class MigratorTests: XCTestCase {
   func testMigratingLegacyDatabase2() throws {
     let path = Bundle.module.path(forResource: "legacy_database_2", ofType: "sqlite")!
     let legacyDb = try LegacyDatabase(path: path)
-    let newDbQueue = DatabaseQueue()
+    let newDbQueue = try DatabaseQueue()
     let newDb = try XXModels.Database.grdb(writer: newDbQueue)
     let currentDate = Date(timeIntervalSince1970: 1234)
     let migrate = Migrator.live(currentDate: { currentDate })
@@ -182,7 +182,7 @@ final class MigratorTests: XCTestCase {
 
     // Mock up new database:
 
-    var newDb = XXModels.Database.failing
+    var newDb = XXModels.Database.unimplemented
     newDb.fetchContacts = .init { _ in [] }
     newDb.saveContact = .init { $0 }
 
