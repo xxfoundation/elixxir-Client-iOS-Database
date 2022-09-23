@@ -23,9 +23,17 @@ public struct FetchPublisher<Model, Query> {
 }
 
 #if DEBUG
+import XCTestDynamicOverlay
+
 extension FetchPublisher {
   public static func failing<Model, Query>() -> FetchPublisher<Model, Query> {
     FetchPublisher<Model, Query> { _ in fatalError() }
+  }
+
+  public static func unimplemented<Model, Query>() -> FetchPublisher<Model, Query> {
+    FetchPublisher<Model, Query>(
+      run: XCTUnimplemented("\(Self.self)", placeholder: Empty().eraseToAnyPublisher())
+    )
   }
 }
 #endif

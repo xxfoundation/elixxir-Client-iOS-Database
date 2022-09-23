@@ -209,5 +209,38 @@ extension Database {
     deleteFileTransfer: .failing(),
     drop: .failing
   )
+
+  static public let unimplemented = Database(
+    fetchChatInfos: .unimplemented(),
+    fetchChatInfosPublisher: .unimplemented(),
+    fetchContacts: .unimplemented(),
+    fetchContactsPublisher: .unimplemented(),
+    saveContact: .unimplemented(),
+    bulkUpdateContacts: .unimplemented(),
+    deleteContact: .unimplemented(),
+    fetchContactChatInfos: .unimplemented(),
+    fetchContactChatInfosPublisher: .unimplemented(),
+    fetchGroups: .unimplemented(),
+    fetchGroupsPublisher: .unimplemented(),
+    saveGroup: .unimplemented(),
+    deleteGroup: .unimplemented(),
+    fetchGroupChatInfos: .unimplemented(),
+    fetchGroupChatInfosPublisher: .unimplemented(),
+    fetchGroupInfos: .unimplemented(),
+    fetchGroupInfosPublisher: .unimplemented(),
+    saveGroupMember: .unimplemented(),
+    deleteGroupMember: .unimplemented(),
+    fetchMessages: .unimplemented(),
+    fetchMessagesPublisher: .unimplemented(),
+    saveMessage: .unimplemented(),
+    bulkUpdateMessages: .unimplemented(),
+    deleteMessage: .unimplemented(),
+    deleteMessages: .unimplemented(),
+    fetchFileTransfers: .unimplemented(),
+    fetchFileTransfersPublisher: .unimplemented(),
+    saveFileTransfer: .unimplemented(),
+    deleteFileTransfer: .unimplemented(),
+    drop: .unimplemented
+  )
 }
 #endif
