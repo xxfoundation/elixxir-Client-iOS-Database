@@ -20,9 +20,7 @@ extension GroupMember: FetchableRecord, MutablePersistableRecord {
     case id, photo, status, userId, groupId, username
   }
 
-  mutating func didInsert(with rowID: Int64, for column: String?) {
-    if column == Column.id.rawValue {
-      id = rowID
-    }
+  mutating func didInsert(_ inserted: InsertionSuccess) {
+    id = inserted.rowID
   }
 }
