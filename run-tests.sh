@@ -4,12 +4,12 @@ set -e
 if [ "$1" = "macos" ]; then
 
   echo "\n\033[1;32m▶ Running package tests on macOS...\033[0m"
-  swift test
+  set -o pipefail && swift test 2>&1 | ./xcbeautify
 
 elif [ "$1" = "ios" ]; then
 
   echo "\n\033[1;32m▶ Running package tests on iOS Simulator...\033[0m"
-  xcodebuild -scheme 'xx-client-ios-db-Package' -sdk iphonesimulator -destination 'platform=iOS Simulator,OS=16.0,name=iPhone 14' test
+  set -o pipefail && xcodebuild -scheme 'xx-client-ios-db-Package' -sdk iphonesimulator -destination 'platform=iOS Simulator,OS=16.0,name=iPhone 14' test | ./xcbeautify
 
 else
 
