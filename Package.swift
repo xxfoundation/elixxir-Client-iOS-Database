@@ -19,7 +19,7 @@ let package = Package(
     .library(name: "XXDatabase", targets: ["XXDatabase"]),
   ],
   dependencies: [
-    .package(url: "https://github.com/groue/GRDB.swift", .upToNextMajor(from: "5.24.0")),
+    .package(url: "https://github.com/groue/GRDB.swift", .upToNextMajor(from: "6.0.0")),
     .package(url: "https://github.com/pointfreeco/swift-custom-dump.git", .upToNextMajor(from: "0.4.0")),
     .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", .upToNextMajor(from: "1.9.0")),
     .package(url: "https://github.com/pointfreeco/xctest-dynamic-overlay.git", .upToNextMajor(from: "0.4.1")),
