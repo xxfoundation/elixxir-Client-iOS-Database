@@ -177,39 +177,6 @@ public struct Database {
 
 #if DEBUG
 extension Database {
-  static public let failing = Database(
-    fetchChatInfos: .failing(),
-    fetchChatInfosPublisher: .failing(),
-    fetchContacts: .failing(),
-    fetchContactsPublisher: .failing(),
-    saveContact: .failing(),
-    bulkUpdateContacts: .failing(),
-    deleteContact: .failing(),
-    fetchContactChatInfos: .failing(),
-    fetchContactChatInfosPublisher: .failing(),
-    fetchGroups: .failing(),
-    fetchGroupsPublisher: .failing(),
-    saveGroup: .failing(),
-    deleteGroup: .failing(),
-    fetchGroupChatInfos: .failing(),
-    fetchGroupChatInfosPublisher: .failing(),
-    fetchGroupInfos: .failing(),
-    fetchGroupInfosPublisher: .failing(),
-    saveGroupMember: .failing(),
-    deleteGroupMember: .failing(),
-    fetchMessages: .failing(),
-    fetchMessagesPublisher: .failing(),
-    saveMessage: .failing(),
-    bulkUpdateMessages: .failing(),
-    deleteMessage: .failing(),
-    deleteMessages: .failing(),
-    fetchFileTransfers: .failing(),
-    fetchFileTransfersPublisher: .failing(),
-    saveFileTransfer: .failing(),
-    deleteFileTransfer: .failing(),
-    drop: .failing
-  )
-
   static public let unimplemented = Database(
     fetchChatInfos: .unimplemented(),
     fetchChatInfosPublisher: .unimplemented(),

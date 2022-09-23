@@ -23,7 +23,6 @@ public struct Drop {
 import XCTestDynamicOverlay
 
 extension Drop {
-  public static let failing = Drop { fatalError() }
   public static let unimplemented = Drop(run: XCTUnimplemented("\(Self.self)"))
 }
 #endif

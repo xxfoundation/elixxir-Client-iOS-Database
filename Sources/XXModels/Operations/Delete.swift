@@ -25,10 +25,6 @@ public struct Delete<Model> {
 import XCTestDynamicOverlay
 
 extension Delete {
-  public static func failing<Model>() -> Delete<Model> {
-    Delete<Model> { _ in fatalError() }
-  }
-
   public static func unimplemented<Model>() -> Delete<Model> {
     Delete<Model>(run: XCTUnimplemented("\(Self.self)"))
   }

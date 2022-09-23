@@ -28,10 +28,6 @@ public struct Save<Model> {
 import XCTestDynamicOverlay
 
 extension Save {
-  public static func failing<Model>() -> Save<Model> {
-    Save<Model> { _ in fatalError() }
-  }
-
   public static func unimplemented<Model>() -> Save<Model> {
     Save<Model>(run: XCTUnimplemented("\(Self.self)"))
   }

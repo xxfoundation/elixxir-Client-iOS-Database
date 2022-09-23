@@ -25,10 +25,6 @@ public struct BulkUpdate<Query, Assignments> {
 import XCTestDynamicOverlay
 
 extension BulkUpdate {
-  public static func failing<Query, Assignments>() -> BulkUpdate<Query, Assignments> {
-    BulkUpdate<Query, Assignments> { _, _ in fatalError() }
-  }
-
   public static func unimplemented<Query, Assignments>() -> BulkUpdate<Query, Assignments> {
     BulkUpdate<Query, Assignments>(run: XCTUnimplemented("\(Self.self)"))
   }
