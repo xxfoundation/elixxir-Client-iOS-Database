@@ -17,9 +17,7 @@ extension FileTransfer: FetchableRecord, MutablePersistableRecord {
 
   static let databaseTableName = "transfers"
 
-  mutating func didInsert(with rowID: Int64, for column: String?) {
-    if column == Column.id.rawValue {
-      id = rowID
-    }
+  mutating func didInsert(_ inserted: InsertionSuccess) {
+    id = inserted.rowID
   }
 }

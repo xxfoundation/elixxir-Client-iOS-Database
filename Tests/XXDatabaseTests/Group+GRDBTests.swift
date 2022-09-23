@@ -9,7 +9,7 @@ final class GroupGRDBTests: XCTestCase {
   var writer: DatabaseWriter!
 
   override func setUp() async throws {
-    writer = DatabaseQueue()
+    writer = try DatabaseQueue()
     db = try Database.grdb(
       writer: writer,
       queue: DispatchQueue(label: "XXDatabase"),
