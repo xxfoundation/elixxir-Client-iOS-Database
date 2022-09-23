@@ -22,10 +22,14 @@ let package = Package(
     .package(url: "https://github.com/groue/GRDB.swift", .upToNextMajor(from: "5.24.0")),
     .package(url: "https://github.com/pointfreeco/swift-custom-dump.git", .upToNextMajor(from: "0.4.0")),
     .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", .upToNextMajor(from: "1.9.0")),
+    .package(url: "https://github.com/pointfreeco/xctest-dynamic-overlay.git", .upToNextMajor(from: "0.4.1")),
   ],
   targets: [
     .target(
       name: "XXModels",
+      dependencies: [
+        .product(name: "XCTestDynamicOverlay", package: "xctest-dynamic-overlay"),
+      ],
       swiftSettings: swiftSettings
     ),
     .testTarget(
@@ -41,6 +45,7 @@ let package = Package(
         .target(name: "XXDatabase"),
         .target(name: "XXModels"),
         .product(name: "GRDB", package: "GRDB.swift"),
+        .product(name: "XCTestDynamicOverlay", package: "xctest-dynamic-overlay"),
       ],
       swiftSettings: swiftSettings
     ),
