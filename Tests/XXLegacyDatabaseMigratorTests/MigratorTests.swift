@@ -36,7 +36,7 @@ final class MigratorTests: XCTestCase {
 
     var didSaveContacts = [XXModels.Contact]()
 
-    var newDb = XXModels.Database.failing
+    var newDb = XXModels.Database.unimplemented
     newDb.fetchContacts = .init { _ in [] }
     newDb.saveContact = .init(run: {
       didSaveContacts.append($0)
@@ -182,7 +182,7 @@ final class MigratorTests: XCTestCase {
 
     // Mock up new database:
 
-    var newDb = XXModels.Database.failing
+    var newDb = XXModels.Database.unimplemented
     newDb.fetchContacts = .init { _ in [] }
     newDb.saveContact = .init { $0 }
 

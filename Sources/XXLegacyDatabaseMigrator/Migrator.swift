@@ -70,7 +70,11 @@ extension Migrator {
 }
 
 #if DEBUG
+import XCTestDynamicOverlay
+
 extension Migrator {
-  public static let failing = Migrator { _, _, _, _ in fatalError() }
+  public static let unimplemented = Migrator(
+    run: XCTUnimplemented("\(Self.self)")
+  )
 }
 #endif
